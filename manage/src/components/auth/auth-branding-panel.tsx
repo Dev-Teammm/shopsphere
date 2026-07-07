@@ -123,7 +123,7 @@ export function AuthBrandingPanel() {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
             {content.eyebrow}
           </p>
-          <h2 className="text-3xl font-semibold leading-tight tracking-tight">
+          <h2 className="text-3xl font-semibold leading-tight tracking-tight text-white">
             {content.title}
           </h2>
           <p className="text-sm leading-relaxed text-slate-300">
