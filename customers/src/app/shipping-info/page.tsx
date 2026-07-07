@@ -52,7 +52,7 @@ export default function ShippingInfoPage() {
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calculator className="h-5 w-5 text-green-500" />
+              <Calculator className="h-5 w-5 text-primary" />
               Shipping Cost Calculation
             </CardTitle>
             <CardDescription>
@@ -72,9 +72,9 @@ export default function ShippingInfoPage() {
                     <span className="text-sm">Orders {formatPrice(25)} - {formatPrice(50)}</span>
                     <Badge variant="secondary">{formatPrice(2.99)}</Badge>
                   </div>
-                  <div className="flex justify-between items-center p-3 border rounded-md bg-green-50">
+                  <div className="flex justify-between items-center p-3 border rounded-md bg-primary/10">
                     <span className="text-sm">Orders over {formatPrice(50)}</span>
-                    <Badge variant="default" className="bg-green-500">
+                    <Badge variant="default" className="bg-primary">
                       FREE
                     </Badge>
                   </div>
@@ -179,7 +179,7 @@ export default function ShippingInfoPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5 text-green-500" />
+                <Package className="h-5 w-5 text-primary" />
                 Standard Delivery
               </CardTitle>
             </CardHeader>
@@ -194,7 +194,7 @@ export default function ShippingInfoPage() {
                   <span className="text-sm">Nationwide coverage</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-primary" />
                   <span className="text-sm">Package tracking included</span>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function ShippingInfoPage() {
                   <span className="text-sm">Major cities only</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-primary" />
                   <span className="text-sm">Priority handling</span>
                 </div>
               </div>
@@ -246,7 +246,7 @@ export default function ShippingInfoPage() {
                   <span className="text-sm">Limited areas</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-primary" />
                   <span className="text-sm">Real-time tracking</span>
                 </div>
               </div>
@@ -312,7 +312,7 @@ export default function ShippingInfoPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-green-500" />
+              <DollarSign className="h-5 w-5 text-primary" />
               Total Calculation Example
             </CardTitle>
             <CardDescription>
@@ -328,7 +328,7 @@ export default function ShippingInfoPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Discount Applied</span>
-                  <span className="text-sm font-medium text-green-600">
+                  <span className="text-sm font-medium text-primary">
                     -{formatPrice(5)}
                   </span>
                 </div>
@@ -349,9 +349,9 @@ export default function ShippingInfoPage() {
               </div>
             </div>
 
-            <div className="mt-4 p-4 bg-green-50 rounded-md">
-              <h4 className="font-semibold text-green-900 mb-2">💡 Pro Tip</h4>
-              <p className="text-sm text-green-800">
+            <div className="mt-4 p-4 bg-primary/10 rounded-md">
+              <h4 className="font-semibold text-primary mb-2">💡 Pro Tip</h4>
+              <p className="text-sm text-primary">
                 Add items worth {formatPrice(5)} more to your cart to qualify for free
                 shipping and save {formatPrice(2.99)}!
               </p>

@@ -372,7 +372,7 @@ export default function WarehouseProductsPage() {
                       <TableCell>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                            <Badge variant="secondary" className="bg-primary/10 text-primary">
                               {product.activeBatchCount} Active
                             </Badge>
                           </div>

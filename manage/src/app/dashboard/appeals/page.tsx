@@ -244,7 +244,7 @@ export default function AppealsPage() {
         );
       case "APPROVED":
         return (
-          <Badge variant="secondary" className="bg-green-100 text-green-800">
+          <Badge variant="secondary" className="bg-primary/10 text-primary">
             <CheckCircle className="w-3 h-3 mr-1" />
             Approved
           </Badge>
@@ -695,20 +695,20 @@ export default function AppealsPage() {
               </div>
 
               {/* Return Request Link */}
-              <div className="p-4 bg-green-50 rounded-md border border-green-200">
+              <div className="p-4 bg-primary/10 rounded-md border border-primary/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium text-green-900">
+                    <h4 className="font-medium text-primary">
                       Related Return Request
                     </h4>
-                    <p className="text-sm text-green-700">
+                    <p className="text-sm text-primary">
                       View the original return request that was appealed
                     </p>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-green-300 text-green-700 hover:bg-green-100"
+                    className="border-primary/30 text-primary hover:bg-primary/10"
                     onClick={() =>
                       window.open(
                         `/dashboard/returns/${selectedAppeal.returnRequestId}`,
@@ -1019,10 +1019,10 @@ export default function AppealsPage() {
                     <CardTitle className="text-sm font-medium">
                       Approved Appeals
                     </CardTitle>
-                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <CheckCircle className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-primary">
                       {stats.approvedCount}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -1053,10 +1053,10 @@ export default function AppealsPage() {
                     <CardTitle className="text-sm font-medium">
                       Recent Appeals
                     </CardTitle>
-                    <FileText className="h-4 w-4 text-green-500" />
+                    <FileText className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-primary">
                       {stats.recentCount}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -1087,10 +1087,10 @@ export default function AppealsPage() {
                     <CardTitle className="text-sm font-medium">
                       Approval Rate
                     </CardTitle>
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
+                    <CheckCircle className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-emerald-600">
+                    <div className="text-2xl font-bold text-primary">
                       {stats.approvalRate.toFixed(1)}%
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -1106,8 +1106,8 @@ export default function AppealsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-green-100 rounded-md">
-                        <FileText className="h-5 w-5 text-green-600" />
+                      <div className="p-2 bg-primary/10 rounded-md">
+                        <FileText className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-medium">Total Appeals</h4>

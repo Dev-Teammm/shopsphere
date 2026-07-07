@@ -87,13 +87,13 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
       case "PENDING":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "PROCESSING":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-primary/10 text-primary border-primary/20";
       case "READY_FOR_PICKUP":
         return "bg-indigo-100 text-indigo-800 border-indigo-200";
       case "SHIPPED":
         return "bg-purple-100 text-purple-800 border-purple-200";
       case "DELIVERED":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-primary/10 text-primary border-primary/20";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
@@ -107,11 +107,11 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
     const badgeConfig: Record<string, { label: string; className: string }> = {
       PICKUP_ORDERS: {
         label: "Pickup Only",
-        className: "bg-green-100 text-green-700 border-green-200",
+        className: "bg-primary/10 text-primary border-primary/20",
       },
       FULL_ECOMMERCE: {
         label: "Full E-commerce",
-        className: "bg-green-100 text-green-700 border-green-200",
+        className: "bg-primary/10 text-primary border-primary/20",
       },
       HYBRID: {
         label: "Hybrid",
@@ -185,7 +185,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
               className="w-10 h-10 rounded-full object-cover border bg-white"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold border border-green-200">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20">
               {shopOrder.shopName.charAt(0)}
             </div>
           )}
@@ -228,12 +228,12 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
         <div className="p-0 animate-in slide-in-from-top-2 duration-300 bg-white">
           {/* Shop Capability Description */}
           {shopOrder.shopCapability && getCapabilityDescription(shopOrder.shopCapability, shopOrder.fulfillmentType) && (
-            <div className="bg-green-50/50 border-b border-green-100 p-4">
+            <div className="bg-primary/10 border-b border-primary/20 p-4">
               <div className="flex items-start gap-2">
-                <Info className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-xs font-semibold text-green-900 mb-1">Shop Service Type</p>
-                  <p className="text-xs text-green-700 leading-relaxed">
+                  <p className="text-xs font-semibold text-primary mb-1">Shop Service Type</p>
+                  <p className="text-xs text-primary leading-relaxed">
                     {getCapabilityDescription(shopOrder.shopCapability, shopOrder.fulfillmentType)}
                   </p>
                 </div>
@@ -244,7 +244,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
           {/* Shop-Level Timeline (The USER specifically asked for this to be enclosed here) */}
           <div className="bg-slate-50 border-b p-6">
             <h4 className="font-semibold flex items-center gap-2 text-slate-800 mb-6 uppercase tracking-wider text-xs">
-              <Clock className="h-4 w-4 text-green-500" />
+              <Clock className="h-4 w-4 text-primary" />
               Order Journey Details
             </h4>
             <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-2">
@@ -260,14 +260,14 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                   <div
                     className={`flex items-center justify-center w-9 h-9 rounded-full border-4 bg-white transition-all duration-300 ${
                       step.isCompleted
-                        ? "border-green-500 shadow-md shadow-green-100"
+                        ? "border-primary shadow-md shadow-primary/10"
                         : "border-slate-200"
                     }`}
                   >
                     {step.isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-500" />
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
                     ) : step.isCurrent ? (
-                      <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+                      <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
                     ) : (
                       <Circle className="w-3 h-3 text-slate-200" />
                     )}
@@ -299,7 +299,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
             {/* Left Side: Products List */}
             <div className="lg:col-span-8 p-6 space-y-6">
               <h4 className="font-semibold flex items-center gap-2 text-slate-800 uppercase tracking-wider text-xs">
-                <Package className="h-4 w-4 text-green-500" />
+                <Package className="h-4 w-4 text-primary" />
                 Ordered Items
               </h4>
 
@@ -340,7 +340,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                             !item.returnInfo?.hasReturnRequest && (
                               <Badge
                                 variant="secondary"
-                                className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                                className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/10"
                               >
                                 Return Eligible ({item.daysRemainingForReturn}d)
                               </Badge>
@@ -369,7 +369,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                               <span className="text-[10px] text-red-400 uppercase font-bold tracking-tight">
                                 Discount
                               </span>
-                              <span className="font-bold text-green-600">
+                              <span className="font-bold text-primary">
                                 -{item.discountPercentage}%{" "}
                                 <span className="text-[10px] font-normal">
                                   ({item.discountName})
@@ -381,7 +381,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">
                               Item Total
                             </span>
-                            <span className="font-extrabold text-green-600 text-lg">
+                            <span className="font-extrabold text-primary text-lg">
                               {formatCurrency(item.totalPrice)}
                             </span>
                           </div>
@@ -413,7 +413,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                                   <Badge
                                     className={
                                       ret.status === "APPROVED"
-                                        ? "bg-green-100 text-green-700 border-green-200"
+                                        ? "bg-primary/10 text-primary border-primary/20"
                                         : ret.status === "DENIED"
                                           ? "bg-red-100 text-red-700 border-red-200"
                                           : "bg-amber-100 text-amber-700 border-amber-200"
@@ -453,14 +453,14 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
 
                               {/* REFUND INFO */}
                               {ret.refundProcessed && (
-                                <div className="bg-green-50 border border-green-100 rounded-md p-3 mt-2">
+                                <div className="bg-primary/10 border border-primary/20 rounded-md p-3 mt-2">
                                   <div className="flex items-center gap-2 mb-2">
-                                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                    <span className="text-xs font-bold text-green-900 uppercase tracking-wider">
+                                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
                                       Refund Processed
                                     </span>
                                     {ret.refundProcessedAt && (
-                                      <span className="ml-auto text-[10px] text-green-600 font-medium">
+                                      <span className="ml-auto text-[10px] text-primary font-medium">
                                         {format(
                                           new Date(ret.refundProcessedAt),
                                           "MMM dd, yyyy",
@@ -478,7 +478,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                                         <Button
                                           variant="outline"
                                           size="sm"
-                                          className="h-8 text-xs bg-white text-green-700 border-green-200 hover:bg-green-50 w-full flex items-center justify-center gap-2"
+                                          className="h-8 text-xs bg-white text-primary border-primary/20 hover:bg-primary/10 w-full flex items-center justify-center gap-2"
                                           onClick={() => {
                                             const link =
                                               document.createElement("a");
@@ -497,7 +497,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                                       </div>
                                     )}
                                     {ret.refundNotes && (
-                                      <p className="text-[10px] text-green-700 italic border-t border-green-100 pt-2 mt-2">
+                                      <p className="text-[10px] text-primary italic border-t border-primary/20 pt-2 mt-2">
                                         Note: {ret.refundNotes}
                                       </p>
                                     )}
@@ -544,7 +544,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                                       }
                                       window.location.href = url;
                                     }}
-                                    className="text-xs font-bold text-green-600 hover:text-green-800 flex items-center gap-1 bg-green-50 px-3 py-1 rounded-full border border-green-100 transition-colors"
+                                    className="text-xs font-bold text-primary hover:text-primary flex items-center gap-1 bg-primary/10 px-3 py-1 rounded-full border border-primary/20 transition-colors"
                                   >
                                     Request Appeal
                                   </button>
@@ -566,7 +566,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
               {shopOrder.pickupToken && (
                 <div className="space-y-3">
                   <h4 className="font-semibold flex items-center gap-2 text-slate-800 uppercase tracking-wider text-xs">
-                    <QrCode className="h-4 w-4 text-green-500" />
+                    <QrCode className="h-4 w-4 text-primary" />
                     Pickup QR Code
                   </h4>
                   <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
@@ -580,7 +580,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                       ) : (
                         <div className="w-32 h-32 rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center">
                           {qrGenerating ? (
-                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500"></div>
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                           ) : (
                             <QrCode className="h-8 w-8 text-slate-300" />
                           )}
@@ -591,7 +591,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                           {shopOrder.pickupToken}
                         </p>
                         {shopOrder.pickupTokenUsed && (
-                          <Badge className="bg-green-100 text-green-700 border-green-200 text-[10px] mt-1">
+                          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] mt-1">
                             Verified
                           </Badge>
                         )}
@@ -626,20 +626,20 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
               {/* Delivery Detailed Info */}
               <div className="space-y-4">
                 <h4 className="font-semibold flex items-center gap-2 text-slate-800 uppercase tracking-wider text-xs">
-                  <Truck className="h-4 w-4 text-green-500" />
+                  <Truck className="h-4 w-4 text-primary" />
                   Delivery & Fulfillment
                 </h4>
 
                 {shopOrder.deliveryInfo ? (
                   <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <div className="flex justify-between items-center bg-green-50 rounded-lg p-3 border border-green-100">
+                    <div className="flex justify-between items-center bg-primary/10 rounded-lg p-3 border border-primary/20">
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 h-4 text-green-600" />
-                        <span className="text-xs font-bold text-green-800 uppercase tracking-wider">
+                        <Clock className="h-4 h-4 text-primary" />
+                        <span className="text-xs font-bold text-primary uppercase tracking-wider">
                           Delivery Status
                         </span>
                       </div>
-                      <Badge className="bg-white text-green-600 border-green-200 hover:bg-white">
+                      <Badge className="bg-white text-primary border-primary/20 hover:bg-white">
                         {shopOrder.deliveryInfo.hasDeliveryStarted
                           ? "Out for Delivery"
                           : "Processing"}
@@ -656,7 +656,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                             {shopOrder.deliveryInfo.delivererName}
                           </span>
                           {shopOrder.deliveryInfo.delivererPhone && (
-                            <span className="text-xs text-green-600 font-medium">
+                            <span className="text-xs text-primary font-medium">
                               {shopOrder.deliveryInfo.delivererPhone}
                             </span>
                           )}
@@ -686,7 +686,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                               {shopOrder.deliveryInfo.pickupToken}
                             </span>
                             {shopOrder.pickupTokenUsed && (
-                              <Badge className="bg-green-500 text-white border-0 text-[10px] h-5">
+                              <Badge className="bg-primary text-white border-0 text-[10px] h-5">
                                 Verified
                               </Badge>
                             )}
@@ -713,7 +713,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                     Delivery Notes
                   </h4>
                   <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
+                    <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
                     <p className="text-sm italic text-slate-700 leading-relaxed font-medium capitalize">
                       "{shopOrder.deliveryNote.note}"
                     </p>
@@ -752,20 +752,20 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                   </div>
                   {shopOrder.discountAmount > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-emerald-400">Shop Discount:</span>
-                      <span className="font-bold text-emerald-400">
+                      <span className="text-primary/80">Shop Discount:</span>
+                      <span className="font-bold text-primary/80">
                         -{formatCurrency(shopOrder.discountAmount)}
                       </span>
                     </div>
                   )}
                   {shopOrder.pointsUsed !== undefined &&
                     shopOrder.pointsUsed > 0 && (
-                      <div className="flex justify-between text-sm py-1 px-2 bg-green-500/10 rounded mt-1">
-                        <span className="text-green-300 flex items-center gap-1 italic">
+                      <div className="flex justify-between text-sm py-1 px-2 bg-primary/10 rounded mt-1">
+                        <span className="text-primary/60 flex items-center gap-1 italic">
                           <Info className="h-3 w-3" />
                           Points Applied:
                         </span>
-                        <span className="font-bold text-green-300">
+                        <span className="font-bold text-primary/60">
                           -{formatCurrency(shopOrder.pointsValue || 0)}
                           <span className="text-[10px] ml-1 opacity-70 italic">
                             ({shopOrder.pointsUsed} pts)
@@ -780,7 +780,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                         ? "Amount Charged"
                         : "Grand Total"}
                     </span>
-                    <span className="text-2xl font-black text-green-400">
+                    <span className="text-2xl font-black text-primary/70">
                       {formatCurrency(
                         Math.max(
                           0,
@@ -825,7 +825,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                     }
                     window.location.href = url;
                   }}
-                  className="w-full bg-green-600 border border-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:shadow-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-primary border border-primary/80 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:shadow-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
                 >
                   <Package className="h-4 w-4" />
                   Request New Return
@@ -866,7 +866,7 @@ export const ShopOrderGroup: React.FC<ShopOrderGroupProps> = ({
                   {shopOrder.pickupToken}
                 </p>
                 {shopOrder.pickupTokenUsed && (
-                  <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
                     Verified
                   </Badge>
                 )}

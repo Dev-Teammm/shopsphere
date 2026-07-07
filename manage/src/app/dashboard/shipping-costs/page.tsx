@@ -354,7 +354,7 @@ export default function ShippingCostsPage() {
                               disabled={toggleActiveMutation.isPending}
                             />
                             {shippingCost.isActive ? (
-                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              <CheckCircle className="h-4 w-4 text-primary" />
                             ) : (
                               <XCircle className="h-4 w-4 text-red-500" />
                             )}

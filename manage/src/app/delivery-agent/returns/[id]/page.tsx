@@ -464,7 +464,7 @@ export default function ReturnRequestDetailsPage() {
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                   remainingDays <= 3 ? 'bg-red-100 text-red-800' :
                                   remainingDays <= 7 ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-green-100 text-green-800'
+                                  'bg-primary/10 text-primary'
                                 }`}>
                                   {remainingDays} days left
                                 </span>
@@ -688,7 +688,7 @@ export default function ReturnRequestDetailsPage() {
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
               <div>
                 <p className="font-medium">Assigned</p>
                 <p className="text-sm text-muted-foreground">{formatDate(returnDetails.assignedAt)}</p>
@@ -714,7 +714,7 @@ export default function ReturnRequestDetailsPage() {
             )}
             {returnDetails.pickupCompletedAt && (
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
                 <div>
                   <p className="font-medium">Pickup Completed</p>
                   <p className="text-sm text-muted-foreground">{formatDate(returnDetails.pickupCompletedAt)}</p>

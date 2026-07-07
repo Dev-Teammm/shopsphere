@@ -191,13 +191,13 @@ export default function AccountOrderDetailsPage() {
       case "PENDING":
         return "bg-yellow-100 text-yellow-800";
       case "CONFIRMED":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "PROCESSING":
         return "bg-purple-100 text-purple-800";
       case "SHIPPED":
         return "bg-indigo-100 text-indigo-800";
       case "DELIVERED":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "CANCELLED":
         return "bg-red-100 text-red-800";
       case "READY_FOR_DELIVERY":
@@ -378,7 +378,7 @@ export default function AccountOrderDetailsPage() {
                       variant="outline"
                       className={
                         returnRequest.status === "APPROVED"
-                          ? "text-green-600 border-green-300 bg-green-50"
+                          ? "text-primary border-primary/30 bg-primary/10"
                           : returnRequest.status === "DENIED"
                             ? "text-red-600 border-red-300 bg-red-50"
                             : "text-orange-600 border-orange-300 bg-orange-50"
@@ -401,7 +401,7 @@ export default function AccountOrderDetailsPage() {
               {t("order.timeline") || "Order Timeline"}
             </h2>
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
               <span className="ml-3 text-muted-foreground">
                 {t("home.loading") || "Loading timeline..."}
               </span>
@@ -415,7 +415,7 @@ export default function AccountOrderDetailsPage() {
           {/* Shop Grouped Orders */}
           <div className="space-y-4">
             <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
-              <Package className="h-6 w-6 text-green-600" />
+              <Package className="h-6 w-6 text-primary" />
               {t("order.itemsByShop") || "Order Items by Shop"}
             </h2>
             {order.shopOrders && order.shopOrders.length > 0 ? (
@@ -468,7 +468,7 @@ export default function AccountOrderDetailsPage() {
 
               {((order.totalDiscount ?? 0) > 0 ||
                 (order.discount ?? 0) > 0) && (
-                <div className="flex justify-between text-green-600 italic">
+                <div className="flex justify-between text-primary italic">
                   <span>{t("cart.discount")}:</span>
                   <span className="font-medium">
                     -
@@ -623,12 +623,12 @@ export default function AccountOrderDetailsPage() {
                   </Badge>
                 </div>
                 {order.paymentInfo && order.paymentInfo.pointsUsed > 0 && (
-                  <div className="flex justify-between text-sm py-1.5 px-2 bg-green-50/50 rounded-md border border-green-100/50">
-                    <span className="text-green-600 flex items-center gap-1 italic">
+                  <div className="flex justify-between text-sm py-1.5 px-2 bg-primary/10 rounded-md border border-primary/20">
+                    <span className="text-primary flex items-center gap-1 italic">
                       <Info className="h-3 w-3" />
                       {t("order.pointsApplied") || "Points Applied"}:
                     </span>
-                    <span className="font-bold text-green-700">
+                    <span className="font-bold text-primary">
                       -{formatCurrency(order.paymentInfo.pointsValue)}
                       <span className="text-[10px] ml-1 opacity-70 italic">
                         ({order.paymentInfo.pointsUsed} pts)

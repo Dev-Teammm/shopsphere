@@ -167,7 +167,7 @@ export function WarehouseStockWithBatches({
     setIsCreateModalOpen(true);
   };
 
-  const extractDateAndTime = (dateTimeStr: string | null) => {
+  const extractDateAndTime = (dateTimeStr?: string | null) => {
     if (!dateTimeStr) return { date: "", time: "" };
     try {
       let cleanStr = dateTimeStr;
@@ -312,7 +312,7 @@ export function WarehouseStockWithBatches({
     if (batch.isExpired || isActuallyExpired) return <Badge variant="destructive" className="text-xs"><XCircle className="w-3 h-3 mr-1" />Expired</Badge>;
     if (batch.isEmpty) return <Badge variant="secondary" className="text-xs"><Package className="w-3 h-3 mr-1" />Empty</Badge>;
     if (batch.isExpiringSoon) return <Badge variant="outline" className="text-xs text-yellow-600 border-yellow-200"><AlertTriangle className="w-3 h-3 mr-1" />Expiring Soon</Badge>;
-    if (batch.isAvailable) return <Badge variant="outline" className="text-xs text-green-600 border-green-200"><CheckCircle className="w-3 h-3 mr-1" />Active</Badge>;
+    if (batch.isAvailable) return <Badge variant="outline" className="text-xs text-primary border-primary/20"><CheckCircle className="w-3 h-3 mr-1" />Active</Badge>;
     return <Badge variant="secondary" className="text-xs"><Clock className="w-3 h-3 mr-1" />Inactive</Badge>;
   };
 
@@ -330,7 +330,7 @@ export function WarehouseStockWithBatches({
                 <div className="flex items-center justify-between p-4 bg-muted/20 hover:bg-muted/30 transition-colors cursor-pointer">
                   <div className="flex items-center gap-3">
                     {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                    <Warehouse className="w-4 h-4 text-green-600" />
+                    <Warehouse className="w-4 h-4 text-primary" />
                     <div>
                       <div className="font-medium text-sm">{stock.warehouseName}</div>
                       {stock.warehouseLocation && <div className="text-xs text-muted-foreground">{stock.warehouseLocation}</div>}
@@ -338,16 +338,16 @@ export function WarehouseStockWithBatches({
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <div className={cn("font-semibold text-sm", stock.isLowStock ? "text-yellow-600" : "text-green-600")}>{stock.stockQuantity} units</div>
+                      <div className={cn("font-semibold text-sm", stock.isLowStock ? "text-yellow-600" : "text-primary")}>{stock.stockQuantity} units</div>
                       <div className="text-xs text-muted-foreground">Threshold: {stock.lowStockThreshold}</div>
                     </div>
                     {warehouseBatches.length > 0 && (
                       <div className="text-right">
-                        <div className="text-sm font-medium text-green-600">{warehouseBatches.length} batch{warehouseBatches.length !== 1 ? "es" : ""}</div>
+                        <div className="text-sm font-medium text-primary">{warehouseBatches.length} batch{warehouseBatches.length !== 1 ? "es" : ""}</div>
                         <div className="text-xs text-muted-foreground">{activeBatches.length} active</div>
                       </div>
                     )}
-                    <div className={cn("w-3 h-3 rounded-full", stock.isLowStock ? "bg-yellow-500" : "bg-green-500")} />
+                    <div className={cn("w-3 h-3 rounded-full", stock.isLowStock ? "bg-yellow-500" : "bg-primary")} />
                   </div>
                 </div>
               </CollapsibleTrigger>
@@ -355,7 +355,7 @@ export function WarehouseStockWithBatches({
                 <div className="p-4 border-t bg-background">
                   <div className="flex items-center justify-between mb-4">
                     <h6 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Stock Batches</h6>
-                    <Button size="sm" onClick={() => handleCreateBatch(stock.warehouseId)} className="bg-green-600 hover:bg-green-700 text-white">
+                    <Button size="sm" onClick={() => handleCreateBatch(stock.warehouseId)} className="bg-primary hover:bg-primary/90 text-white">
                       <Plus className="w-4 h-4 mr-2" />Add Batch
                     </Button>
                   </div>
@@ -369,7 +369,7 @@ export function WarehouseStockWithBatches({
                               <div className="flex items-center gap-3">
                                 <span className="font-medium text-sm">{batch.batchNumber}</span>
                                 {getBatchStatusBadge(batch)}
-                                <span className="text-sm font-semibold text-green-600">{batch.quantity} units</span>
+                                <span className="text-sm font-semibold text-primary">{batch.quantity} units</span>
                               </div>
                               {isActuallyExpired && batch.expiryDate && (
                                 <div className="text-xs text-destructive font-medium flex items-center gap-1">
@@ -378,7 +378,7 @@ export function WarehouseStockWithBatches({
                               )}
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEditBatch(batch)} className="text-green-600 hover:bg-green-50">
+                              <Button variant="outline" size="sm" onClick={() => handleEditBatch(batch)} className="text-primary hover:bg-primary/10">
                                 <Edit className="w-3 h-3 mr-1" />Edit
                               </Button>
                               <Button variant="outline" size="sm" onClick={() => handleDeleteBatch(batch.id)} className="text-destructive hover:bg-destructive/10">
@@ -423,7 +423,12 @@ export function WarehouseStockWithBatches({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Manufacture Date</Label>
+                <Label>
+                  Manufacture Date{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
                 <Input type="date" value={formData.manufactureDate} onChange={(e) => setFormData({ ...formData, manufactureDate: e.target.value })} />
               </div>
               <div>
@@ -433,7 +438,12 @@ export function WarehouseStockWithBatches({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Expiry Date</Label>
+                <Label>
+                  Expiry Date{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
                 <Input type="date" value={formData.expiryDate} onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })} />
               </div>
               <div>
@@ -471,7 +481,12 @@ export function WarehouseStockWithBatches({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Manufacture Date</Label>
+                <Label>
+                  Manufacture Date{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
                 <Input type="date" value={formData.manufactureDate} onChange={(e) => setFormData({ ...formData, manufactureDate: e.target.value })} />
               </div>
               <div>
@@ -481,7 +496,12 @@ export function WarehouseStockWithBatches({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Expiry Date</Label>
+                <Label>
+                  Expiry Date{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
                 <Input type="date" value={formData.expiryDate} onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })} />
               </div>
               <div>

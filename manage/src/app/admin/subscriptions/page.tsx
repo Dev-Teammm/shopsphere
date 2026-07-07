@@ -179,7 +179,7 @@ export default function SubscriptionsPage() {
                   <div className="flex gap-2">
                     {plan.isFreemium && <Badge variant="secondary">Freemium</Badge>}
                     {plan.isActive ? (
-                      <Badge className="bg-green-500">Active</Badge>
+                      <Badge className="bg-primary">Active</Badge>
                     ) : (
                       <Badge variant="destructive">Inactive</Badge>
                     )}

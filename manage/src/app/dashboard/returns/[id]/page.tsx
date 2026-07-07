@@ -150,7 +150,7 @@ export default function ReturnRequestDetailPage() {
       APPROVED: {
         variant: "default" as const,
         icon: CheckCircle,
-        color: "text-green-600",
+        color: "text-primary",
       },
       DENIED: {
         variant: "destructive" as const,
@@ -160,7 +160,7 @@ export default function ReturnRequestDetailPage() {
       COMPLETED: {
         variant: "default" as const,
         icon: CheckCircle,
-        color: "text-green-600",
+        color: "text-primary",
       },
     };
 
@@ -387,7 +387,7 @@ export default function ReturnRequestDetailPage() {
 
                   <div className="flex items-center justify-between text-lg font-semibold">
                     <span>Total Refund Amount:</span>
-                    <span className="text-green-600">
+                    <span className="text-primary">
                       {formatCurrency(calculateTotalRefundAmount())}
                     </span>
                   </div>
@@ -409,7 +409,7 @@ export default function ReturnRequestDetailPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="bg-gradient-to-br from-primary/10 to-primary/10 dark:from-primary/20 dark:to-primary/20 p-6 rounded-lg border border-primary/20 dark:border-primary/30">
                   <div className="space-y-4">
                     {/* Payment Method */}
                     <div className="flex items-center justify-between pb-3 border-b">
@@ -428,7 +428,7 @@ export default function ReturnRequestDetailPage() {
                           <span className="text-sm font-medium text-muted-foreground">
                             Card Refund
                           </span>
-                          <span className="text-xl font-bold text-green-600 dark:text-green-400">
+                          <span className="text-xl font-bold text-primary dark:text-primary/70">
                             {formatCurrency(
                               returnRequest.expectedRefund.monetaryRefund || 0
                             )}
@@ -450,7 +450,7 @@ export default function ReturnRequestDetailPage() {
                             <span className="text-xs text-muted-foreground">
                               Points Value
                             </span>
-                            <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                            <span className="text-sm font-semibold text-primary dark:text-primary/70">
                               {formatCurrency(
                                 returnRequest.expectedRefund
                                   .pointsRefundValue || 0
@@ -499,7 +499,7 @@ export default function ReturnRequestDetailPage() {
                       <span className="font-bold text-lg">
                         Total Refund Value
                       </span>
-                      <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                      <span className="text-2xl font-bold text-primary dark:text-primary/70">
                         {formatCurrency(
                           returnRequest.expectedRefund.totalRefundValue || 0
                         )}
@@ -552,7 +552,7 @@ export default function ReturnRequestDetailPage() {
                       >
                         <div className="flex items-center gap-2 mb-2">
                           {isImageFile(media) ? (
-                            <ImageIcon className="h-4 w-4 text-green-600" />
+                            <ImageIcon className="h-4 w-4 text-primary" />
                           ) : (
                             <Video className="h-4 w-4 text-purple-600" />
                           )}
@@ -676,7 +676,7 @@ export default function ReturnRequestDetailPage() {
                       />
                       {refundScreenshot && (
                         <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                          <ImageIcon className="h-4 w-4 text-green-600" />
+                          <ImageIcon className="h-4 w-4 text-primary" />
                           <span className="text-sm text-muted-foreground flex-1">
                             {refundScreenshot.name}
                           </span>
@@ -777,7 +777,7 @@ export default function ReturnRequestDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
                 <div>
                   <p className="font-medium text-sm">Return Requested</p>
                   <p className="text-xs text-muted-foreground">
@@ -794,7 +794,7 @@ export default function ReturnRequestDetailPage() {
                   <div
                     className={`w-2 h-2 rounded-full mt-2 ${
                       returnRequest.status === "APPROVED"
-                        ? "bg-green-600"
+                        ? "bg-primary"
                         : "bg-red-600"
                     }`}
                   ></div>

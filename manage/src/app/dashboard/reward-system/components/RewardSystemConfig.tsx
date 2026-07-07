@@ -224,7 +224,7 @@ export function RewardSystemConfig({
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-sm ${
-                      config.isActive ? "text-green-600" : "text-gray-500"
+                      config.isActive ? "text-primary" : "text-gray-500"
                     }`}
                   >
                     {config.isActive ? "Active" : "Inactive"}

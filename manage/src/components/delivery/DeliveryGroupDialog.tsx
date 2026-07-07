@@ -544,11 +544,11 @@ export function DeliveryGroupDialog({
           {bulkResult && (
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="p-4 bg-green-50 rounded-md">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className="p-4 bg-primary/10 rounded-md">
+                  <div className="text-2xl font-bold text-primary">
                     {bulkResult.successfullyAdded}
                   </div>
-                  <div className="text-sm text-green-600">
+                  <div className="text-sm text-primary">
                     Successfully Added
                   </div>
                 </div>
@@ -558,11 +558,11 @@ export function DeliveryGroupDialog({
                   </div>
                   <div className="text-sm text-yellow-600">Skipped</div>
                 </div>
-                <div className="p-4 bg-green-50 rounded-md">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className="p-4 bg-primary/10 rounded-md">
+                  <div className="text-2xl font-bold text-primary">
                     {bulkResult.totalRequested}
                   </div>
-                  <div className="text-sm text-green-600">Total Requested</div>
+                  <div className="text-sm text-primary">Total Requested</div>
                 </div>
               </div>
 

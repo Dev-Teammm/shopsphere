@@ -1,8 +1,11 @@
 package com.ecommerce.service;
 
+import com.ecommerce.dto.VisibilityIssueDTO;
+import com.ecommerce.dto.VisibilityStatusDTO;
 import com.ecommerce.entity.Product;
 import com.ecommerce.entity.ProductVariant;
 import com.ecommerce.entity.Shop;
+import com.ecommerce.entity.ShopSubscription;
 import com.ecommerce.entity.Stock;
 import com.ecommerce.repository.StockBatchRepository;
 import com.ecommerce.repository.StockRepository;
@@ -10,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,23 +28,185 @@ public class ProductAvailabilityService {
     private final BatchExpirationService batchExpirationService;
 
     public boolean isProductAvailableForCustomers(Product product) {
-        if (!isProductValidForDisplay(product)) {
-            return false;
+        return getProductVisibilityStatus(product).isVisibleToCustomers();
+    }
+
+    public VisibilityStatusDTO getShopVisibilityStatus(Shop shop) {
+        List<VisibilityIssueDTO> issues = collectShopVisibilityIssues(shop);
+        boolean visible = issues.isEmpty();
+        return VisibilityStatusDTO.builder()
+                .visibleToCustomers(visible)
+                .issues(issues)
+                .build();
+    }
+
+    public VisibilityStatusDTO getProductVisibilityStatus(Product product) {
+        List<VisibilityIssueDTO> issues = new ArrayList<>();
+
+        if (product.getShop() != null) {
+            issues.addAll(collectShopVisibilityIssues(product.getShop()));
+        } else {
+            issues.add(issue(
+                    "SHOP_MISSING",
+                    "Shop not linked",
+                    "This product is not linked to a shop, so it cannot appear on the storefront.",
+                    "error",
+                    "Go to products",
+                    "/dashboard/products"));
         }
 
-        // Check if the shop is truly active (includes subscription check)
-        if (!isShopActiveForCustomers(product.getShop())) {
-            return false;
+        if (!product.isActive()) {
+            issues.add(issue(
+                    "PRODUCT_INACTIVE",
+                    "Product is inactive",
+                    "Turn on Active Product in Basic Info so customers can see this listing.",
+                    "error",
+                    "Edit product",
+                    productActionPath(product, "basic")));
         }
 
-        // Check if shop supports visualization (all shop types support visualization)
-        // Also check transition state
+        if (!Boolean.TRUE.equals(product.getDisplayToCustomers())) {
+            issues.add(issue(
+                    "NOT_DISPLAYED_TO_CUSTOMERS",
+                    "Not visible to customers",
+                    "Enable Display to Customers in Additional Info to publish this product on the storefront.",
+                    "error",
+                    "Edit visibility",
+                    productActionPath(product, "details")));
+        }
+
+        if (!hasAvailableStock(product)) {
+            issues.add(issue(
+                    "NO_STOCK",
+                    "No available inventory",
+                    "Add warehouse stock with at least one active batch and quantity greater than zero.",
+                    "error",
+                    "Add inventory",
+                    productActionPath(product, "inventory")));
+        }
+
+        boolean visibleToCustomers = issues.isEmpty();
+        return VisibilityStatusDTO.builder()
+                .visibleToCustomers(visibleToCustomers)
+                .issues(issues)
+                .build();
+    }
+
+    private List<VisibilityIssueDTO> collectShopVisibilityIssues(Shop shop) {
+        List<VisibilityIssueDTO> issues = new ArrayList<>();
+        if (shop == null) {
+            issues.add(issue(
+                    "SHOP_MISSING",
+                    "Shop not found",
+                    "We could not determine which shop owns this product.",
+                    "error",
+                    null,
+                    null));
+            return issues;
+        }
+
+        String shopManagePath = "/shops/manage/" + shop.getShopId();
+
+        if (shop.getPrimaryCapability() == null) {
+            issues.add(issue(
+                    "CAPABILITY_NOT_SET",
+                    "Shop capability not configured",
+                    "Choose a shop capability (e.g. Pickup, Full E-commerce, or Hybrid) before your products can go live.",
+                    "error",
+                    "Configure shop",
+                    shopManagePath));
+        }
+
+        if (shop.getIsActive() == null || !shop.getIsActive()) {
+            issues.add(issue(
+                    "SHOP_INACTIVE",
+                    "Shop is turned off",
+                    "Your shop is marked inactive. Customers will not see any products until the shop is active.",
+                    "error",
+                    "Manage shop",
+                    shopManagePath));
+        }
+
+        if (shop.getStripeAccount() == null
+                || shop.getStripeAccount().getAccountStatus() != com.ecommerce.entity.StripeAccount.AccountStatus.ACTIVE) {
+            issues.add(issue(
+                    "STRIPE_NOT_CONNECTED",
+                    "Stripe account not connected",
+                    "Connect and activate your Stripe account so customers can browse and purchase from your shop.",
+                    "error",
+                    "Connect Stripe",
+                    shopManagePath));
+        }
+
+        boolean subscriptionSystemEnabled = subscriptionService.isSubscriptionEnabled();
+        if (subscriptionSystemEnabled) {
+            if (!shop.hasValidSubscription()) {
+                issues.add(issue(
+                        "SUBSCRIPTION_REQUIRED",
+                        "No active subscription",
+                        "Subscribe to a plan that matches your shop capability to make products visible to customers.",
+                        "error",
+                        "View plans",
+                        shopManagePath));
+            } else {
+                ShopSubscription activeSubscription = findActiveSubscription(shop);
+                if (activeSubscription != null
+                        && activeSubscription.getPlan() != null
+                        && shop.getPrimaryCapability() != null
+                        && activeSubscription.getPlan().getCapability() != shop.getPrimaryCapability()) {
+                    issues.add(issue(
+                            "SUBSCRIPTION_CAPABILITY_MISMATCH",
+                            "Subscription plan mismatch",
+                            "Your active plan does not match your shop capability. Update your capability or choose a matching plan.",
+                            "error",
+                            "Fix subscription",
+                            shopManagePath));
+                }
+            }
+        }
+
+        return issues;
+    }
+
+    private ShopSubscription findActiveSubscription(Shop shop) {
+        if (shop.getSubscriptions() == null) {
+            return null;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        return shop.getSubscriptions().stream()
+                .filter(sub -> sub.getStatus() == ShopSubscription.SubscriptionStatus.ACTIVE
+                        && sub.getEndDate() != null
+                        && sub.getEndDate().isAfter(now))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String productActionPath(Product product, String tab) {
+        UUID productId = product.getProductId();
         Shop shop = product.getShop();
-        if (shop != null && !shopSupportsCapability(shop, false, false)) {
-            return false;
+        if (shop != null && shop.getSlug() != null && !shop.getSlug().isBlank()) {
+            return "/dashboard/products/" + productId + "/update?shopSlug="
+                    + shop.getSlug() + "&tab=" + tab;
         }
+        return "/dashboard/products/" + productId + "/update?tab=" + tab;
+    }
 
-        return hasAvailableStock(product);
+    private VisibilityIssueDTO issue(
+            String code,
+            String title,
+            String description,
+            String severity,
+            String actionLabel,
+            String actionPath) {
+        return VisibilityIssueDTO.builder()
+                .code(code)
+                .title(title)
+                .description(description)
+                .severity(severity)
+                .actionLabel(actionLabel)
+                .actionPath(actionPath)
+                .build();
     }
 
     /**

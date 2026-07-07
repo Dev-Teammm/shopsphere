@@ -63,7 +63,7 @@ export const returnPickupService = {
         value: ReturnItemPickupStatus.UNDAMAGED,
         label: 'Undamaged',
         description: 'Item is in perfect condition and can be restocked',
-        color: 'bg-green-500'
+        color: 'bg-primary'
       },
       {
         value: ReturnItemPickupStatus.DAMAGED,

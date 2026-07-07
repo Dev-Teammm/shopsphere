@@ -178,9 +178,9 @@ export default function DashboardPage() {
           <StatCard
             title="Points Revenue"
             value={formatCurrency(data.pointsRevenue)}
-            icon={<Package className="h-4 w-4 text-green-500" />}
+            icon={<Package className="h-4 w-4 text-primary" />}
             description="Value from used points"
-            className="border-green-100 bg-green-50/30"
+            className="border-primary/20 bg-primary/10/30"
           />
         )}
       </div>

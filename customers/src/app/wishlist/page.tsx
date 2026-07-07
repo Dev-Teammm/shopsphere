@@ -323,11 +323,11 @@ export default function WishlistPage() {
 
       {/* Guest User Banner */}
       {!isAuthenticated && (
-        <div className="bg-green-50 border-l-4 border-green-400 p-4 mx-4 mb-6">
+        <div className="bg-primary/10 border-l-4 border-primary/40 p-4 mx-4 mb-6">
           <div className="flex items-center">
-            <AlertCircle className="h-5 w-5 text-green-400 mr-3" />
+            <AlertCircle className="h-5 w-5 text-primary/70 mr-3" />
             <div className="flex-1">
-              <p className="text-sm text-green-700">
+              <p className="text-sm text-primary">
                 <strong>{t("wishlist.guestModeTitle")}:</strong>{" "}
                 {t("wishlist.guestModeDesc")}
                 <Link href="/auth/login" className="underline ml-1">
@@ -426,13 +426,13 @@ export default function WishlistPage() {
                             {product.hasActiveDiscount &&
                             product.discountInfo?.active ? (
                               <>
-                                <span className="font-medium text-green-600">
+                                <span className="font-medium text-primary">
                                   {formatPrice(product.finalPrice || 0)}
                                 </span>
                                 <span className="text-sm text-muted-foreground line-through">
                                   {formatPrice(product.price || 0)}
                                 </span>
-                                <span className="text-xs text-green-600 font-medium">
+                                <span className="text-xs text-primary font-medium">
                                   {product.discountInfo.percentage}% OFF
                                 </span>
                               </>
@@ -557,13 +557,13 @@ export default function WishlistPage() {
                           {product.hasActiveDiscount &&
                           product.discountInfo?.active ? (
                             <div className="flex flex-col">
-                              <span className="font-medium text-green-600">
+                              <span className="font-medium text-primary">
                                 {formatPrice(product.finalPrice || 0)}
                               </span>
                               <span className="text-sm text-muted-foreground line-through">
                                 {formatPrice(product.price || 0)}
                               </span>
-                              <span className="text-xs text-green-600 font-medium">
+                              <span className="text-xs text-primary font-medium">
                                 {product.discountInfo.percentage}% OFF
                               </span>
                             </div>

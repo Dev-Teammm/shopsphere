@@ -535,9 +535,9 @@ export function StoresClient() {
                         variant="outline"
                         className={`text-xs ${
                           shop.primaryCapability === "PICKUP_ORDERS"
-                            ? "bg-green-100 text-green-700 border-green-200"
+                            ? "bg-primary/10 text-primary border-primary/20"
                             : shop.primaryCapability === "FULL_ECOMMERCE"
-                            ? "bg-green-100 text-green-700 border-green-200"
+                            ? "bg-primary/10 text-primary border-primary/20"
                             : shop.primaryCapability === "HYBRID"
                             ? "bg-orange-100 text-orange-700 border-orange-200"
                             : "bg-gray-100 text-gray-700 border-gray-200"

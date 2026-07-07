@@ -94,7 +94,7 @@ function MetricCard({
           <div
             className={`flex items-center mt-2 text-xs ${
               trend === "up"
-                ? "text-green-600"
+                ? "text-primary"
                 : trend === "down"
                 ? "text-red-600"
                 : "text-muted-foreground"
@@ -564,14 +564,14 @@ export default function AnalyticsPage() {
                   <>
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                      <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-md border border-green-200 dark:border-green-900">
+                      <div className="p-4 bg-primary/10 dark:bg-primary/20 rounded-md border border-primary/20 dark:border-primary/30">
                         <div className="flex items-center gap-2 mb-2">
-                          <ArrowUpCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                          <ArrowUpCircle className="h-5 w-5 text-primary dark:text-primary/70" />
+                          <p className="text-sm font-medium text-primary dark:text-primary-foreground">
                             Total Inflow
                           </p>
                         </div>
-                        <p className="text-2xl font-bold text-green-700 dark:text-green-300">
+                        <p className="text-2xl font-bold text-primary dark:text-primary">
                           {formatCurrency(
                             moneyFlowData.aggregations.reduce(
                               (sum, agg) => sum + agg.totalInflow,
@@ -598,14 +598,14 @@ export default function AnalyticsPage() {
                         </p>
                       </div>
 
-                      <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-md border border-green-200 dark:border-green-900">
+                      <div className="p-4 bg-primary/10 dark:bg-primary/20 rounded-md border border-primary/20 dark:border-primary/30">
                         <div className="flex items-center gap-2 mb-2">
-                          <BarChart3 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                          <BarChart3 className="h-5 w-5 text-primary dark:text-primary/70" />
+                          <p className="text-sm font-medium text-primary dark:text-primary-foreground">
                             Net Balance
                           </p>
                         </div>
-                        <p className="text-2xl font-bold text-green-700 dark:text-green-300">
+                        <p className="text-2xl font-bold text-primary dark:text-primary">
                           {formatCurrency(
                             moneyFlowData.aggregations.reduce(
                               (sum, agg) => sum + agg.netBalance,
@@ -714,12 +714,12 @@ export default function AnalyticsPage() {
                                 const data = payload[0].payload;
                                 return (
                                   <div className="bg-background border border-border rounded-md shadow-lg p-4 max-w-sm">
-                                    <p className="font-semibold mb-2 text-green-600">
+                                    <p className="font-semibold mb-2 text-primary">
                                       {data.originalPeriod || data.period}
                                     </p>
                                     <div className="space-y-1 text-sm">
                                       <div className="flex items-center justify-between gap-4">
-                                        <span className="flex items-center gap-1 text-green-600">
+                                        <span className="flex items-center gap-1 text-primary">
                                           <ArrowUpCircle className="h-3 w-3" />
                                           Inflow:
                                         </span>
@@ -743,7 +743,7 @@ export default function AnalyticsPage() {
                                         <span
                                           className={`font-bold ${
                                             data.net >= 0
-                                              ? "text-green-600"
+                                              ? "text-primary"
                                               : "text-red-600"
                                           }`}
                                         >
@@ -785,7 +785,7 @@ export default function AnalyticsPage() {
                                                         className={`font-semibold ${
                                                           transaction.type ===
                                                           MoneyFlowType.IN
-                                                            ? "text-green-600"
+                                                            ? "text-primary"
                                                             : "text-red-600"
                                                         }`}
                                                       >
