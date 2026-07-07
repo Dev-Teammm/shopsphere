@@ -473,7 +473,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           )}
 
           {hasActiveSubscription && !isCurrentPlan && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800">
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-sm text-primary">
               <p className="font-medium">Active subscription required</p>
               <p className="text-xs mt-1">
                 Cancel your current subscription to switch plans.
@@ -572,7 +572,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
                 <Badge
                   className={
                     activeSubscription.status === "ACTIVE"
-                      ? "bg-green-500"
+                      ? "bg-primary"
                       : activeSubscription.status === "EXPIRED"
                         ? "bg-gray-500"
                         : "bg-red-500"
@@ -610,7 +610,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
                   <span className="text-muted-foreground">Auto Renew:</span>
                   <p className="font-medium">
                     {activeSubscription.autoRenew ? (
-                      <Check className="h-4 w-4 text-green-500 inline" />
+                      <Check className="h-4 w-4 text-primary inline" />
                     ) : (
                       <X className="h-4 w-4 text-gray-500 inline" />
                     )}

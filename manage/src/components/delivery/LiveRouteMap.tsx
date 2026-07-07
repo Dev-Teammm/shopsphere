@@ -412,13 +412,13 @@ export default function LiveRouteMap({
 
               {/* Distance & Duration */}
               <div className="grid grid-cols-2 gap-3 pt-2 border-t">
-                <div className="bg-green-50 p-2 rounded-md">
+                <div className="bg-primary/10 p-2 rounded-md">
                   <p className="text-xs text-muted-foreground mb-1">Distance</p>
                   <p className="text-lg font-bold text-primary">{distance}</p>
                 </div>
-                <div className="bg-green-50 p-2 rounded-md">
+                <div className="bg-primary/10 p-2 rounded-md">
                   <p className="text-xs text-muted-foreground mb-1">Duration</p>
-                  <p className="text-lg font-bold text-green-600">{duration}</p>
+                  <p className="text-lg font-bold text-primary">{duration}</p>
                 </div>
               </div>
 

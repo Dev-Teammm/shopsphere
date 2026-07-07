@@ -578,7 +578,7 @@ export default function ProductsPage() {
                             {product.isFeatured && (
                               <Badge
                                 variant="outline"
-                                className="text-xs bg-green-50 text-green-700 border-green-200"
+                                className="text-xs bg-primary/10 text-primary border-primary/20"
                               >
                                 Featured
                               </Badge>
@@ -627,7 +627,7 @@ export default function ProductsPage() {
                       {product.stockQuantity > 0 ? (
                         <Badge
                           variant="outline"
-                          className="bg-green-50 text-green-700 border-green-200"
+                          className="bg-primary/10 text-primary border-primary/20"
                         >
                           {product.stockQuantity} in stock
                         </Badge>

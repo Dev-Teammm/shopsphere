@@ -810,17 +810,17 @@ export default function OrderDetailsPage() {
                         {item.hasDiscount &&
                           item.originalPrice &&
                           item.discountPercentage && (
-                            <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
+                            <div className="mt-2 p-2 bg-primary/10 border border-primary/20 rounded-md">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   <Badge
                                     variant="secondary"
-                                    className="bg-green-100 text-green-800 font-semibold"
+                                    className="bg-primary/10 text-primary font-semibold"
                                   >
                                     -{Math.round(item.discountPercentage)}%
                                     DISCOUNT
                                   </Badge>
-                                  <span className="text-xs text-green-700 font-medium">
+                                  <span className="text-xs text-primary font-medium">
                                     Applied at purchase
                                   </span>
                                 </div>
@@ -839,7 +839,7 @@ export default function OrderDetailsPage() {
                                   <span className="text-muted-foreground">
                                     Discounted:{" "}
                                   </span>
-                                  <span className="text-green-700 font-semibold">
+                                  <span className="text-primary font-semibold">
                                     {(item.price || 0).toLocaleString()} RWF
                                   </span>
                                 </div>
@@ -847,7 +847,7 @@ export default function OrderDetailsPage() {
                                   <span className="text-muted-foreground">
                                     Saved:{" "}
                                   </span>
-                                  <span className="text-green-700 font-semibold">
+                                  <span className="text-primary font-semibold">
                                     {(
                                       (item.originalPrice || 0) -
                                       (item.price || 0)
@@ -891,7 +891,7 @@ export default function OrderDetailsPage() {
                                     className="text-xs"
                                   >
                                     <div className="flex items-center justify-between mb-1">
-                                      <span className="font-medium text-green-700">
+                                      <span className="font-medium text-primary">
                                         {warehouse.warehouseName}
                                       </span>
                                       <span className="text-muted-foreground">
@@ -963,14 +963,14 @@ export default function OrderDetailsPage() {
                               ).toLocaleString()}{" "}
                               RWF
                             </p>
-                            <p className="font-medium text-green-600">
+                            <p className="font-medium text-primary">
                               {(
                                 item.totalPrice ||
                                 (item.price || 0) * item.quantity
                               ).toLocaleString()}{" "}
                               RWF
                             </p>
-                            <p className="text-xs text-green-600">
+                            <p className="text-xs text-primary">
                               Saved:{" "}
                               {(
                                 ((item.originalPrice || 0) -
@@ -1043,7 +1043,7 @@ export default function OrderDetailsPage() {
                   </div>
                 )}
               {displayData?.discount && displayData.discount > 0 ? (
-                <div className="flex justify-between text-sm text-green-600">
+                <div className="flex justify-between text-sm text-primary">
                   <span>Discount</span>
                   <span>
                     -{(displayData.discount || 0).toLocaleString()} RWF
@@ -1066,7 +1066,7 @@ export default function OrderDetailsPage() {
                     <label className="text-sm font-medium text-muted-foreground">
                       Points Value
                     </label>
-                    <p className="text-sm font-bold text-green-600">
+                    <p className="text-sm font-bold text-primary">
                       -{(displayData.pointsValue || 0).toLocaleString()} RWF
                     </p>
                   </div>
@@ -1076,7 +1076,7 @@ export default function OrderDetailsPage() {
                     </div>
                   )}
                   {displayData.paymentMethod === "POINTS" && (
-                    <div className="text-xs text-green-600 font-medium italic">
+                    <div className="text-xs text-primary font-medium italic">
                       Full Points Payment
                     </div>
                   )}
@@ -1100,7 +1100,7 @@ export default function OrderDetailsPage() {
                       <label className="text-sm font-medium text-muted-foreground">
                         Points Value
                       </label>
-                      <p className="text-sm font-bold text-green-600">
+                      <p className="text-sm font-bold text-primary">
                         -{(order.paymentInfo.pointsValue || 0).toLocaleString()}{" "}
                         RWF
                       </p>
@@ -1292,7 +1292,7 @@ export default function OrderDetailsPage() {
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       Contact Phone
                     </label>
-                    <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                    <p className="text-sm font-medium text-primary dark:text-primary/70">
                       {order.shippingAddress.phone}
                     </p>
                   </div>
@@ -1323,7 +1323,7 @@ export default function OrderDetailsPage() {
                     {displayData?.paymentMethod === "POINTS" && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] bg-green-50 text-green-700 border-green-200"
+                        className="text-[10px] bg-primary/10 text-primary border-primary/20"
                       >
                         POINTS
                       </Badge>
@@ -1331,7 +1331,7 @@ export default function OrderDetailsPage() {
                     {displayData?.paymentMethod === "HYBRID" && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] bg-green-50 text-green-700 border-green-200"
+                        className="text-[10px] bg-primary/10 text-primary border-primary/20"
                       >
                         HYBRID
                       </Badge>
@@ -1460,20 +1460,20 @@ export default function OrderDetailsPage() {
                   <div
                     className={`p-4 rounded-md ${
                       pickupVerificationResult.success
-                        ? "bg-green-50 border border-green-200"
+                        ? "bg-primary/10 border border-primary/20"
                         : "bg-red-50 border border-red-200"
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       {pickupVerificationResult.success ? (
-                        <Check className="h-5 w-5 text-green-600" />
+                        <Check className="h-5 w-5 text-primary" />
                       ) : (
                         <X className="h-5 w-5 text-red-600" />
                       )}
                       <p
                         className={`text-sm font-medium ${
                           pickupVerificationResult.success
-                            ? "text-green-800"
+                            ? "text-primary"
                             : "text-red-800"
                         }`}
                       >
@@ -1535,12 +1535,12 @@ export default function OrderDetailsPage() {
                 )}
 
                 {order.status === OrderStatus.DELIVERED && (
-                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-green-700">
+                  <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                    <div className="flex items-center gap-2 text-primary">
                       <Check className="h-5 w-5" />
                       <span className="font-semibold">Order Already Delivered</span>
                     </div>
-                    <p className="text-sm text-green-600 mt-2">
+                    <p className="text-sm text-primary mt-2">
                       This pickup order has been verified and marked as delivered.
                     </p>
                   </div>
@@ -1548,9 +1548,9 @@ export default function OrderDetailsPage() {
 
                 {/* Instructions */}
                 {order.status !== OrderStatus.DELIVERED && (
-                  <div className="bg-green-50 p-4 rounded-md">
-                    <p className="font-medium mb-2 text-green-900">Quick Instructions:</p>
-                    <ul className="text-sm text-green-800 space-y-1">
+                  <div className="bg-primary/10 p-4 rounded-md">
+                    <p className="font-medium mb-2 text-primary">Quick Instructions:</p>
+                    <ul className="text-sm text-primary space-y-1">
                       <li>• Ask customer to show their pickup QR code</li>
                       <li>• Use camera for real-time scanning (recommended)</li>
                       <li>• Or take a photo and upload it</li>

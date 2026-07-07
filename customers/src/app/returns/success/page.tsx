@@ -62,7 +62,7 @@ function ReturnSuccessPageContent() {
         return <Badge variant="secondary">Pending Review</Badge>;
       case "APPROVED":
         return (
-          <Badge variant="default" className="bg-green-600">
+          <Badge variant="default" className="bg-primary">
             Approved
           </Badge>
         );
@@ -78,7 +78,7 @@ function ReturnSuccessPageContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-gray-600">Loading return request details...</p>
           </div>
         </div>
@@ -90,8 +90,8 @@ function ReturnSuccessPageContent() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       {/* Success Header */}
       <div className="text-center mb-8">
-        <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-          <CheckCircle className="h-8 w-8 text-green-600" />
+        <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="h-8 w-8 text-primary" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Return Request Submitted!
@@ -236,8 +236,8 @@ function ReturnSuccessPageContent() {
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">1</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">1</span>
               </div>
               <div>
                 <p className="font-medium">Review Process</p>
@@ -249,8 +249,8 @@ function ReturnSuccessPageContent() {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">2</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">2</span>
               </div>
               <div>
                 <p className="font-medium">Decision Notification</p>
@@ -262,8 +262,8 @@ function ReturnSuccessPageContent() {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">3</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">3</span>
               </div>
               <div>
                 <p className="font-medium">Return Instructions</p>

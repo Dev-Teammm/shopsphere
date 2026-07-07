@@ -3279,7 +3279,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                             checked,
                                           );
                                         }}
-                                        className="data-[state=checked]:bg-green-600"
+                                        className="data-[state=checked]:bg-primary"
                                         onClick={(e) => e.stopPropagation()}
                                       />
                                       <Label className="text-sm font-medium">
@@ -3291,7 +3291,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                     {variant.isInStock && (
                                       <Badge
                                         variant="outline"
-                                        className="text-xs text-green-600 border-green-200"
+                                        className="text-xs text-primary border-primary/20"
                                       >
                                         In Stock
                                       </Badge>
@@ -3340,7 +3340,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                       e.stopPropagation();
                                       handleSaveVariant(variant.variantId);
                                     }}
-                                    className="text-green-600 hover:bg-green-50"
+                                    className="text-primary hover:bg-primary/10"
                                   >
                                     <CheckCircle className="w-4 h-4 mr-2" />
                                     Save
@@ -3361,7 +3361,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         );
                                       // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                     }}
-                                    className="text-green-600 hover:bg-green-50"
+                                    className="text-primary hover:bg-primary/10"
                                   >
                                     <Warehouse className="w-4 h-4 mr-2" />
                                     Stock
@@ -3726,7 +3726,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           );
                                         // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                       }}
-                                      className="text-green-600 hover:bg-green-50"
+                                      className="text-primary hover:bg-primary/10"
                                     >
                                       <Warehouse className="w-4 h-4 mr-2" />
                                       Manage Stock
@@ -3763,7 +3763,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                             );
                                           // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                         }}
-                                        className="text-green-600 hover:bg-green-50"
+                                        className="text-primary hover:bg-primary/10"
                                       >
                                         <Warehouse className="w-4 h-4 mr-2" />
                                         Assign to Warehouses
@@ -3800,7 +3800,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         <span className="text-muted-foreground">
                                           Discount:
                                         </span>
-                                        <div className="font-medium text-green-600">
+                                        <div className="font-medium text-primary">
                                           {variant.discount.percentage}% off
                                         </div>
                                       </div>
@@ -4964,7 +4964,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                           isActive: checked,
                         }))
                       }
-                      className="data-[state=checked]:bg-green-600"
+                      className="data-[state=checked]:bg-primary"
                     />
                     <Label className="text-sm font-medium">Active Status</Label>
                   </div>

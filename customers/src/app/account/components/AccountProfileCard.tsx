@@ -77,11 +77,11 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
   const pointsValue = totalMonetaryValue || points * 10; // Use backend value if available, fallback to default 10 RWF/pt
 
   return (
-    <Card className="overflow-hidden border-green-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-      <div className="h-24 bg-gradient-to-r from-green-600 via-green-500 to-green-400 relative">
+    <Card className="overflow-hidden border-primary/20 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <div className="h-24 bg-gradient-to-r from-primary via-primary to-primary/70 relative">
         <div className="absolute -bottom-10 left-1/2 -translate-x-1/2">
-          <Avatar className="h-20 w-20 border-4 border-white shadow-lg ring-2 ring-green-100">
-            <AvatarFallback className="text-xl font-bold bg-white text-green-600">
+          <Avatar className="h-20 w-20 border-4 border-white shadow-lg ring-2 ring-primary/20">
+            <AvatarFallback className="text-xl font-bold bg-white text-primary">
               {getUserInitials()}
             </AvatarFallback>
           </Avatar>
@@ -104,7 +104,7 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
             variant={userData?.enabled ? "default" : "secondary"}
             className={`${
               userData?.enabled
-                ? "bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
+                ? "bg-primary/10 text-primary hover:bg-primary/20 border-primary/20"
                 : "bg-gray-100 text-gray-600"
             } px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider transition-colors`}
           >
@@ -117,15 +117,15 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
 
       <CardContent className="space-y-6">
         {/* Points Section */}
-        <div className="bg-[#fcfdfc] border border-green-100 rounded-2xl p-5 relative overflow-hidden group">
+        <div className="bg-[#fcfdfc] border border-primary/20 rounded-2xl p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-            <Gift className="h-16 w-16 text-green-600 -rotate-12" />
+            <Gift className="h-16 w-16 text-primary -rotate-12" />
           </div>
 
           <div className="flex items-center justify-between mb-3 relative z-10">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Gift className="h-4 w-4 text-green-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Gift className="h-4 w-4 text-primary" />
               </div>
               <span className="text-sm font-bold text-gray-700">
                 {t("account.loyaltyRewards")}
@@ -133,7 +133,7 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
             </div>
             <Link
               href="/account/points"
-              className="text-[10px] font-bold text-green-600 uppercase tracking-tight flex items-center gap-0.5 hover:underline"
+              className="text-[10px] font-bold text-primary uppercase tracking-tight flex items-center gap-0.5 hover:underline"
             >
               {t("account.details")} <ArrowUpRight className="h-3 w-3" />
             </Link>
@@ -146,7 +146,7 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
                 {t("account.pointsAbbr")}
               </span>
             </div>
-            <div className="text-sm font-bold text-green-600">
+            <div className="text-sm font-bold text-primary">
               {t("account.pointsValue", {
                 value: pointsValue.toLocaleString(),
               })}
@@ -160,15 +160,15 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
             </div>
             <Progress
               value={(points / 500) * 100}
-              className="h-2 bg-green-50"
-              indicatorClassName="bg-green-500 rounded-full"
+              className="h-2 bg-primary/10"
+              indicatorClassName="bg-primary rounded-full"
             />
           </div>
 
           <Button
             asChild
             variant="ghost"
-            className="w-full mt-4 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-bold py-5 rounded-xl border border-green-100 group/btn"
+            className="w-full mt-4 bg-primary/10 hover:bg-primary/10 text-primary text-xs font-bold py-5 rounded-xl border border-primary/20 group/btn"
           >
             <Link href="/account/points">
               {t("account.viewShopSpecificPoints") ||
@@ -182,8 +182,8 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
         <div className="space-y-4 px-1">
           <div className="flex items-center justify-between group cursor-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-green-50 transition-colors">
-                <Phone className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
+              <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-primary/10 transition-colors">
+                <Phone className="h-4 w-4 text-gray-400 group-hover:text-primary" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
@@ -200,8 +200,8 @@ const AccountProfileCard: FC<AccountProfileCardProps> = ({
 
           <div className="flex items-center justify-between group cursor-default">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-green-50 transition-colors">
-                <ShieldCheck className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
+              <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-primary/10 transition-colors">
+                <ShieldCheck className="h-4 w-4 text-gray-400 group-hover:text-primary" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">

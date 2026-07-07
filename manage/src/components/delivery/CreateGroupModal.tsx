@@ -342,7 +342,7 @@ export function CreateGroupModal({
                     {/* Available Agents Section */}
                     {availableAgents.length > 0 && (
                       <>
-                        <div className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">
+                        <div className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">
                           Available Agents ({availableAgents.length})
                         </div>
                         {availableAgents.map((agent) => (
@@ -381,7 +381,7 @@ export function CreateGroupModal({
                               <div className="flex flex-col items-end gap-1">
                                 <Badge
                                   variant="default"
-                                  className="bg-green-600"
+                                  className="bg-primary"
                                 >
                                   Available
                                 </Badge>
@@ -463,7 +463,7 @@ export function CreateGroupModal({
                       groups, max 5 allowed)
                     </span>
                   ) : (
-                    <span className="text-green-600 ml-2">
+                    <span className="text-primary ml-2">
                       (Available - has {selectedAgent.activeGroupCount} active
                       groups)
                     </span>

@@ -308,7 +308,7 @@ export default function DeliveryGroupsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-primary">
                   {statusCounts.scheduled}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -330,7 +330,7 @@ export default function DeliveryGroupsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-primary">
                   {statusCounts.inProgress}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -393,7 +393,7 @@ export default function DeliveryGroupsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-primary">
                   {statusCounts.scheduled}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -415,7 +415,7 @@ export default function DeliveryGroupsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-primary">
                   {statusCounts.inProgress}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">

@@ -149,13 +149,13 @@ export default function DeliveryAgentOrderDetails() {
       case "PENDING":
         return "bg-yellow-100 text-yellow-800";
       case "CONFIRMED":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "PROCESSING":
         return "bg-purple-100 text-purple-800";
       case "SHIPPED":
         return "bg-indigo-100 text-indigo-800";
       case "DELIVERED":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "CANCELLED":
         return "bg-red-100 text-red-800";
       case "READY_FOR_DELIVERY":
@@ -249,20 +249,20 @@ export default function DeliveryAgentOrderDetails() {
                   <div
                     className={`p-4 rounded-md ${
                       verificationResult.success
-                        ? "bg-green-50 border border-green-200"
+                        ? "bg-primary/10 border border-primary/20"
                         : "bg-red-50 border border-red-200"
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       {verificationResult.success ? (
-                        <Check className="h-5 w-5 text-green-600" />
+                        <Check className="h-5 w-5 text-primary" />
                       ) : (
                         <X className="h-5 w-5 text-red-600" />
                       )}
                       <p
                         className={`text-sm font-medium ${
                           verificationResult.success
-                            ? "text-green-800"
+                            ? "text-primary"
                             : "text-red-800"
                         }`}
                       >
@@ -316,9 +316,9 @@ export default function DeliveryAgentOrderDetails() {
                 </div>
 
                 {/* Instructions */}
-                <div className="bg-green-50 p-4 rounded-md">
-                  <p className="font-medium mb-2 text-green-900">Quick Instructions:</p>
-                  <ul className="text-sm text-green-800 space-y-1">
+                <div className="bg-primary/10 p-4 rounded-md">
+                  <p className="font-medium mb-2 text-primary">Quick Instructions:</p>
+                  <ul className="text-sm text-primary space-y-1">
                     <li>• Ask customer to show their pickup QR code</li>
                     <li>• Use camera for real-time scanning (recommended)</li>
                     <li>• Or take a photo and upload it</li>
@@ -332,23 +332,23 @@ export default function DeliveryAgentOrderDetails() {
 
         {/* Delivery Completed Status */}
         {order.status === "DELIVERED" && (
-          <Card className="border-2 border-green-200 bg-green-50">
+          <Card className="border-2 border-primary/20 bg-primary/10">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-700">
+              <CardTitle className="flex items-center gap-2 text-primary">
                 <Check className="h-6 w-6" />
                 Delivery Completed Successfully
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center space-y-4">
-                <div className="bg-green-100 p-6 rounded-full w-fit mx-auto">
-                  <Check className="h-16 w-16 text-green-600" />
+                <div className="bg-primary/10 p-6 rounded-full w-fit mx-auto">
+                  <Check className="h-16 w-16 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xl font-semibold text-green-700 mb-2">
+                  <p className="text-xl font-semibold text-primary mb-2">
                     Order Successfully Delivered
                   </p>
-                  <p className="text-green-600">
+                  <p className="text-primary">
                     This order has been verified and marked as delivered.
                   </p>
                 </div>
@@ -389,12 +389,12 @@ export default function DeliveryAgentOrderDetails() {
                 <div className="space-y-3">
                   <a 
                     href={`tel:${order.customerPhone}`}
-                    className="flex items-center gap-3 p-3 rounded-md bg-green-50 hover:bg-green-100 transition-colors"
+                    className="flex items-center gap-3 p-3 rounded-md bg-primary/10 hover:bg-primary/10 transition-colors"
                   >
-                    <Phone className="h-5 w-5 text-green-600" />
+                    <Phone className="h-5 w-5 text-primary" />
                     <div>
-                      <p className="font-medium text-green-900">Call Customer</p>
-                      <p className="text-sm text-green-700">{order.customerPhone}</p>
+                      <p className="font-medium text-primary">Call Customer</p>
+                      <p className="text-sm text-primary">{order.customerPhone}</p>
                     </div>
                   </a>
                   <a 
@@ -478,11 +478,11 @@ export default function DeliveryAgentOrderDetails() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="bg-green-50 p-4 rounded-md">
-                <p className="text-sm text-green-900 font-medium mb-2">
+              <div className="bg-primary/10 p-4 rounded-md">
+                <p className="text-sm text-primary font-medium mb-2">
                   Why add notes?
                 </p>
-                <ul className="text-sm text-green-800 space-y-1">
+                <ul className="text-sm text-primary space-y-1">
                   <li>• Record customer-specific delivery instructions</li>
                   <li>• Document any issues or delays for this order</li>
                   <li>• Keep track of communication with the customer</li>
@@ -491,8 +491,8 @@ export default function DeliveryAgentOrderDetails() {
               </div>
               
               {order.status === "DELIVERED" && (
-                <div className="bg-green-50 p-3 rounded-md border border-green-200">
-                  <p className="text-sm text-green-800">
+                <div className="bg-primary/10 p-3 rounded-md border border-primary/20">
+                  <p className="text-sm text-primary">
                     <strong>Note:</strong> This order has been delivered. You can view existing notes but cannot add new ones.
                   </p>
                 </div>
@@ -615,7 +615,7 @@ export default function DeliveryAgentOrderDetails() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
                   <div>
                     <p className="font-medium">Order Placed</p>
                     <p className="text-sm text-muted-foreground">
@@ -626,7 +626,7 @@ export default function DeliveryAgentOrderDetails() {
 
                 {order.updatedAt && order.updatedAt !== order.createdAt && (
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-primary rounded-full"></div>
                     <div>
                       <p className="font-medium">Last Updated</p>
                       <p className="text-sm text-muted-foreground">

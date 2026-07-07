@@ -74,15 +74,15 @@ export function Alerts({ data }: AlertsProps) {
           )}
 
           {pendingOrderCount > 0 && (
-            <li className="flex items-start gap-4 p-3 rounded-lg bg-green-500/5 border border-green-500/10 hover:bg-green-500/10 transition-colors cursor-pointer group">
-              <div className="p-2 rounded-full bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all">
+            <li className="flex items-start gap-4 p-3 rounded-lg bg-primary/5 border border-primary/10 hover:bg-primary/100/10 transition-colors cursor-pointer group">
+              <div className="p-2 rounded-full bg-primary/10 text-primary group-hover:bg-primary/100 group-hover:text-white transition-all">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div className="flex-1">
-                <p className="font-bold text-green-900 leading-none mb-1">
+                <p className="font-bold text-primary leading-none mb-1">
                   Pending Orders
                 </p>
-                <p className="text-green-700/80 text-sm leading-relaxed">
+                <p className="text-primary/80 text-sm leading-relaxed">
                   {pendingOrderCount}{" "}
                   {pendingOrderCount === 1 ? "order needs" : "orders need"}{" "}
                   processing. Please review and update their status.

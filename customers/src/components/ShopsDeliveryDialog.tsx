@@ -172,7 +172,7 @@ export function ShopsDeliveryDialog({
                           className={`text-xs ${
                             shop.capability === "HYBRID"
                               ? "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
-                              : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              : "bg-primary/10 text-primary dark:bg-primary/30 dark:text-primary/80"
                           }`}
                         >
                           {shop.capability === "HYBRID" ? "Hybrid" : "Full E-commerce"}

@@ -116,14 +116,14 @@ function ReturnInfoPageContent() {
         return <Clock className="h-5 w-5 text-yellow-500" />;
       case ReturnStatus.APPROVED:
       case AppealStatus.APPROVED:
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-primary" />;
       case ReturnStatus.DENIED:
       case AppealStatus.DENIED:
         return <XCircle className="h-5 w-5 text-red-500" />;
       case ReturnStatus.PROCESSING:
-        return <RefreshCw className="h-5 w-5 text-green-500" />;
+        return <RefreshCw className="h-5 w-5 text-primary" />;
       case ReturnStatus.COMPLETED:
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-primary" />;
       case ReturnStatus.CANCELLED:
         return <XCircle className="h-5 w-5 text-gray-500" />;
       default:
@@ -352,7 +352,7 @@ function ReturnInfoPageContent() {
             <Card
               className={
                 returnRequest.status === ReturnStatus.APPROVED
-                  ? "border-green-200 bg-green-50"
+                  ? "border-primary/20 bg-primary/10"
                   : returnRequest.status === ReturnStatus.DENIED
                     ? "border-red-200 bg-red-50"
                     : ""
@@ -536,7 +536,7 @@ function ReturnInfoPageContent() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
                   <div>
                     <p className="text-sm font-medium">
                       Return Request Submitted
@@ -551,7 +551,7 @@ function ReturnInfoPageContent() {
                   <div
                     className={`w-3 h-3 rounded-full ${
                       returnRequest.status !== ReturnStatus.PENDING
-                        ? "bg-green-500"
+                        ? "bg-primary"
                         : "bg-gray-300"
                     }`}
                   ></div>
@@ -571,7 +571,7 @@ function ReturnInfoPageContent() {
                       returnRequest.status == ReturnStatus.PENDING
                         ? "bg-gray-500"
                         : returnRequest.status == ReturnStatus.APPROVED
-                          ? "bg-green-500"
+                          ? "bg-primary"
                           : "bg-red-500"
                     }`}
                   ></div>
@@ -591,10 +591,10 @@ function ReturnInfoPageContent() {
                       <div
                         className={`w-3 h-3 rounded-full ${
                           returnRequest.status === ReturnStatus.COMPLETED
-                            ? "bg-green-500"
+                            ? "bg-primary"
                             : returnRequest.status === ReturnStatus.PROCESSING
                               ? "bg-yellow-500"
-                              : "bg-green-500"
+                              : "bg-primary"
                         }`}
                       ></div>
                       <div>
@@ -613,7 +613,7 @@ function ReturnInfoPageContent() {
                       <div
                         className={`w-3 h-3 rounded-full ${
                           returnRequest.status === ReturnStatus.COMPLETED
-                            ? "bg-green-500"
+                            ? "bg-primary"
                             : "bg-gray-300"
                         }`}
                       ></div>
@@ -634,10 +634,10 @@ function ReturnInfoPageContent() {
 
           {/* Appeal Information */}
           {returnRequest.returnAppeal && (
-            <Card className="border-green-200 bg-green-50">
+            <Card className="border-primary/20 bg-primary/10">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-green-800">
+                  <CardTitle className="flex items-center gap-2 text-primary">
                     <MessageSquare className="h-5 w-5" />
                     Appeal Information
                   </CardTitle>
@@ -660,19 +660,19 @@ function ReturnInfoPageContent() {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <span className="text-sm font-medium text-green-700">
+                    <span className="text-sm font-medium text-primary">
                       Appeal Reason:
                     </span>
-                    <p className="mt-1 text-sm text-green-800">
+                    <p className="mt-1 text-sm text-primary">
                       {returnRequest.returnAppeal.reason}
                     </p>
                   </div>
                   {returnRequest.returnAppeal.description && (
                     <div>
-                      <span className="text-sm font-medium text-green-700">
+                      <span className="text-sm font-medium text-primary">
                         Description:
                       </span>
-                      <p className="mt-1 text-sm text-green-800">
+                      <p className="mt-1 text-sm text-primary">
                         {returnRequest.returnAppeal.description}
                       </p>
                     </div>
@@ -699,7 +699,7 @@ function ReturnInfoPageContent() {
                     ) &&
                     returnRequest.returnAppeal.mediaAttachments.length > 0 && (
                       <div>
-                        <span className="text-sm font-medium text-green-700">
+                        <span className="text-sm font-medium text-primary">
                           Attachments:
                         </span>
                         <div className="mt-2 space-y-2">
@@ -709,7 +709,7 @@ function ReturnInfoPageContent() {
                                 key={index}
                                 className="flex items-center gap-2 p-2 bg-white rounded border"
                               >
-                                <Paperclip className="h-4 w-4 text-green-600" />
+                                <Paperclip className="h-4 w-4 text-primary" />
                                 <span className="text-sm flex-1">
                                   {attachment.fileName}
                                 </span>
@@ -771,7 +771,7 @@ function ReturnInfoPageContent() {
 
                 {returnRequest.status === ReturnStatus.DENIED &&
                   !returnRequest.returnAppeal && (
-                    <Button asChild className="bg-green-600 hover:bg-green-700">
+                    <Button asChild className="bg-primary hover:bg-primary/90">
                       <Link
                         href={`/returns/appeal?returnRequestId=${returnRequest.id}${token ? `&token=${token}` : ""}`}
                         className="flex items-center gap-2"

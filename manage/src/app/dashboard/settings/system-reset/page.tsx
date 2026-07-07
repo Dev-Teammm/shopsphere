@@ -115,7 +115,7 @@ export default function SystemResetPage() {
       label: "Products",
       description: "All products with variants, images, videos, stocks, batches, cart items, and reviews",
       icon: Package,
-      color: "text-green-500",
+      color: "text-primary",
     },
     {
       key: "deleteOrders" as keyof SystemResetSelections,
@@ -129,7 +129,7 @@ export default function SystemResetPage() {
       label: "Discounts",
       description: "All discount codes and promotional offers",
       icon: Tag,
-      color: "text-green-500",
+      color: "text-primary",
     },
     {
       key: "deleteRewardSystems" as keyof SystemResetSelections,
@@ -150,7 +150,7 @@ export default function SystemResetPage() {
       label: "Money Flows",
       description: "Financial transaction records",
       icon: DollarSign,
-      color: "text-emerald-500",
+      color: "text-primary",
     },
     {
       key: "deleteCategories" as keyof SystemResetSelections,
@@ -288,9 +288,9 @@ export default function SystemResetPage() {
 
       {/* Success Display */}
       {resetComplete && resetResponse && (
-        <Card className="border-green-500/50 bg-green-500/5">
+        <Card className="border-primary/50 bg-primary/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-600">
+            <CardTitle className="flex items-center gap-2 text-primary">
               <CheckCircle2 className="w-5 h-5" />
               Reset Completed Successfully
             </CardTitle>
@@ -303,7 +303,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.productsDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Products</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.productsDeleted}
                   </p>
                 </div>
@@ -311,7 +311,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.ordersDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Orders</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.ordersDeleted}
                   </p>
                 </div>
@@ -319,7 +319,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.discountsDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Discounts</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.discountsDeleted}
                   </p>
                 </div>
@@ -327,7 +327,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.rewardSystemsDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Reward Systems</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.rewardSystemsDeleted}
                   </p>
                 </div>
@@ -335,7 +335,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.shippingCostsDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Shipping Costs</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.shippingCostsDeleted}
                   </p>
                 </div>
@@ -343,7 +343,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.moneyFlowsDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Money Flows</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.moneyFlowsDeleted}
                   </p>
                 </div>
@@ -351,7 +351,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.categoriesDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Categories</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.categoriesDeleted}
                   </p>
                 </div>
@@ -359,7 +359,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.brandsDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Brands</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.brandsDeleted}
                   </p>
                 </div>
@@ -367,7 +367,7 @@ export default function SystemResetPage() {
               {resetResponse.stats.warehousesDeleted > 0 && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Warehouses</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {resetResponse.stats.warehousesDeleted}
                   </p>
                 </div>
@@ -379,7 +379,7 @@ export default function SystemResetPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium">Total Deleted</p>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-3xl font-bold text-primary">
                   {resetResponse.stats.totalDeleted}
                 </p>
               </div>

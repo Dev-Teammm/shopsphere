@@ -258,8 +258,18 @@ public class CartServiceImpl implements CartService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart is empty"));
+        Cart cart = cartRepository.findByUserId(userId).orElse(null);
+
+        if (cart == null) {
+            return CartDTO.builder()
+                    .userId(userId)
+                    .items(List.of())
+                    .totalItems(0)
+                    .subtotal(BigDecimal.ZERO)
+                    .total(BigDecimal.ZERO)
+                    .isEmpty(true)
+                    .build();
+        }
 
         List<CartItem> allItems = cartItemRepository.findByCartId(cart.getId());
         List<CartItem> availableItems = new ArrayList<>();

@@ -207,7 +207,7 @@ function ReturnRequestsPageContent() {
       APPROVED: {
         variant: "default" as const,
         icon: CheckCircle,
-        color: "text-green-600",
+        color: "text-primary",
       },
       DENIED: {
         variant: "destructive" as const,
@@ -217,7 +217,7 @@ function ReturnRequestsPageContent() {
       COMPLETED: {
         variant: "default" as const,
         icon: CheckCircle,
-        color: "text-green-600",
+        color: "text-primary",
       },
     };
 
@@ -315,10 +315,10 @@ function ReturnRequestsPageContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Approved</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-primary">
               {statistics.approved}
             </div>
           </CardContent>
@@ -326,7 +326,7 @@ function ReturnRequestsPageContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{statistics.completed}</div>
@@ -689,7 +689,7 @@ function ReturnRequestsPageContent() {
                           <span className="text-sm text-muted-foreground">
                             Refund:
                           </span>
-                          <span className="font-medium text-green-600">
+                          <span className="font-medium text-primary">
                             {formatCurrency(
                               calculateTotalRefundAmount(returnRequest),
                             )}
