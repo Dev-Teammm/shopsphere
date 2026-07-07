@@ -1,0 +1,125 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/ci-cd.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/ci-cd.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: shopsphere_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d shopsphere_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      SPRING_PROFILES_ACTIVE: ci
+      SERVER_PORT: 8080
+      DB_URL: jdbc:postgresql://localhost:5432/shopsphere_ci
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET_KEY: 01234567890123456789012345678901
+      STRIPE_SECRET_KEY: sk_test_dummy
+      STRIPE_WEBHOOK_SECRET: whsec_dummy
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: 587
+      MAIL_USERNAME: ci@example.com
+      MAIL_PASSWORD: ci-password
+      CLOUDINARY_CLOUD_NAME: ci-cloud
+      CLOUDINARY_API_KEY: ci-key
+      CLOUDINARY_API_SECRET: ci-secret
+      GOOGLE_MAPS_API_KEY: ""
+      APP_BASE_URL: https://api.shopsphere.innov.rw
+      APP_FRONTEND_URL: https://shopsphere-new.vercel.app/
+      APP_FRONTEND_ADMIN_URL: https://shopsphere-mng.vercel.app/
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Make Maven wrapper executable
+        run: chmod +x mvnw
+
+      - name: Run tests and package JAR
+        run: ./mvnw clean test package
+
+      - name: Upload backend artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: shopsphere-api-jar
+          path: backend/target/ecom-app-0.0.1-SNAPSHOT.jar
+          if-no-files-found: error
+
+  deploy-prod:
+    name: Deploy backend to VPS
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, X64]
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: shopsphere-api-jar
+          path: backend/target
+
+      - name: Verify server env file exists
+        run: |
+          ENV_FILE="/opt/configs/shopsphere_api/.env"
+          if [[ ! -f "$ENV_FILE" ]]; then
+            echo "ERROR: Create $ENV_FILE from backend/deploy/shopsphere-api.env.example"
+            exit 1
+          fi
+          echo "Using server env: $ENV_FILE"
+
+      - name: Make deploy script executable
+        run: chmod +x scripts/deploy.sh
+
+      - name: Deploy backend with PM2
+        run: |
+          APP_DIR=/opt/apps/shopsphere_api \
+          CONFIG_DIR=/opt/configs/shopsphere_api \
+          ENV_FILE=/opt/configs/shopsphere_api/.env \
+          JAR_SOURCE=target/ecom-app-0.0.1-SNAPSHOT.jar \
+          ./scripts/deploy.sh
+
+      - name: Show PM2 status
+        run: pm2 status shopsphere-api || true
