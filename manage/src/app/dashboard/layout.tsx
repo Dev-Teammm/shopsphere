@@ -10,6 +10,7 @@ import { UserRole } from "@/lib/constants";
 import { useAppSelector } from "@/lib/redux/hooks";
 import type { RootState } from "@/lib/redux/store";
 import { useRouter } from "next/navigation";
+import { ProductVisibilityBanner } from "@/components/products/ProductVisibilityBanner";
 
 function DashboardLayoutContent({
   children,
@@ -24,13 +25,19 @@ function DashboardLayoutContent({
 
   const { checkingAuth } = useAppSelector((state: RootState) => state.auth);
 
+  const shopSlug = searchParams.get("shopSlug");
+  const isProductRoute = pathname.startsWith("/dashboard/products");
+  const productRouteMatch = pathname.match(/^\/dashboard\/products\/([^/]+)/);
+  const visibilityProductId =
+    productRouteMatch?.[1] && productRouteMatch[1] !== "create"
+      ? productRouteMatch[1]
+      : null;
+
   useEffect(() => {
     // Wait for auth check to complete before checking shopSlug
     if (checkingAuth || !user) {
       return;
     }
-
-    const shopSlug = searchParams.get("shopSlug");
 
     // Debug: log shopSlug and pathname
     console.log("Dashboard layout debug:", {
@@ -100,6 +107,12 @@ function DashboardLayoutContent({
           </div>
           <div className="flex flex-col flex-1 overflow-hidden">
             <Header title={title} />
+            {isProductRoute && shopSlug && (
+              <ProductVisibilityBanner
+                shopSlug={shopSlug}
+                productId={visibilityProductId}
+              />
+            )}
             <main className="flex-1 overflow-y-auto p-4 md:p-6">
               {children}
             </main>

@@ -379,8 +379,8 @@ function AppealPageContent() {
               <span
                 className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                   isAuthenticated
-                    ? "bg-green-100 text-green-800"
-                    : "bg-green-100 text-green-800"
+                    ? "bg-primary/10 text-primary"
+                    : "bg-primary/10 text-primary"
                 }`}
               >
                 {isAuthenticated ? "Authenticated" : "Guest Access"}

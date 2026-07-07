@@ -829,12 +829,12 @@ const ProductGrid = ({
                         )}
 
                       {convertedProduct.isNew && (
-                        <Badge className="bg-green-500 text-white text-xs">
+                        <Badge className="bg-primary text-white text-xs">
                           {t("filters.new") || "New"}
                         </Badge>
                       )}
                       {convertedProduct.isBestseller && (
-                        <Badge className="bg-green-500 text-white text-xs">
+                        <Badge className="bg-primary text-white text-xs">
                           {t("filters.bestsellers") || "Bestseller"}
                         </Badge>
                       )}
@@ -905,7 +905,7 @@ const ProductGrid = ({
                               </span>
                             )}
                             {convertedProduct.brand && (
-                              <span className="bg-green-100 px-2 py-1 rounded-full text-green-700 text-xs">
+                              <span className="bg-primary/10 px-2 py-1 rounded-full text-primary text-xs">
                                 {convertedProduct.brand}
                               </span>
                             )}
@@ -954,7 +954,7 @@ const ProductGrid = ({
                                   {convertedProduct.hasActiveDiscount &&
                                     convertedProduct.discount &&
                                     priceInfo.hasDiscount && (
-                                      <span className="text-sm text-green-600 font-medium">
+                                      <span className="text-sm text-primary font-medium">
                                         {t("filters.save", {
                                           amount: formatPrice(
                                             (convertedProduct.originalPrice ||
@@ -986,7 +986,7 @@ const ProductGrid = ({
                                 size="sm"
                                 className={`flex-1 ${
                                   isInCart(convertedProduct.id)
-                                    ? "bg-green-600 hover:bg-green-700"
+                                    ? "bg-primary hover:bg-primary/90"
                                     : ""
                                 }`}
                                 onClick={() =>

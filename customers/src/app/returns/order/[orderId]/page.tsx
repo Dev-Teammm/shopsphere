@@ -106,11 +106,11 @@ function OrderReturnRequestsPageContent() {
       case "PENDING":
         return "bg-yellow-100 text-yellow-800 border-yellow-300";
       case "APPROVED":
-        return "bg-green-100 text-green-800 border-green-300";
+        return "bg-primary/10 text-primary border-primary/30";
       case "DENIED":
         return "bg-red-100 text-red-800 border-red-300";
       case "COMPLETED":
-        return "bg-green-100 text-green-800 border-green-300";
+        return "bg-primary/10 text-primary border-primary/30";
       case "CANCELLED":
         return "bg-gray-100 text-gray-800 border-gray-300";
       default:
@@ -150,7 +150,7 @@ function OrderReturnRequestsPageContent() {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             <span className="ml-3 text-muted-foreground">
               Loading return requests...
             </span>
@@ -302,7 +302,7 @@ function OrderReturnRequestsPageContent() {
                         <RotateCcw className="h-4 w-4" />
                         Expected Refund
                       </h4>
-                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                      <div className="bg-gradient-to-br from-primary/10 to-primary/10 dark:from-primary/20 dark:to-primary/20 p-4 rounded-lg border border-primary/20 dark:border-primary/30">
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-muted-foreground">
@@ -318,7 +318,7 @@ function OrderReturnRequestsPageContent() {
                               <span className="text-sm font-medium text-muted-foreground">
                                 Card Refund
                               </span>
-                              <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                              <span className="text-lg font-bold text-primary dark:text-primary/70">
                                 $
                                 {(
                                   request.expectedRefund.monetaryRefund || 0
@@ -341,7 +341,7 @@ function OrderReturnRequestsPageContent() {
                                 <span className="text-sm font-medium text-muted-foreground">
                                   Points Value
                                 </span>
-                                <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                                <span className="text-sm font-semibold text-primary dark:text-primary/70">
                                   $
                                   {(
                                     request.expectedRefund.pointsRefundValue ||
@@ -358,7 +358,7 @@ function OrderReturnRequestsPageContent() {
                             <span className="font-semibold">
                               Total Refund Value
                             </span>
-                            <span className="text-xl font-bold text-green-600 dark:text-green-400">
+                            <span className="text-xl font-bold text-primary dark:text-primary/70">
                               $
                               {(
                                 request.expectedRefund.totalRefundValue || 0

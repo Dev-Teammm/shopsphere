@@ -51,7 +51,7 @@ const getActivityColor = (activityType: string): string => {
     CUSTOMER_NOTE_ADDED: "#6B7280",
     
     // Success (Emerald)
-    DELIVERY_COMPLETED: "#059669",
+    DELIVERY_COMPLETED: "#2563eb",
     
     // Customer Actions (Red)
     RETURN_REQUESTED: "#EF4444",
@@ -204,7 +204,7 @@ const OrderTimeline: React.FC<OrderTimelineProps> = ({ activities }) => {
             <span className="text-xs text-gray-600">In Transit</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#059669" }} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#2563eb" }} />
             <span className="text-xs text-gray-600">Delivered</span>
           </div>
           <div className="flex items-center gap-1.5">

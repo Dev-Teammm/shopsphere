@@ -293,7 +293,7 @@ export default function DeliveryAgentSettings() {
                   <span className="text-sm">Status</span>
                   <Badge
                     variant="default"
-                    className="bg-green-100 text-green-800"
+                    className="bg-primary/10 text-primary"
                   >
                     Active
                   </Badge>

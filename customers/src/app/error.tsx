@@ -90,8 +90,8 @@ export default function Error({ error, reset }: ErrorProps) {
             </h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <div className="bg-green-100 rounded-full p-1 mt-1">
-                  <RefreshCw className="h-3 w-3 text-green-600" />
+                <div className="bg-primary/10 rounded-full p-1 mt-1">
+                  <RefreshCw className="h-3 w-3 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">Try refreshing the page</p>
@@ -100,8 +100,8 @@ export default function Error({ error, reset }: ErrorProps) {
               </div>
               
               <div className="flex items-start gap-3">
-                <div className="bg-green-100 rounded-full p-1 mt-1">
-                  <Home className="h-3 w-3 text-green-600" />
+                <div className="bg-primary/10 rounded-full p-1 mt-1">
+                  <Home className="h-3 w-3 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">Go back to homepage</p>
@@ -117,7 +117,7 @@ export default function Error({ error, reset }: ErrorProps) {
                   <p className="text-sm font-medium text-gray-900">Contact support</p>
                   <p className="text-xs text-gray-600">
                     If the problem persists, please{" "}
-                    <Link href="/contact" className="text-green-600 hover:text-green-700 underline">
+                    <Link href="/contact" className="text-primary hover:text-primary underline">
                       contact our support team
                     </Link>
                   </p>

@@ -5,8 +5,8 @@ export interface StockBatch {
   id: number;
   stockId: number;
   batchNumber: string;
-  manufactureDate: string;
-  expiryDate: string;
+  manufactureDate?: string;
+  expiryDate?: string;
   quantity: number;
   status: string;
   supplierName?: string;

@@ -1,8 +1,10 @@
 package com.ecommerce.controller;
 
 import com.ecommerce.dto.ShopDTO;
+import com.ecommerce.dto.VisibilityStatusDTO;
 import com.ecommerce.service.ShopService;
 import com.ecommerce.service.CloudinaryService;
+import com.ecommerce.service.VisibilityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,14 +46,17 @@ public class ShopController {
     private final com.ecommerce.repository.UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
     private final com.ecommerce.service.ProductService productService;
+    private final VisibilityService visibilityService;
 
     @Autowired
     public ShopController(ShopService shopService, com.ecommerce.repository.UserRepository userRepository,
-            CloudinaryService cloudinaryService, com.ecommerce.service.ProductService productService) {
+            CloudinaryService cloudinaryService, com.ecommerce.service.ProductService productService,
+            VisibilityService visibilityService) {
         this.shopService = shopService;
         this.userRepository = userRepository;
         this.cloudinaryService = cloudinaryService;
         this.productService = productService;
+        this.visibilityService = visibilityService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -216,6 +221,27 @@ public class ShopController {
                     java.util.Map.of(
                             "success", false,
                             "message", e.getMessage() != null ? e.getMessage() : "Failed to get shop"));
+        }
+    }
+
+    @GetMapping("/{shopId}/visibility-status")
+    @PreAuthorize("hasAnyRole('VENDOR', 'EMPLOYEE', 'ADMIN')")
+    @Operation(summary = "Get shop customer visibility status", description = "Returns shop-level issues that prevent products from being visible to customers")
+    public ResponseEntity<?> getShopVisibilityStatus(@PathVariable UUID shopId) {
+        try {
+            UUID currentUserId = getCurrentUserId();
+            VisibilityStatusDTO status = visibilityService.getShopVisibilityStatus(shopId, currentUserId);
+            return ResponseEntity.ok(status);
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    java.util.Map.of("success", false, "message", e.getMessage()));
+        } catch (com.ecommerce.Exception.CustomException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    java.util.Map.of("success", false, "message", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Failed to get visibility status for shop {}", shopId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    java.util.Map.of("success", false, "message", "Failed to get shop visibility status"));
         }
     }
 

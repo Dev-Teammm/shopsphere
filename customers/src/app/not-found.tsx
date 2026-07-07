@@ -25,7 +25,7 @@ export default function NotFound() {
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="bg-white rounded-full p-4 shadow-lg">
-                <Package className="h-12 w-12 text-green-600" />
+                <Package className="h-12 w-12 text-primary" />
               </div>
             </div>
           </div>
@@ -48,7 +48,7 @@ export default function NotFound() {
             <Link href="/">
               <Button
                 size="lg"
-                className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+                className="w-full sm:w-auto bg-primary hover:bg-primary/90"
               >
                 <Home className="mr-2 h-5 w-5" />
                 Back to Home
@@ -71,7 +71,7 @@ export default function NotFound() {
               If you believe this is an error, please{" "}
               <Link
                 href="/contact"
-                className="text-green-600 hover:text-green-700 underline"
+                className="text-primary hover:text-primary underline"
               >
                 contact our support team
               </Link>

@@ -413,8 +413,8 @@ function PaymentSuccessContent() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <CheckCircle className="h-24 w-24 text-green-500 mx-auto mb-6" />
-          <h1 className="text-4xl font-bold mb-4 text-green-600">
+          <CheckCircle className="h-24 w-24 text-primary mx-auto mb-6" />
+          <h1 className="text-4xl font-bold mb-4 text-primary">
             {isPointsPayment
               ? "Order Placed Successfully!"
               : "Payment Successful!"}
@@ -431,8 +431,8 @@ function PaymentSuccessContent() {
 
           {/* Email notification message */}
           {orderDetails?.customerInfo?.email && (
-            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
-              <div className="flex items-center gap-2 text-green-800">
+            <div className="mt-4 p-4 bg-primary/10 border border-primary/20 rounded-md">
+              <div className="flex items-center gap-2 text-primary">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -443,7 +443,7 @@ function PaymentSuccessContent() {
                 </svg>
                 <span className="font-medium">Order confirmation sent!</span>
               </div>
-              <p className="text-green-700 text-sm mt-1">
+              <p className="text-primary text-sm mt-1">
                 A detailed order confirmation and receipt have been sent to{" "}
                 <strong>{orderDetails.customerInfo.email}</strong>
               </p>
@@ -454,19 +454,19 @@ function PaymentSuccessContent() {
         {/* Professional Invoice Layout */}
         {orderDetails && (
           <div className="bg-white border-2 border-gray-200 rounded-md shadow-lg mb-8 print:shadow-none print:border-gray-400">
-            <div className="bg-green-700 text-white p-6 rounded-t-lg">
+            <div className="bg-primary text-white p-6 rounded-t-lg">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">INVOICE</h2>
-                  <p className="text-green-100">Shopsphere E-Commerce</p>
-                  <p className="text-green-100 text-sm">
+                  <p className="text-primary-foreground">Shopsphere E-Commerce</p>
+                  <p className="text-primary-foreground text-sm">
                     Order Confirmation & Receipt
                   </p>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-3">
                     <div className="bg-white/20 rounded-md p-3">
-                      <p className="text-sm text-green-100">Invoice #</p>
+                      <p className="text-sm text-primary-foreground">Invoice #</p>
                       <p className="font-mono font-bold text-lg">
                         {orderDetails.orderNumber}
                       </p>
@@ -533,7 +533,7 @@ function PaymentSuccessContent() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Status:</span>
-                      <span className="capitalize font-medium text-green-600">
+                      <span className="capitalize font-medium text-primary">
                         {orderDetails.status}
                       </span>
                     </div>
@@ -590,7 +590,7 @@ function PaymentSuccessContent() {
                             </p>
                           </div>
                           <div className="mt-2 md:mt-0 flex flex-col md:flex-row gap-2 items-start md:items-center">
-                            <div className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-semibold uppercase tracking-wider border border-green-100">
+                            <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold uppercase tracking-wider border border-primary/20">
                               {shopOrder.status}
                             </div>
 
@@ -838,7 +838,7 @@ function PaymentSuccessContent() {
                       <h3 className="font-bold text-gray-800">
                         Purchased Items
                       </h3>
-                      <div className="text-xs px-2 py-1 bg-green-50 text-green-700 rounded font-medium border border-green-100">
+                      <div className="text-xs px-2 py-1 bg-primary/10 text-primary rounded font-medium border border-primary/20">
                         Order # {orderDetails.orderNumber}
                       </div>
                     </div>
@@ -1020,8 +1020,8 @@ function PaymentSuccessContent() {
                       Payment Tips
                     </h4>
                     <div className="space-y-4 text-sm text-gray-600">
-                      <div className="flex gap-3 bg-green-50/50 p-3 rounded-lg border border-green-100">
-                        <div className="shrink-0 h-5 w-5 rounded-full bg-green-500 text-white flex items-center justify-center text-[10px] font-bold">
+                      <div className="flex gap-3 bg-primary/10 p-3 rounded-lg border border-primary/20">
+                        <div className="shrink-0 h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold">
                           1
                         </div>
                         <p>
@@ -1067,7 +1067,7 @@ function PaymentSuccessContent() {
                       </div>
                     )}
                     {orderDetails.discount > 0 && (
-                      <div className="flex justify-between text-green-600 text-sm">
+                      <div className="flex justify-between text-primary text-sm">
                         <span>Discount:</span>
                         <span className="font-semibold">
                           -$ {orderDetails.discount?.toLocaleString()}
@@ -1252,7 +1252,7 @@ function PaymentSuccessContent() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Status:</span>
-                        <span className="text-green-600 font-bold uppercase tracking-tight">
+                        <span className="text-primary font-bold uppercase tracking-tight">
                           {verificationResult.status}
                         </span>
                       </div>
@@ -1352,8 +1352,8 @@ function PaymentSuccessContent() {
                       <p className="text-sm font-bold text-gray-800">
                         {orderDetails.shippingAddress.street}
                       </p>
-                      <div className="mt-2 flex items-center gap-2 text-[10px] text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full w-fit">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      <div className="mt-2 flex items-center gap-2 text-[10px] text-primary font-bold bg-primary/10 px-2 py-1 rounded-full w-fit">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                         Secure Location Locked
                       </div>
                     </div>

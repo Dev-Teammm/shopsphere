@@ -203,7 +203,7 @@ export default function AccountPage() {
             <div className="lg:col-span-8 xl:col-span-8 space-y-10">
               <section>
                 <div className="flex items-center gap-2 mb-4 px-2">
-                  <div className="h-6 w-1 bg-green-500 rounded-full" />
+                  <div className="h-6 w-1 bg-primary rounded-full" />
                   <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">
                     {t("account.quickAccess")}
                   </h2>

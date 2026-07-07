@@ -196,22 +196,40 @@ export function BatchManagement({
         return;
       }
 
-      if (!editForm.manufactureDate) {
-        toast({
-          title: "Validation Error",
-          description: "Manufacture date is required",
-          variant: "destructive",
-        });
-        return;
+      if (editForm.manufactureDate) {
+        const mfgDate = new Date(editForm.manufactureDate);
+        if (mfgDate > new Date()) {
+          toast({
+            title: "Validation Error",
+            description: "Manufacture date cannot be in the future",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
-      if (!editForm.expiryDate) {
-        toast({
-          title: "Validation Error",
-          description: "Expiry date is required",
-          variant: "destructive",
-        });
-        return;
+      if (editForm.expiryDate) {
+        const expDate = new Date(editForm.expiryDate);
+        if (expDate < new Date()) {
+          toast({
+            title: "Validation Error",
+            description: "Expiry date cannot be in the past",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (
+          editForm.manufactureDate &&
+          expDate <= new Date(editForm.manufactureDate)
+        ) {
+          toast({
+            title: "Validation Error",
+            description: "Expiry date must be after manufacture date",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Combine date and time for submission
@@ -286,7 +304,7 @@ export function BatchManagement({
       supplierBatchNumber: batch.supplierBatchNumber || "",
     });
     // Extract date and time from the batch data
-    const extractDateAndTime = (dateTimeStr: string | null) => {
+    const extractDateAndTime = (dateTimeStr?: string | null) => {
       if (!dateTimeStr) return { date: "", time: "" };
 
       try {
@@ -330,7 +348,7 @@ export function BatchManagement({
 
     switch (status) {
       case "ACTIVE":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "EXPIRED":
         return "bg-red-100 text-red-800";
       case "EMPTY":
@@ -390,7 +408,12 @@ export function BatchManagement({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="manufactureDate">Manufacture Date</Label>
+                  <Label htmlFor="manufactureDate">
+                    Manufacture Date{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (optional)
+                    </span>
+                  </Label>
                   <div className="flex gap-2">
                     <Popover>
                       <PopoverTrigger asChild>
@@ -446,7 +469,12 @@ export function BatchManagement({
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="expiryDate">Expiry Date</Label>
+                  <Label htmlFor="expiryDate">
+                    Expiry Date{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (optional)
+                    </span>
+                  </Label>
                   <div className="flex gap-2">
                     <Popover>
                       <PopoverTrigger asChild>
@@ -618,7 +646,9 @@ export function BatchManagement({
                         Manufacture Date:
                       </span>
                       <span className="ml-2">
-                        {new Date(batch.manufactureDate).toLocaleDateString()}
+                        {batch.manufactureDate
+                          ? new Date(batch.manufactureDate).toLocaleDateString()
+                          : "Not set"}
                       </span>
                     </div>
                     <div>
@@ -631,8 +661,10 @@ export function BatchManagement({
                           isActuallyExpired && "text-destructive font-semibold",
                         )}
                       >
-                        {new Date(batch.expiryDate).toLocaleDateString()}
-                        {isActuallyExpired && " (EXPIRED)"}
+                        {batch.expiryDate
+                          ? new Date(batch.expiryDate).toLocaleDateString()
+                          : "Not set"}
+                        {isActuallyExpired && batch.expiryDate && " (EXPIRED)"}
                       </span>
                     </div>
                     {batch.supplierName && (

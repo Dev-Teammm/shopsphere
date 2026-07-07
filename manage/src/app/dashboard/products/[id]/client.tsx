@@ -172,7 +172,7 @@ export default function ProductClient({
           </Badge>
         )}
         {product.isNewArrival && (
-          <Badge className="bg-green-600 hover:bg-green-700">
+          <Badge className="bg-primary hover:bg-primary/90">
             <Zap className="h-3 w-3 mr-1" />
             New Arrival
           </Badge>
@@ -292,8 +292,8 @@ export default function ProductClient({
                         Sale Price
                       </label>
                       <div className="flex items-center gap-2 mt-1">
-                        <DollarSign className="h-4 w-4 text-green-600" />
-                        <span className="text-xl font-bold text-green-600">
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        <span className="text-xl font-bold text-primary">
                           {formatPrice(product.salePrice)}
                         </span>
                       </div>
@@ -303,8 +303,8 @@ export default function ProductClient({
                         Savings
                       </label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Percent className="h-4 w-4 text-green-600" />
-                        <span className="text-lg font-semibold text-green-600">
+                        <Percent className="h-4 w-4 text-primary" />
+                        <span className="text-lg font-semibold text-primary">
                           {formatPrice(product.basePrice - product.salePrice)}
                         </span>
                       </div>
@@ -654,7 +654,7 @@ export default function ProductClient({
                             <label className="text-sm font-medium text-muted-foreground">
                               Sale Price
                             </label>
-                            <p className="mt-1 font-semibold text-green-600">
+                            <p className="mt-1 font-semibold text-primary">
                               {formatPrice(variant.salePrice)}
                             </p>
                           </div>
@@ -759,16 +759,16 @@ export default function ProductClient({
                       Total Stock Units
                     </div>
                   </div>
-                  <div className="text-center p-4 bg-green-50 rounded-md">
-                    <div className="text-2xl font-bold text-green-600">
+                  <div className="text-center p-4 bg-primary/10 rounded-md">
+                    <div className="text-2xl font-bold text-primary">
                       {product.totalWarehouses || 0}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       Total Warehouses
                     </div>
                   </div>
-                  <div className="text-center p-4 bg-green-50 rounded-md">
-                    <div className="text-2xl font-bold text-green-600">
+                  <div className="text-center p-4 bg-primary/10 rounded-md">
+                    <div className="text-2xl font-bold text-primary">
                       {product.warehouseStock?.filter(
                         (stock) => stock.isInStock,
                       ).length || 0}
@@ -832,7 +832,7 @@ export default function ProductClient({
                           {/* Stock Info */}
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
-                              <Package className="h-4 w-4 text-green-600" />
+                              <Package className="h-4 w-4 text-primary" />
                               <span className="font-semibold">
                                 {stock.quantity} units
                               </span>
@@ -860,7 +860,7 @@ export default function ProductClient({
                               ) : (
                                 <Badge
                                   variant="default"
-                                  className="flex items-center gap-1 bg-green-100 text-green-800"
+                                  className="flex items-center gap-1 bg-primary/10 text-primary"
                                 >
                                   <CheckCircle className="h-3 w-3" />
                                   In Stock

@@ -25,8 +25,8 @@ import {
 const AccountSettingsCard: FC = () => {
   const { t } = useTranslation();
   return (
-    <Card className="border-green-100 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden">
-      <div className="h-1 bg-green-500 w-full opacity-0 group-hover:opacity-100 transition-opacity" />
+    <Card className="border-primary/20 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden">
+      <div className="h-1 bg-primary w-full opacity-0 group-hover:opacity-100 transition-opacity" />
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg font-bold text-gray-800">
           <div className="p-2 bg-blue-100 rounded-lg">
@@ -44,10 +44,10 @@ const AccountSettingsCard: FC = () => {
           <Link href="/account/profile" className="block">
             <Button
               variant="outline"
-              className="w-full justify-between border-green-100 hover:bg-green-50 hover:text-green-700 hover:border-green-200 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
+              className="w-full justify-between border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/20 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
             >
               <span className="flex items-center gap-2">
-                <UserCheck className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
+                <UserCheck className="h-4 w-4 text-gray-400 group-hover:text-primary" />
                 {t("account.editProfile") || "Edit Profile"}
               </span>
               <ChevronRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -56,10 +56,10 @@ const AccountSettingsCard: FC = () => {
           <Link href="/account/password" className="block">
             <Button
               variant="outline"
-              className="w-full justify-between border-green-100 hover:bg-green-50 hover:text-green-700 hover:border-green-200 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
+              className="w-full justify-between border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/20 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
             >
               <span className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
+                <ShieldCheck className="h-4 w-4 text-gray-400 group-hover:text-primary" />
                 {t("account.changePassword") || "Change Password"}
               </span>
               <ChevronRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -68,10 +68,10 @@ const AccountSettingsCard: FC = () => {
           <Link href="/account/addresses" className="block">
             <Button
               variant="outline"
-              className="w-full justify-between border-green-100 hover:bg-green-50 hover:text-green-700 hover:border-green-200 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
+              className="w-full justify-between border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/20 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
             >
               <span className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
+                <MapPin className="h-4 w-4 text-gray-400 group-hover:text-primary" />
                 {t("account.manageAddresses") || "Manage Addresses"}
               </span>
               <ChevronRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -80,10 +80,10 @@ const AccountSettingsCard: FC = () => {
           <Link href="/account/notifications" className="block">
             <Button
               variant="outline"
-              className="w-full justify-between border-green-100 hover:bg-green-50 hover:text-green-700 hover:border-green-200 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
+              className="w-full justify-between border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/20 group/btn transition-all py-6 rounded-xl font-bold text-sm text-gray-700"
             >
               <span className="flex items-center gap-2">
-                <Bell className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
+                <Bell className="h-4 w-4 text-gray-400 group-hover:text-primary" />
                 {t("account.notifications")}
               </span>
               <ChevronRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />

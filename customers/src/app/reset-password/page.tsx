@@ -122,7 +122,7 @@ function ResetPasswordContent() {
       <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4">
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-green-600 mb-4" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
             <p className="text-gray-600">Verifying reset link...</p>
           </CardContent>
         </Card>
@@ -176,7 +176,7 @@ function ResetPasswordContent() {
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <div className="flex justify-center mb-4">
-              <CheckCircle2 className="h-12 w-12 text-green-500" />
+              <CheckCircle2 className="h-12 w-12 text-primary" />
             </div>
             <CardTitle className="text-2xl font-bold text-center">
               Password Reset Successful
@@ -186,8 +186,8 @@ function ResetPasswordContent() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Alert className="border-green-200 bg-green-50">
-              <AlertDescription className="text-green-800">
+            <Alert className="border-primary/20 bg-primary/10">
+              <AlertDescription className="text-primary">
                 Redirecting you to the login page...
               </AlertDescription>
             </Alert>
@@ -295,7 +295,7 @@ function ResetPasswordContent() {
             <div className="text-center">
               <Link
                 href="/auth/login"
-                className="text-sm text-green-600 hover:text-green-500"
+                className="text-sm text-primary hover:text-primary"
               >
                 Back to login
               </Link>
@@ -312,7 +312,7 @@ export default function ResetPasswordPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-gray-50">
-          <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       }
     >

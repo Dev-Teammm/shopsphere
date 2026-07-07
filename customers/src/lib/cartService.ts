@@ -138,6 +138,7 @@ export const CartService = {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            "X-Skip-Global-Toast": "true",
           },
         },
       );
@@ -149,6 +150,27 @@ export const CartService = {
           console.warn("Authentication token expired, treating as guest user");
           return getCartFromBackend();
         }
+
+        if (response.status === 404) {
+          try {
+            const errorData = await response.json();
+            const message = (errorData.message || "").toLowerCase();
+            if (message.includes("cart is empty")) {
+              return {
+                cartId: "",
+                userId: "",
+                items: [],
+                totalItems: 0,
+                subtotal: 0,
+                totalPages: 1,
+                currentPage: page,
+              };
+            }
+          } catch {
+            // Fall through to generic handling below
+          }
+        }
+
         throw new Error(
           `${response.status == 403 ? "Not logged in" : "Something went wrong"}`,
         );

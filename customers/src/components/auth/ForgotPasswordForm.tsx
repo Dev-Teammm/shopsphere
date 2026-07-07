@@ -55,8 +55,8 @@ export default function ForgotPasswordForm() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Alert className="border-green-200 bg-green-50">
-              <AlertDescription className="text-green-800">
+            <Alert className="border-primary/20 bg-primary/10">
+              <AlertDescription className="text-primary">
                 <strong>Check your email!</strong> We've sent a password reset link to your email address.
                 Click the link in the email to reset your password.
               </AlertDescription>
@@ -70,7 +70,7 @@ export default function ForgotPasswordForm() {
             <div className="text-center space-y-2">
               <Link
                 href="/auth/login"
-                className="text-sm text-green-600 hover:text-green-500"
+                className="text-sm text-primary hover:text-primary"
               >
                 Back to login
               </Link>
@@ -129,7 +129,7 @@ export default function ForgotPasswordForm() {
             <div className="text-center">
               <Link
                 href="/auth/login"
-                className="text-sm text-green-600 hover:text-green-500 flex items-center justify-center gap-1"
+                className="text-sm text-primary hover:text-primary flex items-center justify-center gap-1"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to login

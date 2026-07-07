@@ -58,7 +58,7 @@ export function TruncatedText({
         className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
       >
         {copied ? (
-          <Check className="h-3 w-3 text-green-600" />
+          <Check className="h-3 w-3 text-primary" />
         ) : (
           <Copy className="h-3 w-3" />
         )}

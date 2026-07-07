@@ -252,7 +252,7 @@ export default function DeliveryAgentDashboard() {
         <div
           className={`p-4 rounded-md border ${
             actionResult.success
-              ? "bg-green-50 border-green-200 text-green-800"
+              ? "bg-primary/10 border-primary/20 text-primary"
               : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
@@ -287,7 +287,7 @@ export default function DeliveryAgentDashboard() {
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="default"
-                      className="bg-green-100 text-green-800"
+                      className="bg-primary/10 text-primary"
                     >
                       {group.hasDeliveryStarted ? "In Progress" : "Active"}
                     </Badge>
@@ -438,7 +438,7 @@ export default function DeliveryAgentDashboard() {
                   className="flex items-center justify-between rounded-md border p-3"
                 >
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-primary" />
                     <div>
                       <div className="font-medium">
                         {group.deliveryGroupName}
