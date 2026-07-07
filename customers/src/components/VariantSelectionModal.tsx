@@ -208,7 +208,7 @@ const VariantSelectionModal = ({
 
         return (
           <div className="flex flex-col">
-            <span className="font-semibold text-green-600">
+            <span className="font-semibold text-primary">
               {formatPriceUtil(effectiveDiscount.discountedPrice)}
             </span>
             <span className="text-xs text-muted-foreground line-through">
@@ -318,7 +318,7 @@ const VariantSelectionModal = ({
                           selectedVariant?.variantId === variant.variantId
                             ? "ring-2 ring-primary border-primary"
                             : variantsInCart.has(variant.variantId.toString())
-                              ? "border-green-500 bg-green-50"
+                              ? "border-primary bg-primary/10"
                               : "hover:border-primary/50"
                         }`}
                         onClick={() => handleVariantSelect(variant)}
@@ -352,7 +352,7 @@ const VariantSelectionModal = ({
                                   ) && (
                                     <Badge
                                       variant="secondary"
-                                      className="text-xs bg-green-500 text-white"
+                                      className="text-xs bg-primary text-white"
                                     >
                                       {t("variant.inCart") || "In Cart"}
                                     </Badge>
@@ -367,7 +367,7 @@ const VariantSelectionModal = ({
                                 <span
                                   className={`flex items-center gap-1 ${
                                     ProductService.isVariantInStock(variant)
-                                      ? "text-green-600"
+                                      ? "text-primary"
                                       : "text-red-600"
                                   }`}
                                 >

@@ -144,7 +144,7 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand, brandCount }) => {
         <Link href={`/shop?brands=${encodeURIComponent(brand.slug || brand.name)}`}>
           <Button 
             variant="outline" 
-            className="w-full text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300"
+            className="w-full text-primary border-primary/20 hover:bg-primary/10 hover:border-primary/30"
           >
             <span className="text-sm">Shop {brand.name}</span>
             <ArrowRight className="ml-2 h-4 w-4" />

@@ -909,7 +909,7 @@ const ProductFilters = ({
               placeholder={t("filters.search")}
               value={categorySearch}
               onChange={(e) => handleCategorySearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             {categorySearchLoading && (
               <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
@@ -970,7 +970,7 @@ const ProductFilters = ({
               placeholder={t("filters.search")}
               value={brandSearch}
               onChange={(e) => handleBrandSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             {brandSearchLoading && (
               <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
@@ -1084,7 +1084,7 @@ const ProductFilters = ({
               }
               value={attributeTypeSearch}
               onChange={(e) => handleAttributeTypeSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             {attributeTypeSearchLoading && (
               <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
@@ -1160,7 +1160,7 @@ const ProductFilters = ({
                                 e.target.value,
                               )
                             }
-                            className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-green-500"
+                            className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                           />
                           {attributeValueSearchLoading[
                             attrType.attributeTypeId
@@ -1301,7 +1301,7 @@ const ProductFilters = ({
                               e.target.value,
                             )
                           }
-                          className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-green-500"
+                          className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                         {attributeValueSearchLoading[
                           attrType.attributeTypeId

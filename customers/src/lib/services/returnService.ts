@@ -440,14 +440,14 @@ export class ReturnService {
         return "bg-yellow-100 text-yellow-800";
       case ReturnStatus.APPROVED:
       case AppealStatus.APPROVED:
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case ReturnStatus.DENIED:
       case AppealStatus.DENIED:
         return "bg-red-100 text-red-800";
       case ReturnStatus.PROCESSING:
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case ReturnStatus.COMPLETED:
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case ReturnStatus.CANCELLED:
         return "bg-gray-100 text-gray-800";
       default:

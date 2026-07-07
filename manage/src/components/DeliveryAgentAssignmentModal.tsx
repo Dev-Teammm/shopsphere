@@ -227,7 +227,7 @@ export default function DeliveryAgentAssignmentModal({
     const totalActive = workload.pendingPickups + workload.scheduledPickups + workload.inProgressPickups;
     
     if (totalActive === 0) {
-      return <Badge variant="secondary" className="bg-green-100 text-green-800">Available</Badge>;
+      return <Badge variant="secondary" className="bg-primary/10 text-primary">Available</Badge>;
     } else if (totalActive <= 2) {
       return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Light Load</Badge>;
     } else if (totalActive <= 5) {
@@ -239,12 +239,12 @@ export default function DeliveryAgentAssignmentModal({
 
   const getSuccessRateBadge = (successRate: number) => {
     if (successRate >= 95) {
-      return <Badge variant="secondary" className="bg-green-100 text-green-800 flex items-center gap-1">
+      return <Badge variant="secondary" className="bg-primary/10 text-primary flex items-center gap-1">
         <Star className="h-3 w-3" />
         Excellent
       </Badge>;
     } else if (successRate >= 85) {
-      return <Badge variant="secondary" className="bg-green-100 text-green-800 flex items-center gap-1">
+      return <Badge variant="secondary" className="bg-primary/10 text-primary flex items-center gap-1">
         <TrendingUp className="h-3 w-3" />
         Good
       </Badge>;
@@ -298,34 +298,34 @@ export default function DeliveryAgentAssignmentModal({
 
         {/* Return Request Details */}
         {returnRequestDetails && (
-          <div className="p-4 bg-green-50 rounded-md border border-green-200">
-            <h4 className="font-medium text-green-900 mb-2 flex items-center gap-2">
+          <div className="p-4 bg-primary/10 rounded-md border border-primary/20">
+            <h4 className="font-medium text-primary mb-2 flex items-center gap-2">
               <Package className="h-4 w-4" />
               Return Request Details
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
               {returnRequestDetails.customerName && (
                 <div>
-                  <span className="text-green-700 font-medium">Customer:</span>{" "}
-                  <span className="text-green-800">{returnRequestDetails.customerName}</span>
+                  <span className="text-primary font-medium">Customer:</span>{" "}
+                  <span className="text-primary">{returnRequestDetails.customerName}</span>
                 </div>
               )}
               {returnRequestDetails.orderNumber && (
                 <div>
-                  <span className="text-green-700 font-medium">Order:</span>{" "}
-                  <span className="text-green-800">#{returnRequestDetails.orderNumber}</span>
+                  <span className="text-primary font-medium">Order:</span>{" "}
+                  <span className="text-primary">#{returnRequestDetails.orderNumber}</span>
                 </div>
               )}
               {returnRequestDetails.submittedAt && (
                 <div>
-                  <span className="text-green-700 font-medium">Submitted:</span>{" "}
-                  <span className="text-green-800">{new Date(returnRequestDetails.submittedAt).toLocaleDateString()}</span>
+                  <span className="text-primary font-medium">Submitted:</span>{" "}
+                  <span className="text-primary">{new Date(returnRequestDetails.submittedAt).toLocaleDateString()}</span>
                 </div>
               )}
               {returnRequestDetails.reason && (
                 <div className="md:col-span-2">
-                  <span className="text-green-700 font-medium">Reason:</span>{" "}
-                  <span className="text-green-800">{returnRequestDetails.reason}</span>
+                  <span className="text-primary font-medium">Reason:</span>{" "}
+                  <span className="text-primary">{returnRequestDetails.reason}</span>
                 </div>
               )}
             </div>
@@ -460,7 +460,7 @@ export default function DeliveryAgentAssignmentModal({
                         </TableCell>
                         <TableCell>
                           {agent.enabled ? (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                            <Badge variant="secondary" className="bg-primary/10 text-primary">
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Active
                             </Badge>

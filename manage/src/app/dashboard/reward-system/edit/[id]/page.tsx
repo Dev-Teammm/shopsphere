@@ -501,7 +501,7 @@ export default function EditRewardSystemPage() {
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-sm ${
-                      rewardSystem.isActive ? "text-green-600" : "text-gray-500"
+                      rewardSystem.isActive ? "text-primary" : "text-gray-500"
                     }`}
                   >
                     {rewardSystem.isActive ? "Active" : "Inactive"}

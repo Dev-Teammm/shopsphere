@@ -81,7 +81,7 @@ export default function ShopPointsPage() {
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
-            className="rounded-full hover:bg-green-50 hover:text-green-600 transition-colors"
+            className="rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -98,12 +98,12 @@ export default function ShopPointsPage() {
 
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         {/* Summary Card */}
-        <Card className="mb-10 border-none bg-gradient-to-br from-green-600 to-green-800 text-white shadow-xl shadow-green-100 overflow-hidden relative rounded-3xl">
+        <Card className="mb-10 border-none bg-gradient-to-br from-primary to-primary/90 text-white shadow-xl shadow-primary/10 overflow-hidden relative rounded-3xl">
           <div className="absolute top-0 right-0 p-8 opacity-10">
             <Coins className="h-40 w-40 rotate-12" />
           </div>
           <CardHeader className="pb-2 relative z-10">
-            <CardTitle className="text-green-100 font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+            <CardTitle className="text-primary-foreground font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
               <div className="p-1.5 bg-white/10 rounded-lg backdrop-blur-md">
                 <Gift className="h-4 w-4" />
               </div>
@@ -119,13 +119,13 @@ export default function ShopPointsPage() {
                     RWF
                   </span>
                 </div>
-                <p className="text-green-100/80 text-sm font-medium mt-2 flex items-center gap-2">
+                <p className="text-primary-foreground/80 text-sm font-medium mt-2 flex items-center gap-2">
                   <Store className="h-4 w-4" /> Across all participating shops
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="bg-white/10 px-6 py-3 rounded-2xl backdrop-blur-md border border-white/10 shadow-inner">
-                  <div className="text-[10px] uppercase font-bold text-green-200 tracking-widest mb-0.5">
+                  <div className="text-[10px] uppercase font-bold text-primary/40 tracking-widest mb-0.5">
                     Total Points
                   </div>
                   <div className="text-2xl font-black">
@@ -142,17 +142,17 @@ export default function ShopPointsPage() {
         <div className="space-y-8">
           <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
             <div className="flex items-center gap-3 self-start">
-              <div className="h-8 w-1.5 bg-green-500 rounded-full" />
+              <div className="h-8 w-1.5 bg-primary rounded-full" />
               <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
                 Your Rewards Portfolio
               </h2>
             </div>
 
             <div className="relative w-full md:w-80 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-green-600 transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input
                 placeholder="Search by shop name..."
-                className="pl-11 h-12 bg-white border-gray-100 focus-visible:ring-green-500 rounded-2xl shadow-sm"
+                className="pl-11 h-12 bg-white border-gray-100 focus-visible:ring-primary rounded-2xl shadow-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -161,7 +161,7 @@ export default function ShopPointsPage() {
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-              <Loader2 className="h-10 w-10 text-green-500 animate-spin mb-4" />
+              <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
               <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">
                 Syncing your rewards...
               </p>
@@ -177,7 +177,7 @@ export default function ShopPointsPage() {
                   <AccordionItem
                     key={shop.shopId}
                     value={shop.shopId}
-                    className="border border-green-50 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md hover:border-green-100 transition-all duration-300 px-0"
+                    className="border border-primary/10 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 px-0"
                   >
                     <AccordionTrigger className="hover:no-underline py-0 px-6 h-auto">
                       <div className="flex flex-1 items-center gap-6 py-6 text-left">
@@ -196,7 +196,7 @@ export default function ShopPointsPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <Badge
                               variant="outline"
-                              className="text-[9px] uppercase tracking-wider font-black text-green-700 border-green-100 bg-green-50 px-2 py-0.5 rounded-md"
+                              className="text-[9px] uppercase tracking-wider font-black text-primary border-primary/20 bg-primary/10 px-2 py-0.5 rounded-md"
                             >
                               {shop.category}
                             </Badge>
@@ -206,13 +206,13 @@ export default function ShopPointsPage() {
                           </h3>
                           <div className="flex items-center gap-4 mt-1.5">
                             <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500">
-                              <Coins className="h-3.5 w-3.5 text-green-500" />
+                              <Coins className="h-3.5 w-3.5 text-primary" />
                               {shop.monetaryValue.toLocaleString()} RWF
                             </div>
                           </div>
                         </div>
                         <div className="hidden sm:flex flex-col items-end mr-4">
-                          <div className="text-2xl font-black text-green-600">
+                          <div className="text-2xl font-black text-primary">
                             {shop.points.toLocaleString()}
                           </div>
                           <div className="text-[10px] text-gray-400 uppercase font-black tracking-tighter">
@@ -226,13 +226,13 @@ export default function ShopPointsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div className="space-y-4">
                             <h4 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                              <div className="h-1.5 w-1.5 bg-green-500 rounded-full" />
+                              <div className="h-1.5 w-1.5 bg-primary rounded-full" />
                               Earning Rules
                             </h4>
                             <div className="space-y-3">
                               {shop.rewardSettings?.isPurchasePointsEnabled ? (
                                 <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-start gap-3">
-                                  <div className="p-2 bg-green-100 rounded-xl text-green-600">
+                                  <div className="p-2 bg-primary/10 rounded-xl text-primary">
                                     <ShoppingBag className="h-4 w-4" />
                                   </div>
                                   <div>
@@ -274,7 +274,7 @@ export default function ShopPointsPage() {
                               Redemption Value
                             </h4>
                             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
-                              <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-black text-sm mb-3">
+                              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl font-black text-sm mb-3">
                                 1 Point = {shop.rewardSettings?.pointValue || 0}{" "}
                                 RWF
                               </div>
@@ -307,7 +307,7 @@ export default function ShopPointsPage() {
                                         >
                                           {range.rangeType}
                                         </Badge>
-                                        <div className="text-green-600 font-black text-sm">
+                                        <div className="text-primary font-black text-sm">
                                           +{range.points} pts
                                         </div>
                                       </div>
@@ -333,7 +333,7 @@ export default function ShopPointsPage() {
                             onClick={() =>
                               router.push(`/stores/${shop.shopId}`)
                             }
-                            className="bg-green-600 hover:bg-green-700 text-white font-black text-xs uppercase tracking-widest px-8 py-6 rounded-2xl shadow-lg shadow-green-100 transition-all flex items-center gap-2 group/visit"
+                            className="bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-widest px-8 py-6 rounded-2xl shadow-lg shadow-primary/10 transition-all flex items-center gap-2 group/visit"
                           >
                             Visit {shop.shopName}
                             <ChevronRight className="h-4 w-4 group-hover/visit:translate-x-1 transition-transform" />
@@ -360,7 +360,7 @@ export default function ShopPointsPage() {
               <Button
                 variant="outline"
                 onClick={() => setSearchQuery("")}
-                className="mt-6 border-green-100 text-green-700 font-bold hover:bg-green-50 rounded-xl px-8"
+                className="mt-6 border-primary/20 text-primary font-bold hover:bg-primary/10 rounded-xl px-8"
               >
                 Clear Search
               </Button>

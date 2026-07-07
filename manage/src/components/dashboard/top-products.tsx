@@ -49,11 +49,11 @@ export function TopProducts({ data }: TopProductsProps) {
                 <p className="text-sm text-amber-700">Low Stock</p>
               </div>
 
-              <div className="text-center p-4 bg-green-50 rounded-md">
-                <div className="text-2xl font-bold text-green-600 mb-1">
+              <div className="text-center p-4 bg-primary/10 rounded-md">
+                <div className="text-2xl font-bold text-primary mb-1">
                   {totalProducts - lowStockProducts}
                 </div>
-                <p className="text-sm text-green-700">In Stock</p>
+                <p className="text-sm text-primary">In Stock</p>
               </div>
             </div>
 
@@ -84,7 +84,7 @@ export function TopProducts({ data }: TopProductsProps) {
                 <span
                   className={`text-xs px-2 py-1 rounded-full ${
                     lowStockProducts === 0
-                      ? "bg-green-100 text-green-700"
+                      ? "bg-primary/10 text-primary"
                       : lowStockProducts <= 5
                       ? "bg-amber-100 text-amber-700"
                       : "bg-red-100 text-red-700"

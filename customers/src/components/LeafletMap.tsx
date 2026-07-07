@@ -393,19 +393,19 @@ export function LeafletMap({
 
       {/* Selected Address Display (matching Google pattern) */}
       {selectedAddress && (
-        <Card className="border-green-200 bg-green-50/50">
+        <Card className="border-primary/20 bg-primary/10">
           <CardContent className="p-3 flex items-start gap-3">
-            <div className="bg-green-100 p-2 rounded-full">
-              <Check className="h-4 w-4 text-green-600" />
+            <div className="bg-primary/10 p-2 rounded-full">
+              <Check className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-green-900">
+              <p className="text-sm font-semibold text-primary">
                 Location Selected
               </p>
-              <p className="text-xs text-green-700 leading-tight mt-0.5 line-clamp-2">
+              <p className="text-xs text-primary leading-tight mt-0.5 line-clamp-2">
                 {selectedAddress.formattedAddress}
               </p>
-              <p className="text-[10px] text-green-600 font-mono mt-1">
+              <p className="text-[10px] text-primary font-mono mt-1">
                 {selectedAddress.latitude.toFixed(6)},{" "}
                 {selectedAddress.longitude.toFixed(6)}
               </p>

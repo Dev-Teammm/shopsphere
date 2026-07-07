@@ -208,7 +208,7 @@ export function DiscountDetailsModal({
     if (!discount?.isValid) {
       return <AlertCircle className="h-5 w-5 text-yellow-500" />;
     }
-    return <CheckCircle className="h-5 w-5 text-green-500" />;
+    return <CheckCircle className="h-5 w-5 text-primary" />;
   };
 
   const getStatusText = () => {

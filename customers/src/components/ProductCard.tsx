@@ -379,12 +379,12 @@ const ProductCard = ({
                   </Badge>
                 )}
               {isNew && (
-                <Badge className="bg-green-500 text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
+                <Badge className="bg-primary text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
                   {t("filters.new") || "New"}
                 </Badge>
               )}
               {isBestseller && (
-                <Badge className="bg-green-500 text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
+                <Badge className="bg-primary text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
                   {t("filters.bestsellers") || "Bestseller"}
                 </Badge>
               )}
@@ -488,7 +488,7 @@ const ProductCard = ({
               </span>
             )}
             {brand && (
-              <span className="bg-green-100 px-2 py-1 rounded-full text-green-700">
+              <span className="bg-primary/10 px-2 py-1 rounded-full text-primary">
                 {brand}
               </span>
             )}
@@ -525,7 +525,7 @@ const ProductCard = ({
                     </span>
                   )}
                   {hasActiveDiscount && discount && priceInfo.hasDiscount && (
-                    <span className="text-xs text-green-600 font-medium">
+                    <span className="text-xs text-primary font-medium">
                       {t("filters.save", {
                         amount: formatPrice(
                           (originalPrice || price) - (discountedPrice || price),

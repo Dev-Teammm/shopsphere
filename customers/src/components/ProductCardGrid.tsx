@@ -237,7 +237,7 @@ const ProductCardGrid = ({
           <Button
             variant="link"
             onClick={onSeeMore}
-            className="text-green-600 hover:text-green-800 p-0 h-auto"
+            className="text-primary hover:text-primary p-0 h-auto"
           >
             {t("common.showMore") || "See more"}
           </Button>
@@ -289,17 +289,17 @@ const ProductCardGrid = ({
                       </Badge>
                     )}
                   {product.isNew && (
-                    <Badge className="bg-green-500 text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
+                    <Badge className="bg-primary text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
                       {t("filters.new") || "New"}
                     </Badge>
                   )}
                   {product.isBestseller && (
-                    <Badge className="bg-green-500 text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
+                    <Badge className="bg-primary text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
                       {t("filters.bestsellers") || "Bestseller"}
                     </Badge>
                   )}
                   {product.organic && (
-                    <Badge className="bg-green-600 text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
+                    <Badge className="bg-primary text-white text-xs w-fit px-2 py-1 whitespace-nowrap">
                       {t("filters.organicLabel") || "Organic"}
                     </Badge>
                   )}
@@ -343,7 +343,7 @@ const ProductCardGrid = ({
             <div className="space-y-1">
               <Link href={`/product/${product.id}`}>
                 <h3
-                  className="text-sm font-medium text-gray-900 hover:text-green-600 transition-colors overflow-hidden"
+                  className="text-sm font-medium text-gray-900 hover:text-primary transition-colors overflow-hidden"
                   style={{
                     display: "-webkit-box",
                     WebkitLineClamp: 2,

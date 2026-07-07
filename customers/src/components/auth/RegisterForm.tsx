@@ -301,13 +301,13 @@ export default function RegisterForm() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] mt-1 bg-gray-50 p-2 rounded border border-gray-100">
                 <div className="flex items-center gap-1">
                   <div
-                    className={`h-1.5 w-1.5 rounded-full ${formData.phoneNumber.replace(/[^0-9]/g, "").length >= 7 && formData.phoneNumber.replace(/[^0-9]/g, "").length <= 15 ? "bg-green-500" : "bg-gray-300"}`}
+                    className={`h-1.5 w-1.5 rounded-full ${formData.phoneNumber.replace(/[^0-9]/g, "").length >= 7 && formData.phoneNumber.replace(/[^0-9]/g, "").length <= 15 ? "bg-primary" : "bg-gray-300"}`}
                   />
                   <span
                     className={
                       formData.phoneNumber.replace(/[^0-9]/g, "").length >= 7 &&
                       formData.phoneNumber.replace(/[^0-9]/g, "").length <= 15
-                        ? "text-green-700 font-medium"
+                        ? "text-primary font-medium"
                         : "text-gray-500"
                     }
                   >
@@ -316,13 +316,13 @@ export default function RegisterForm() {
                 </div>
                 <div className="flex items-center gap-1">
                   <div
-                    className={`h-1.5 w-1.5 rounded-full ${/^[+]?[0-9\s-]*$/.test(formData.phoneNumber) && formData.phoneNumber.length > 0 ? "bg-green-500" : "bg-gray-300"}`}
+                    className={`h-1.5 w-1.5 rounded-full ${/^[+]?[0-9\s-]*$/.test(formData.phoneNumber) && formData.phoneNumber.length > 0 ? "bg-primary" : "bg-gray-300"}`}
                   />
                   <span
                     className={
                       /^[+]?[0-9\s-]*$/.test(formData.phoneNumber) &&
                       formData.phoneNumber.length > 0
-                        ? "text-green-700 font-medium"
+                        ? "text-primary font-medium"
                         : "text-gray-500"
                     }
                   >
@@ -332,14 +332,14 @@ export default function RegisterForm() {
                 {formData.phoneNumber.startsWith("0") && (
                   <div className="flex items-center gap-1 col-span-full">
                     <div
-                      className={`h-1.5 w-1.5 rounded-full ${formData.phoneNumber.replace(/[^0-9]/g, "").length === 10 || formData.phoneNumber.replace(/[^0-9]/g, "").length === 9 ? "bg-green-500" : "bg-amber-500"}`}
+                      className={`h-1.5 w-1.5 rounded-full ${formData.phoneNumber.replace(/[^0-9]/g, "").length === 10 || formData.phoneNumber.replace(/[^0-9]/g, "").length === 9 ? "bg-primary" : "bg-amber-500"}`}
                     />
                     <span
                       className={
                         formData.phoneNumber.replace(/[^0-9]/g, "").length ===
                           10 ||
                         formData.phoneNumber.replace(/[^0-9]/g, "").length === 9
-                          ? "text-green-700 font-medium"
+                          ? "text-primary font-medium"
                           : "text-amber-700"
                       }
                     >
@@ -377,7 +377,7 @@ export default function RegisterForm() {
                 {t("auth.hasAccount")}{" "}
                 <Link
                   href="/auth/login"
-                  className="text-green-600 hover:text-green-500"
+                  className="text-primary hover:text-primary"
                 >
                   {t("auth.signIn")}
                 </Link>

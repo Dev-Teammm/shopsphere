@@ -174,9 +174,9 @@ export default function DeliveryAgentOrdersPage() {
 
   const getGroupStatus = (group: DeliveryGroupDto) => {
     if (group.hasDeliveryFinished) {
-      return { label: "Completed", variant: "default", className: "bg-green-100 text-green-800" };
+      return { label: "Completed", variant: "default", className: "bg-primary/10 text-primary" };
     } else if (group.hasDeliveryStarted) {
-      return { label: "In Progress", variant: "default", className: "bg-green-100 text-green-800" };
+      return { label: "In Progress", variant: "default", className: "bg-primary/10 text-primary" };
     } else {
       return { label: "Pending", variant: "secondary", className: "bg-yellow-100 text-yellow-800" };
     }
@@ -315,7 +315,7 @@ export default function DeliveryAgentOrdersPage() {
         <div
           className={`p-4 rounded-md border ${
             actionResult.success
-              ? "bg-green-50 border-green-200 text-green-800"
+              ? "bg-primary/10 border-primary/20 text-primary"
               : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
@@ -332,12 +332,12 @@ export default function DeliveryAgentOrdersPage() {
 
       {/* Info Banner for History View */}
       {showHistory && filteredGroups.length > 0 && (
-        <div className="bg-green-50 border border-green-200 rounded-md p-4">
+        <div className="bg-primary/10 border border-primary/20 rounded-md p-4">
           <div className="flex items-start gap-3">
-            <History className="h-5 w-5 text-green-600 mt-0.5" />
+            <History className="h-5 w-5 text-primary mt-0.5" />
             <div>
-              <h3 className="font-semibold text-green-900 mb-1">Viewing Completed Deliveries</h3>
-              <p className="text-sm text-green-800">
+              <h3 className="font-semibold text-primary mb-1">Viewing Completed Deliveries</h3>
+              <p className="text-sm text-primary">
                 These delivery groups have been marked as finished. You can view order details and notes, but cannot modify delivery status.
               </p>
             </div>

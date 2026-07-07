@@ -234,11 +234,11 @@ class DeliveryAgentReturnsService {
       case ReturnStatus.PENDING:
         return { label: 'Pending', color: 'bg-yellow-100 text-yellow-800' };
       case ReturnStatus.APPROVED:
-        return { label: 'Approved', color: 'bg-green-100 text-green-800' };
+        return { label: 'Approved', color: 'bg-primary/10 text-primary' };
       case ReturnStatus.DENIED:
         return { label: 'Denied', color: 'bg-red-100 text-red-800' };
       case ReturnStatus.COMPLETED:
-        return { label: 'Completed', color: 'bg-green-100 text-green-800' };
+        return { label: 'Completed', color: 'bg-primary/10 text-primary' };
       default:
         return { label: status, color: 'bg-gray-100 text-gray-800' };
     }
@@ -252,13 +252,13 @@ class DeliveryAgentReturnsService {
       case DeliveryStatus.NOT_ASSIGNED:
         return { label: 'Not Assigned', color: 'bg-gray-100 text-gray-800' };
       case DeliveryStatus.ASSIGNED:
-        return { label: 'Assigned', color: 'bg-green-100 text-green-800' };
+        return { label: 'Assigned', color: 'bg-primary/10 text-primary' };
       case DeliveryStatus.PICKUP_SCHEDULED:
         return { label: 'Pickup Scheduled', color: 'bg-purple-100 text-purple-800' };
       case DeliveryStatus.PICKUP_IN_PROGRESS:
         return { label: 'Pickup In Progress', color: 'bg-orange-100 text-orange-800' };
       case DeliveryStatus.PICKUP_COMPLETED:
-        return { label: 'Pickup Completed', color: 'bg-green-100 text-green-800' };
+        return { label: 'Pickup Completed', color: 'bg-primary/10 text-primary' };
       case DeliveryStatus.PICKUP_FAILED:
         return { label: 'Pickup Failed', color: 'bg-red-100 text-red-800' };
       case DeliveryStatus.CANCELLED:

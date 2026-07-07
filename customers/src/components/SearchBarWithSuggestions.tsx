@@ -155,7 +155,7 @@ export function SearchBarWithSuggestions({
   };
 
   const getSuggestionIcon = () => {
-    return <Search className="h-4 w-4 text-green-500" />;
+    return <Search className="h-4 w-4 text-primary" />;
   };
 
   return (

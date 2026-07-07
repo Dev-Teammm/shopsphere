@@ -97,7 +97,7 @@ export default function RewardSystemPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader className="text-center">
-              <DollarSign className="h-8 w-8 text-green-500 mx-auto mb-2" />
+              <DollarSign className="h-8 w-8 text-primary mx-auto mb-2" />
               <CardTitle className="text-lg">Point Value</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
@@ -111,7 +111,7 @@ export default function RewardSystemPage() {
           {rewardSystem.isPercentageBasedEnabled && rewardSystem.percentageRate && (
             <Card>
               <CardHeader className="text-center">
-                <Percent className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <Percent className="h-8 w-8 text-primary mx-auto mb-2" />
                 <CardTitle className="text-lg">Purchase Rewards</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
@@ -139,8 +139,8 @@ export default function RewardSystemPage() {
             <div className="space-y-4">
               {rewardSystem.isPurchasePointsEnabled && (
                 <div className="flex items-start gap-4 p-4 border rounded-md">
-                  <div className="bg-green-100 rounded-full p-3">
-                    <ShoppingBag className="h-6 w-6 text-green-600" />
+                  <div className="bg-primary/10 rounded-full p-3">
+                    <ShoppingBag className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">Purchase Rewards</h3>
@@ -183,7 +183,7 @@ export default function RewardSystemPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Package className="h-5 w-5 text-green-500" />
+                    <Package className="h-5 w-5 text-primary" />
                     Quantity-Based Rewards
                   </CardTitle>
                   <CardDescription>
@@ -218,7 +218,7 @@ export default function RewardSystemPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-green-500" />
+                    <TrendingUp className="h-5 w-5 text-primary" />
                     Amount-Based Rewards
                   </CardTitle>
                   <CardDescription>
@@ -255,7 +255,7 @@ export default function RewardSystemPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
+              <CheckCircle className="h-5 w-5 text-primary" />
               How to Redeem Your Points
             </CardTitle>
           </CardHeader>
@@ -294,8 +294,8 @@ export default function RewardSystemPage() {
                   </p>
                 </div>
               </div>
-              <div className="p-4 bg-green-50 rounded-md border border-green-200 mt-4">
-                <p className="text-sm text-green-900">
+              <div className="p-4 bg-primary/10 rounded-md border border-primary/20 mt-4">
+                <p className="text-sm text-primary">
                   <strong>Note:</strong> Each point is worth ${rewardSystem.pointValue.toFixed(2)}. 
                   Points can be used to reduce your order total at checkout.
                 </p>

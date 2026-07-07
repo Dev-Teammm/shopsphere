@@ -136,23 +136,40 @@ export function VariantBatchManagement({
         return;
       }
 
-      // Require manufacture and expiry dates when assigning batches to a warehouse
-      if (!createForm.manufactureDate) {
-        toast({
-          title: "Validation Error",
-          description: "Manufacture date is required",
-          variant: "destructive",
-        });
-        return;
+      if (createForm.manufactureDate) {
+        const mfgDate = new Date(createForm.manufactureDate);
+        if (mfgDate > new Date()) {
+          toast({
+            title: "Validation Error",
+            description: "Manufacture date cannot be in the future",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
-      if (!createForm.expiryDate) {
-        toast({
-          title: "Validation Error",
-          description: "Expiry date is required",
-          variant: "destructive",
-        });
-        return;
+      if (createForm.expiryDate) {
+        const expDate = new Date(createForm.expiryDate);
+        if (expDate < new Date()) {
+          toast({
+            title: "Validation Error",
+            description: "Expiry date cannot be in the past",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (
+          createForm.manufactureDate &&
+          expDate <= new Date(createForm.manufactureDate)
+        ) {
+          toast({
+            title: "Validation Error",
+            description: "Expiry date must be after manufacture date",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Prepare the request data with proper date/time formatting
@@ -227,23 +244,40 @@ export function VariantBatchManagement({
         return;
       }
 
-      // Require manufacture and expiry dates for updates too
-      if (!editForm.manufactureDate) {
-        toast({
-          title: "Validation Error",
-          description: "Manufacture date is required",
-          variant: "destructive",
-        });
-        return;
+      if (editForm.manufactureDate) {
+        const mfgDate = new Date(editForm.manufactureDate);
+        if (mfgDate > new Date()) {
+          toast({
+            title: "Validation Error",
+            description: "Manufacture date cannot be in the future",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
-      if (!editForm.expiryDate) {
-        toast({
-          title: "Validation Error",
-          description: "Expiry date is required",
-          variant: "destructive",
-        });
-        return;
+      if (editForm.expiryDate) {
+        const expDate = new Date(editForm.expiryDate);
+        if (expDate < new Date()) {
+          toast({
+            title: "Validation Error",
+            description: "Expiry date cannot be in the past",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (
+          editForm.manufactureDate &&
+          expDate <= new Date(editForm.manufactureDate)
+        ) {
+          toast({
+            title: "Validation Error",
+            description: "Expiry date must be after manufacture date",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Prepare the request data with proper date/time formatting
@@ -353,7 +387,7 @@ export function VariantBatchManagement({
     }
     if (batch.isAvailable) {
       return (
-        <Badge variant="outline" className="text-green-600">
+        <Badge variant="outline" className="text-primary">
           Active
         </Badge>
       );
@@ -543,7 +577,12 @@ export function VariantBatchManagement({
             </div>
 
             <div>
-              <Label htmlFor="manufactureDate">Manufacture Date</Label>
+              <Label htmlFor="manufactureDate">
+                Manufacture Date{" "}
+                <span className="text-muted-foreground font-normal">
+                  (optional)
+                </span>
+              </Label>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -599,7 +638,12 @@ export function VariantBatchManagement({
             </div>
 
             <div>
-              <Label htmlFor="expiryDate">Expiry Date</Label>
+              <Label htmlFor="expiryDate">
+                Expiry Date{" "}
+                <span className="text-muted-foreground font-normal">
+                  (optional)
+                </span>
+              </Label>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -737,7 +781,12 @@ export function VariantBatchManagement({
             </div>
 
             <div>
-              <Label htmlFor="editManufactureDate">Manufacture Date</Label>
+              <Label htmlFor="editManufactureDate">
+                Manufacture Date{" "}
+                <span className="text-muted-foreground font-normal">
+                  (optional)
+                </span>
+              </Label>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -793,7 +842,12 @@ export function VariantBatchManagement({
             </div>
 
             <div>
-              <Label htmlFor="editExpiryDate">Expiry Date</Label>
+              <Label htmlFor="editExpiryDate">
+                Expiry Date{" "}
+                <span className="text-muted-foreground font-normal">
+                  (optional)
+                </span>
+              </Label>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>

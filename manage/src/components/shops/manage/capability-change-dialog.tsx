@@ -78,7 +78,7 @@ export function CapabilityChangeDialog({
                 <div className="grid grid-cols-2 gap-3">
                   {pendingOperations.pendingOrders > 0 && (
                     <div className="flex items-center gap-2 p-3 rounded-lg border bg-muted/50">
-                      <Package className="h-4 w-4 text-green-600" />
+                      <Package className="h-4 w-4 text-primary" />
                       <div>
                         <div className="font-medium text-sm">
                           {pendingOperations.pendingOrders}
@@ -120,7 +120,7 @@ export function CapabilityChangeDialog({
 
                   {pendingOperations.pendingDeliveries > 0 && (
                     <div className="flex items-center gap-2 p-3 rounded-lg border bg-muted/50">
-                      <Truck className="h-4 w-4 text-green-600" />
+                      <Truck className="h-4 w-4 text-primary" />
                       <div>
                         <div className="font-medium text-sm">
                           {pendingOperations.pendingDeliveries}

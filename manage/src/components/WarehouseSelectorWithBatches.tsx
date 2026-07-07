@@ -231,10 +231,8 @@ export function WarehouseSelectorWithBatches({
           batchErrors.quantity = "Quantity must be greater than 0";
         }
 
-        // Require and validate manufacture date
-        if (!batch.manufactureDate) {
-          batchErrors.manufactureDate = "Manufacture date is required";
-        } else {
+        // Validate manufacture date only when provided
+        if (batch.manufactureDate) {
           const mfgDate = new Date(batch.manufactureDate);
           const now = new Date();
 
@@ -244,10 +242,8 @@ export function WarehouseSelectorWithBatches({
           }
         }
 
-        // Require and validate expiry date
-        if (!batch.expiryDate) {
-          batchErrors.expiryDate = "Expiry date is required";
-        } else {
+        // Validate expiry date only when provided
+        if (batch.expiryDate) {
           const expDate = new Date(batch.expiryDate);
           const now = new Date();
 
@@ -255,7 +251,6 @@ export function WarehouseSelectorWithBatches({
             batchErrors.expiryDate = "Expiry date cannot be in the past";
           }
 
-          // If both dates are provided, ensure expiry is after manufacture
           if (batch.manufactureDate) {
             const mfgDate = new Date(batch.manufactureDate);
             if (expDate <= mfgDate) {
@@ -667,7 +662,10 @@ export function WarehouseSelectorWithBatches({
                                 </div>
                                 <div>
                                   <Label htmlFor={`manufactureDate-${index}`}>
-                                    Manufacture Date & Time
+                                    Manufacture Date & Time{" "}
+                                    <span className="text-muted-foreground font-normal">
+                                      (optional)
+                                    </span>
                                   </Label>
                                   <div className="space-y-2">
                                     <Popover>
@@ -796,7 +794,10 @@ export function WarehouseSelectorWithBatches({
                                 </div>
                                 <div>
                                   <Label htmlFor={`expiryDate-${index}`}>
-                                    Expiry Date & Time
+                                    Expiry Date & Time{" "}
+                                    <span className="text-muted-foreground font-normal">
+                                      (optional)
+                                    </span>
                                   </Label>
                                   <div className="space-y-2">
                                     <Popover>

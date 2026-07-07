@@ -41,9 +41,9 @@ export function RegistrationSuccessDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-md border-2 border-green-500 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl p-8">
+      <DialogContent className="sm:max-w-md border-2 border-primary bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl p-8">
         <DialogHeader className="text-center">
-          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-green-50 text-green-600 animate-in zoom-in duration-500 border-4 border-green-500/10">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-primary/10 text-primary animate-in zoom-in duration-500 border-4 border-primary/10">
             <CheckCircle2 className="h-12 w-12" />
           </div>
           <DialogTitle className="text-3xl font-black text-black tracking-tight">
@@ -58,7 +58,7 @@ export function RegistrationSuccessDialog({
         <div className="space-y-6 mt-8">
           <div className="rounded-2xl bg-gray-50 border-2 border-gray-100 p-5 space-y-4">
             <div className="flex items-center gap-4 transition-all hover:translate-x-1">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-sm">
                 <CheckCircle2 className="h-4 w-4" />
               </div>
               <span className="font-bold text-black text-sm uppercase tracking-wide">
@@ -66,7 +66,7 @@ export function RegistrationSuccessDialog({
               </span>
             </div>
             <div className="flex items-center gap-4 transition-all hover:translate-x-1">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-sm">
                 <CheckCircle2 className="h-4 w-4" />
               </div>
               <span className="font-bold text-black text-sm uppercase tracking-wide">
@@ -78,7 +78,7 @@ export function RegistrationSuccessDialog({
           <Button
             onClick={handleGoToLogin}
             disabled={isRedirecting}
-            className="w-full h-14 text-lg font-bold bg-green-600 hover:bg-black text-white rounded-2xl transition-all duration-300 shadow-lg hover:shadow-green-500/20 active:scale-[0.98] group"
+            className="w-full h-14 text-lg font-bold bg-primary hover:bg-black text-white rounded-2xl transition-all duration-300 shadow-lg hover:shadow-primary/20 active:scale-[0.98] group"
           >
             {isRedirecting ? (
               <>

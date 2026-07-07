@@ -1073,7 +1073,7 @@ export default function OrdersPage() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => openDeliveryGroupDialog(orderId)}
-                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10"
                                 title={
                                   currentGroup
                                     ? "Change Delivery Group"

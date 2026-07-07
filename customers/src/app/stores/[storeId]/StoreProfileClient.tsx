@@ -371,9 +371,9 @@ export function StoreProfileClient({ storeId }: { storeId: string }) {
                       variant="outline"
                       className={`text-xs ${
                         store.primaryCapability === "PICKUP_ORDERS"
-                          ? "bg-green-100 text-green-700 border-green-200"
+                          ? "bg-primary/10 text-primary border-primary/20"
                           : store.primaryCapability === "FULL_ECOMMERCE"
-                            ? "bg-green-100 text-green-700 border-green-200"
+                            ? "bg-primary/10 text-primary border-primary/20"
                             : store.primaryCapability === "HYBRID"
                               ? "bg-orange-100 text-orange-700 border-orange-200"
                               : "bg-gray-100 text-gray-700 border-gray-200"
@@ -740,7 +740,7 @@ export function StoreProfileClient({ storeId }: { storeId: string }) {
                               <div className="flex items-start justify-between">
                                 <CardTitle className="text-lg">{warehouse.name}</CardTitle>
                                 {warehouse.isActive && (
-                                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                                     Active
                                   </Badge>
                                 )}
@@ -858,7 +858,7 @@ export function StoreProfileClient({ storeId }: { storeId: string }) {
                                   )}
                                 </div>
                                 {area.isActive && (
-                                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                                     Active
                                   </Badge>
                                 )}

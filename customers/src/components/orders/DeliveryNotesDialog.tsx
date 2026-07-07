@@ -89,9 +89,9 @@ export function DeliveryNotesDialog({
       case "ISSUE":
         return "bg-red-100 text-red-800";
       case "UPDATE":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "SUCCESS":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       default:
         return "bg-gray-100 text-gray-800";
     }

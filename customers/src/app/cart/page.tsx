@@ -641,7 +641,7 @@ export default function CartPage() {
                               -{Math.round(item.discountPercentage || 0)}% OFF
                             </Badge>
                             {item.discountName && (
-                              <span className="text-xs text-green-600 font-medium">
+                              <span className="text-xs text-primary font-medium">
                                 {item.discountName}
                               </span>
                             )}
@@ -869,7 +869,7 @@ export default function CartPage() {
                                 -{Math.round(item.discountPercentage || 0)}% OFF
                               </Badge>
                               {item.discountName && (
-                                <span className="text-xs text-green-600 font-medium">
+                                <span className="text-xs text-primary font-medium">
                                   {item.discountName}
                                 </span>
                               )}
@@ -1076,7 +1076,7 @@ export default function CartPage() {
               ) && (
                 <>
                   <div className="space-y-2">
-                    <div className="text-sm font-medium text-green-600">
+                    <div className="text-sm font-medium text-primary">
                       {t("cart.discountsApplied") || "Discounts Applied"}
                     </div>
                     {cart.items
@@ -1093,19 +1093,19 @@ export default function CartPage() {
                             <span className="text-muted-foreground font-medium">
                               {item.name}
                             </span>
-                            <span className="text-green-600 font-medium">
+                            <span className="text-primary font-medium">
                               -{formatPrice(calculateItemDiscount(item))}
                             </span>
                           </div>
                           {item.discountName && (
-                            <span className="text-xs text-green-600">
+                            <span className="text-xs text-primary">
                               {item.discountName} (
                               {Math.round(item.discountPercentage || 0)}% off)
                             </span>
                           )}
                         </div>
                       ))}
-                    <div className="flex justify-between text-sm font-medium text-green-600 border-t pt-2">
+                    <div className="flex justify-between text-sm font-medium text-primary border-t pt-2">
                       <span>{t("cart.totalDiscount") || "Total Discount"}</span>
                       <span>-{formatPrice(calculateTotalDiscount())}</span>
                     </div>

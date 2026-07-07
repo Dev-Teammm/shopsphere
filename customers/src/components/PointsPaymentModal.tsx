@@ -284,7 +284,7 @@ export function PointsPaymentModal({
                               shop.canPayWithPoints ? "default" : "secondary"
                             }
                             className={
-                              shop.canPayWithPoints ? "bg-green-600" : ""
+                              shop.canPayWithPoints ? "bg-primary" : ""
                             }
                           >
                             {shop.canPayWithPoints ? "Has Points" : "No Points"}
@@ -312,7 +312,7 @@ export function PointsPaymentModal({
                               <div className="text-muted-foreground">
                                 Can Cover:
                               </div>
-                              <div className="font-medium text-right text-green-600">
+                              <div className="font-medium text-right text-primary">
                                 {formatPrice(shop.maxPointsPayableAmount)}
                               </div>
                             </>
@@ -321,7 +321,7 @@ export function PointsPaymentModal({
                           <div className="text-muted-foreground">
                             Potential Earning:
                           </div>
-                          <div className="font-medium text-right text-green-600">
+                          <div className="font-medium text-right text-primary">
                             +{shop.potentialEarnedPoints} pts
                           </div>
                         </div>
@@ -371,7 +371,7 @@ export function PointsPaymentModal({
                   <span
                     className={
                       calculations.isFullPointsPayment
-                        ? "text-green-600"
+                        ? "text-primary"
                         : "text-primary"
                     }
                   >
@@ -410,7 +410,7 @@ export function PointsPaymentModal({
               className={
                 calculations.isFullPointsPayment
                   ? "bg-yellow-600 hover:bg-yellow-700"
-                  : "bg-green-600 hover:bg-green-700"
+                  : "bg-primary hover:bg-primary/90"
               }
             >
               {processing ? (

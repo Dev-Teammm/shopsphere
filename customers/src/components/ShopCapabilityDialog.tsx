@@ -66,7 +66,7 @@ export function ShopCapabilityDialog({
         t("shopCapability.pickupDetail3") || "Returns are handled at the shop",
         t("shopCapability.pickupDetail4") || "No delivery service available",
       ],
-      color: "bg-green-100 text-green-700",
+      color: "bg-primary/10 text-primary",
     },
     FULL_ECOMMERCE: {
       title: t("shopCapability.fullEcommerceTitle") || "Full E-commerce",
@@ -82,7 +82,7 @@ export function ShopCapabilityDialog({
         t("shopCapability.fullEcommerceDetail4") ||
           "Returns can be picked up by delivery agents",
       ],
-      color: "bg-green-100 text-green-700",
+      color: "bg-primary/10 text-primary",
     },
     HYBRID: {
       title: t("shopCapability.hybridTitle") || "Hybrid Shop",
@@ -167,12 +167,12 @@ export function ShopCapabilityBadge({
     PICKUP_ORDERS: {
       title: t("shopCapability.pickupTitle") || "Pickup Orders",
       icon: Store,
-      color: "bg-green-100 text-green-700",
+      color: "bg-primary/10 text-primary",
     },
     FULL_ECOMMERCE: {
       title: t("shopCapability.fullEcommerceTitle") || "Full E-commerce",
       icon: Truck,
-      color: "bg-green-100 text-green-700",
+      color: "bg-primary/10 text-primary",
     },
     HYBRID: {
       title: t("shopCapability.hybridTitle") || "Hybrid Shop",

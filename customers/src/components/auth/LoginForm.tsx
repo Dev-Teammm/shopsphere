@@ -96,7 +96,7 @@ export default function LoginForm() {
             )}
 
             {successMessage && (
-              <Alert className="border-green-200 bg-green-50 text-green-800">
+              <Alert className="border-primary/20 bg-primary/10 text-primary">
                 <AlertDescription>{successMessage}</AlertDescription>
               </Alert>
             )}
@@ -159,7 +159,7 @@ export default function LoginForm() {
             <div className="text-center space-y-2">
               <Link
                 href="/auth/forgot-password"
-                className="text-sm text-green-600 hover:text-green-500"
+                className="text-sm text-primary hover:text-primary"
               >
                 {t("auth.forgotPassword")}
               </Link>
@@ -167,7 +167,7 @@ export default function LoginForm() {
                 {t("auth.noAccount")}{" "}
                 <Link
                   href="/auth/register"
-                  className="text-green-600 hover:text-green-500"
+                  className="text-primary hover:text-primary"
                 >
                   {t("auth.signUp")}
                 </Link>

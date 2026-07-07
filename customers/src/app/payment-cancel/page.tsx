@@ -67,7 +67,7 @@ function PaymentCancelContent() {
         <CardContent className="space-y-4">
           {isCleaningUp && (
             <div className="text-center py-4">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
               <p className="mt-2 text-sm text-gray-600">
                 Cleaning up your order...
               </p>
@@ -76,9 +76,9 @@ function PaymentCancelContent() {
 
           {cleanupComplete && (
             <div className="text-center py-4">
-              <div className="mx-auto mb-2 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <div className="mx-auto mb-2 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                 <svg
-                  className="w-4 h-4 text-green-600"
+                  className="w-4 h-4 text-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -91,7 +91,7 @@ function PaymentCancelContent() {
                   />
                 </svg>
               </div>
-              <p className="text-sm text-green-600 font-medium">
+              <p className="text-sm text-primary font-medium">
                 Order cleaned up successfully
               </p>
             </div>
@@ -136,7 +136,7 @@ export default function PaymentCancelPage() {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardContent className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               <p className="mt-4 text-sm text-gray-600">Loading...</p>
             </CardContent>
           </Card>

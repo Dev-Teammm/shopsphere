@@ -413,7 +413,7 @@ export default function MembersPage() {
                             <Mail className="h-4 w-4 text-muted-foreground" />
                             {member.userEmail}
                             {member.emailVerified && (
-                              <CheckCircle2 className="h-4 w-4 text-green-500" />
+                              <CheckCircle2 className="h-4 w-4 text-primary" />
                             )}
                           </div>
                         </TableCell>
@@ -423,7 +423,7 @@ export default function MembersPage() {
                               <Phone className="h-4 w-4 text-muted-foreground" />
                               {member.phoneNumber}
                               {member.phoneVerified && (
-                                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
                               )}
                             </div>
                           ) : (

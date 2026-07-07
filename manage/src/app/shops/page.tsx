@@ -192,7 +192,7 @@ function ShopsPageContent() {
   const getStatusBadge = (status: string, isActive?: boolean) => {
     if (status === "ACTIVE" && isActive) {
       return (
-        <Badge className="bg-green-500 hover:bg-green-600 text-white">
+        <Badge className="bg-primary hover:bg-primary/90 text-white">
           Active
         </Badge>
       );

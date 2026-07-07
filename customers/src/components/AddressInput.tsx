@@ -175,7 +175,7 @@ export function AddressInput({
             validationResult && !validationResult.isValid
               ? "border-red-500 focus:border-red-500"
               : validationResult && validationResult.isValid
-              ? "border-green-500 focus:border-green-500"
+              ? "border-primary focus:border-primary"
               : ""
           }`}
         />
@@ -184,13 +184,13 @@ export function AddressInput({
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           )}
           {isValidating && (
-            <Loader2 className="h-4 w-4 animate-spin text-green-500" />
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
           )}
           {validationResult && !validationResult.isValid && (
             <AlertTriangle className="h-4 w-4 text-red-500" />
           )}
           {validationResult && validationResult.isValid && (
-            <Check className="h-4 w-4 text-green-500" />
+            <Check className="h-4 w-4 text-primary" />
           )}
           <MapPin className="h-4 w-4 text-muted-foreground" />
         </div>
@@ -215,7 +215,7 @@ export function AddressInput({
             <div
               key={suggestion.place_id}
               className={`px-4 py-3 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-50 ${
-                index === selectedIndex ? "bg-green-50" : ""
+                index === selectedIndex ? "bg-primary/10" : ""
               }`}
               onClick={() => handleSuggestionClick(suggestion)}
             >

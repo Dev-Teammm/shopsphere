@@ -18,10 +18,12 @@ import com.ecommerce.dto.WarehouseStockRequest;
 import com.ecommerce.dto.WarehouseStockWithBatchesRequest;
 import com.ecommerce.dto.ProductDetailsDTO;
 import com.ecommerce.dto.ProductDetailsUpdateDTO;
+import com.ecommerce.dto.VisibilityStatusDTO;
 import com.ecommerce.Exception.ProductDeletionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ecommerce.service.ProductService;
 import com.ecommerce.service.ShopAuthorizationService;
+import com.ecommerce.service.VisibilityService;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.repository.ProductRepository;
 import com.ecommerce.entity.Product;
@@ -69,6 +71,7 @@ public class ProductController {
     private final ShopAuthorizationService shopAuthorizationService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final VisibilityService visibilityService;
 
     @PostMapping("/create-empty")
     @PreAuthorize("hasAnyRole('VENDOR', 'EMPLOYEE')")
@@ -1494,6 +1497,27 @@ public class ProductController {
             log.error("Error creating variant for product {}: {}", productId, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(createErrorResponse("INTERNAL_ERROR", "Failed to create variant: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{productId}/visibility-status")
+    @PreAuthorize("hasAnyRole('VENDOR', 'EMPLOYEE', 'ADMIN')")
+    @Operation(summary = "Get product customer visibility status", description = "Returns whether a product is visible to customers and any blocking issues")
+    public ResponseEntity<?> getProductVisibilityStatus(@PathVariable UUID productId) {
+        try {
+            UUID currentUserId = getCurrentUserId();
+            VisibilityStatusDTO status = visibilityService.getProductVisibilityStatus(productId, currentUserId);
+            return ResponseEntity.ok(status);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(createErrorResponse("NOT_FOUND", e.getMessage()));
+        } catch (com.ecommerce.Exception.CustomException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(createErrorResponse("FORBIDDEN", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error getting product visibility status for {}: {}", productId, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(createErrorResponse("INTERNAL_ERROR", "Failed to get product visibility status"));
         }
     }
 

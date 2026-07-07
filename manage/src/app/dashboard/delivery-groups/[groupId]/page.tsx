@@ -118,7 +118,7 @@ export default function DeliveryGroupDetailsPage() {
       return (
         <Badge
           variant="default"
-          className="flex items-center w-fit gap-1 bg-green-600"
+          className="flex items-center w-fit gap-1 bg-primary"
         >
           <CheckCircle2 className="h-3 w-3" />
           Completed
@@ -129,7 +129,7 @@ export default function DeliveryGroupDetailsPage() {
       return (
         <Badge
           variant="default"
-          className="flex items-center w-fit gap-1 bg-green-600"
+          className="flex items-center w-fit gap-1 bg-primary"
         >
           <Truck className="h-3 w-3" />
           In Progress
@@ -174,7 +174,7 @@ export default function DeliveryGroupDetailsPage() {
       CONFIRMED: {
         label: "Confirmed",
         variant: "default",
-        className: "bg-green-600",
+        className: "bg-primary",
       },
       PROCESSING: {
         label: "Processing",
@@ -194,7 +194,7 @@ export default function DeliveryGroupDetailsPage() {
       DELIVERED: {
         label: "Delivered",
         variant: "default",
-        className: "bg-green-600",
+        className: "bg-primary",
       },
       CANCELLED: { label: "Cancelled", variant: "destructive" },
       REFUNDED: { label: "Refunded", variant: "outline" },

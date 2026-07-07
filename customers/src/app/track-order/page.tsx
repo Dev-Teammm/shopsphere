@@ -119,13 +119,13 @@ function TrackOrderPageContent() {
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
       case "COMPLETED":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "PROCESSING":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "SHIPPED":
         return "bg-purple-100 text-purple-800";
       case "DELIVERED":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "CANCELLED":
         return "bg-red-100 text-red-800";
       default:
@@ -160,7 +160,7 @@ function TrackOrderPageContent() {
         <div className="max-w-md w-full mx-4">
           <div className="bg-white rounded-md shadow-lg p-8">
             <div className="text-center mb-6">
-              <Package className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <Package className="h-12 w-12 text-primary mx-auto mb-4" />
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 {t("trackOrder.title") || "Track Your Orders"}
               </h1>
@@ -188,7 +188,7 @@ function TrackOrderPageContent() {
                     placeholder={
                       t("auth.emailPlaceholder") || "Enter your email address"
                     }
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                     onKeyPress={(e) =>
                       e.key === "Enter" && requestTrackingAccess()
                     }
@@ -199,7 +199,7 @@ function TrackOrderPageContent() {
               <button
                 onClick={requestTrackingAccess}
                 disabled={isRequestingAccess}
-                className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isRequestingAccess ? (
                   <div className="flex items-center justify-center gap-2">
@@ -215,11 +215,11 @@ function TrackOrderPageContent() {
               </button>
             </div>
 
-            <div className="mt-6 p-4 bg-green-50 rounded-md">
-              <h3 className="text-sm font-medium text-green-900 mb-2">
+            <div className="mt-6 p-4 bg-primary/10 rounded-md">
+              <h3 className="text-sm font-medium text-primary mb-2">
                 {t("trackOrder.howItWorks") || "How it works:"}
               </h3>
-              <ol className="text-sm text-green-800 space-y-1">
+              <ol className="text-sm text-primary space-y-1">
                 <li>
                   {t("trackOrder.step1") || "1. Enter your email address"}
                 </li>
@@ -258,7 +258,7 @@ function TrackOrderPageContent() {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-gray-600">
               {t("trackOrder.loading") || "Loading your orders..."}
             </p>
@@ -331,7 +331,7 @@ function TrackOrderPageContent() {
                     <div className="mt-4 md:mt-0">
                       <button
                         onClick={() => viewOrderDetail(order.id)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
                       >
                         <Eye className="h-4 w-4" />
                         {t("orders.viewDetails") || "View Details"}
@@ -360,7 +360,7 @@ function TrackOrderPageContent() {
                       onClick={() => handlePageChange(i)}
                       className={`px-3 py-2 text-sm rounded-md ${
                         currentPage === i
-                          ? "bg-green-600 text-white"
+                          ? "bg-primary text-white"
                           : "border border-gray-300 hover:bg-gray-50"
                       }`}
                     >
@@ -394,7 +394,7 @@ function TrackOrderPageContent() {
             </p>
             <button
               onClick={fetchOrders}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
             >
               <Search className="h-4 w-4" />
               {t("common.refresh") || "Refresh"}

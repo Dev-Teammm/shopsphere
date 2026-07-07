@@ -59,7 +59,7 @@ export function RevenueChart({ data, isAdmin }: RevenueChartProps) {
           </div>
 
           <div className="text-center">
-            <div className="text-3xl font-bold text-green-600 mb-2">
+            <div className="text-3xl font-bold text-primary mb-2">
               {data.totalOrders || 0}
             </div>
             <p className="text-sm text-muted-foreground">Total Orders</p>

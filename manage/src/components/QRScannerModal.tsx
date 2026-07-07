@@ -366,7 +366,7 @@ const QRScannerModal = ({
 
             {/* Success State */}
             {success && (
-              <div className="absolute inset-0 flex items-center justify-center bg-green-600 bg-opacity-90">
+              <div className="absolute inset-0 flex items-center justify-center bg-primary bg-opacity-90">
                 <div className="text-white text-center">
                   <CheckCircle className="h-16 w-16 mx-auto mb-4" />
                   <p className="text-lg font-semibold mb-2">
