@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-APP_NAME="${APP_NAME:-shopsphere-api}"
+PM2_APP_NAME="${PM2_APP_NAME:-shopsphere-api}"
 APP_DIR="${APP_DIR:-/opt/apps/shopsphere_api}"
 CONFIG_DIR="${CONFIG_DIR:-/opt/configs/shopsphere_api}"
 JAR_SOURCE="${JAR_SOURCE:-target/ecom-app-0.0.1-SNAPSHOT.jar}"
@@ -37,7 +37,7 @@ PM2_CMD=(
   pm2
   start
   "$JAR_TARGET"
-  --name "$APP_NAME"
+  --name "$PM2_APP_NAME"
   --cwd "$APP_DIR"
   --interpreter java
   --interpreter-args "-jar"
@@ -45,8 +45,8 @@ PM2_CMD=(
   --update-env
 )
 
-if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
-  pm2 restart "$APP_NAME" --update-env
+if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
+  pm2 restart "$PM2_APP_NAME" --update-env
 else
   "${PM2_CMD[@]}"
 fi
