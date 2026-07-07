@@ -121,7 +121,7 @@ export default function Home() {
             <p className="text-gray-600">{t("home.loading")}</p>
           </div>
         </div>
-        <Footer />
+        
       </div>
     );
   }
@@ -138,7 +138,7 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <Footer />
+        
       </div>
     );
   }
@@ -150,7 +150,7 @@ export default function Home() {
         <div className="flex items-center justify-center min-h-[400px]">
           <p className="text-gray-600">{t("home.noData")}</p>
         </div>
-        <Footer />
+        
       </div>
     );
   }
@@ -217,7 +217,7 @@ export default function Home() {
           )}
       </div>
 
-      <Footer />
+      
     </div>
   );
 }
