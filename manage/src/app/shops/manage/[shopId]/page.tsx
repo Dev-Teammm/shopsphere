@@ -248,7 +248,7 @@ function ShopManagementContent() {
               <span className="text-sm font-medium">Status:</span>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 existingShop.status === "ACTIVE"
-                  ? "bg-green-100 text-green-800"
+                  ? "bg-primary/10 text-primary"
                   : existingShop.status === "PENDING"
                   ? "bg-yellow-100 text-yellow-800"
                   : "bg-gray-100 text-gray-800"

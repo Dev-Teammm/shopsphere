@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { isSuppressedApiError } from "@/lib/suppressedApiErrors";
 
 export function GlobalFetchHandler() {
   useEffect(() => {
@@ -46,7 +47,7 @@ export function GlobalFetchHandler() {
               data.message ||
               data.error ||
               `Error ${response.status}: ${response.statusText}`;
-            if (errorMessage.toLowerCase() === "access denied") {
+            if (isSuppressedApiError(errorMessage)) {
               return response;
             }
             toast.error("Process Failed", {

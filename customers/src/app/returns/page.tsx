@@ -55,8 +55,8 @@ export default function ReturnsPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <div className="text-center mb-8">
-        <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-          <Package className="h-8 w-8 text-green-600" />
+        <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <Package className="h-8 w-8 text-primary" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Return Your Order
@@ -148,12 +148,12 @@ export default function ReturnsPage() {
               </Button>
 
               {isAuthenticated && (
-                <div className="bg-green-50 p-3 rounded-md">
-                  <div className="flex items-center gap-2 text-green-700 mb-1">
+                <div className="bg-primary/10 p-3 rounded-md">
+                  <div className="flex items-center gap-2 text-primary mb-1">
                     <CheckCircle className="h-4 w-4" />
                     <span className="font-medium">Signed In</span>
                   </div>
-                  <p className="text-sm text-green-600">
+                  <p className="text-sm text-primary">
                     We'll automatically load your order details and customer information.
                   </p>
                 </div>
@@ -217,12 +217,12 @@ export default function ReturnsPage() {
                 )}
               </Button>
 
-              <div className="bg-green-50 p-3 rounded-md">
-                <div className="flex items-center gap-2 text-green-700 mb-1">
+              <div className="bg-primary/10 p-3 rounded-md">
+                <div className="flex items-center gap-2 text-primary mb-1">
                   <QrCode className="h-4 w-4" />
                   <span className="font-medium">Need Help Finding Your Pickup Token?</span>
                 </div>
-                <p className="text-sm text-green-600">
+                <p className="text-sm text-primary">
                   Check your order confirmation email or look for the QR code that was sent to you after placing the order.
                 </p>
               </div>
@@ -242,8 +242,8 @@ export default function ReturnsPage() {
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">1</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">1</span>
               </div>
               <div>
                 <p className="font-medium">Select Items</p>
@@ -254,8 +254,8 @@ export default function ReturnsPage() {
             </div>
             
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">2</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">2</span>
               </div>
               <div>
                 <p className="font-medium">Submit Request</p>
@@ -266,8 +266,8 @@ export default function ReturnsPage() {
             </div>
             
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">3</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">3</span>
               </div>
               <div>
                 <p className="font-medium">Get Approval</p>
@@ -278,8 +278,8 @@ export default function ReturnsPage() {
             </div>
             
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-green-600">4</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-primary">4</span>
               </div>
               <div>
                 <p className="font-medium">Return Items</p>

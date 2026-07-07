@@ -140,7 +140,7 @@ export default function SettingsPage() {
           {showSaved && (
             <Badge
               variant="outline"
-              className="bg-green-500/10 text-green-500 border-green-500/20 flex items-center"
+              className="bg-primary/10 text-primary border-primary/20 flex items-center"
             >
               <CheckCircle2 className="w-3 h-3 mr-1" />
               Settings saved
@@ -868,7 +868,7 @@ export default function SettingsPage() {
                           className={
                             i === 0
                               ? "bg-primary"
-                              : "bg-green-500/10 text-green-500 border-green-500/20"
+                              : "bg-primary/10 text-primary border-primary/20"
                           }
                         >
                           {i === 0 ? "Current" : "Successful"}

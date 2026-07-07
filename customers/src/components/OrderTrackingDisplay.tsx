@@ -77,8 +77,8 @@ const OrderTrackingDisplay: React.FC<OrderTrackingDisplayProps> = ({ order }) =>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Order #{order.orderNumber}</h1>
         <div className="flex items-center gap-4">
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-            order.status === 'PROCESSING' ? 'bg-green-100 text-green-800' :
+            order.status === 'COMPLETED' ? 'bg-primary/10 text-primary' :
+            order.status === 'PROCESSING' ? 'bg-primary/10 text-primary' :
             order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
             'bg-gray-100 text-gray-800'
           }`}>
@@ -184,7 +184,7 @@ const OrderTrackingDisplay: React.FC<OrderTrackingDisplayProps> = ({ order }) =>
               href={getGoogleMapsUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
             >
               <ExternalLink className="h-4 w-4" />
               Open in Maps
@@ -194,7 +194,7 @@ const OrderTrackingDisplay: React.FC<OrderTrackingDisplayProps> = ({ order }) =>
               href={getDirectionsUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
             >
               <Navigation className="h-4 w-4" />
               Get Directions

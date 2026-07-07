@@ -102,7 +102,7 @@ export function CountrySelector({
               <button
                 onClick={loadMoreCountries}
                 disabled={isLoading}
-                className="w-full text-left text-sm text-green-600 hover:text-green-800 disabled:opacity-50"
+                className="w-full text-left text-sm text-primary hover:text-primary disabled:opacity-50"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">

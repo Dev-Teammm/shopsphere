@@ -162,6 +162,7 @@ export interface ApiError {
 }
 
 import { toast } from "sonner";
+import { isSuppressedApiError } from "./suppressedApiErrors";
 
 // API Helper functions
 export const apiCall = async <T>(
@@ -200,7 +201,7 @@ export const apiCall = async <T>(
         // Fallback if not JSON
       }
 
-      if (errorMessage.toLowerCase() !== "access denied" && errorMessage.toLowerCase() !== "wishlist is empty" && errorMessage.toLowerCase() !== "cart is empty") {
+      if (!isSuppressedApiError(errorMessage)) {
         toast.error("Process Failed", {
           description: errorMessage,
           position: "top-center",

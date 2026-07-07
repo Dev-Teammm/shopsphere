@@ -109,8 +109,8 @@ function OrderSuccessContent() {
       <div className="max-w-2xl mx-auto">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle2 className="h-8 w-8 text-green-600" />
+          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <CheckCircle2 className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Order Placed Successfully!
@@ -143,7 +143,7 @@ function OrderSuccessContent() {
               <span className="text-sm font-medium text-gray-600">
                 Payment Status:
               </span>
-              <Badge variant="default" className="bg-green-600">
+              <Badge variant="default" className="bg-primary">
                 {verificationResult.status || "Completed"}
               </Badge>
             </div>
@@ -166,8 +166,8 @@ function OrderSuccessContent() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-bold text-green-600">1</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-bold text-primary">1</span>
               </div>
               <div>
                 <p className="font-medium">Order Confirmation</p>
@@ -179,8 +179,8 @@ function OrderSuccessContent() {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-bold text-green-600">2</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-bold text-primary">2</span>
               </div>
               <div>
                 <p className="font-medium">Processing</p>
@@ -192,8 +192,8 @@ function OrderSuccessContent() {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-bold text-green-600">3</span>
+              <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-xs font-bold text-primary">3</span>
               </div>
               <div>
                 <p className="font-medium">Shipping</p>

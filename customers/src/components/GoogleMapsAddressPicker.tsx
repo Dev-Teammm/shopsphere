@@ -662,12 +662,12 @@ export function GoogleMapsAddressPicker({
           <MapPin className="h-5 w-5" />
           Select Delivery Address
         </CardTitle>
-        <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
-          <p className="text-sm text-green-800 font-medium flex items-center gap-2">
-            <span className="inline-block w-4 h-1 bg-green-600 rounded"></span>
+        <div className="mt-2 p-3 bg-primary/10 border border-primary/20 rounded-md">
+          <p className="text-sm text-primary font-medium flex items-center gap-2">
+            <span className="inline-block w-4 h-1 bg-primary rounded"></span>
             green highlighted paths show roads where delivery is available
           </p>
-          <p className="text-xs text-green-700 mt-1">
+          <p className="text-xs text-primary mt-1">
             Click on or near the green roads to select your pickup location
           </p>
         </div>
@@ -738,7 +738,7 @@ export function GoogleMapsAddressPicker({
                         }}
                       >
                         <div className="flex items-start gap-3 w-full">
-                          <MapPin className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">
                               {suggestion.structured_formatting?.main_text || suggestion.description}
@@ -798,7 +798,7 @@ export function GoogleMapsAddressPicker({
           />
           <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-sm rounded-md p-3 text-sm text-muted-foreground shadow-md border">
             <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-green-500" />
+              <MapPin className="h-4 w-4 text-primary" />
               <span className="font-medium">🛰️ Satellite View Active</span>
             </div>
             <div className="mt-1 text-xs">
@@ -812,10 +812,10 @@ export function GoogleMapsAddressPicker({
               )}
             </div>
           </div>
-          <div className="absolute bottom-2 left-2 bg-white/95 backdrop-blur-sm rounded-md p-2.5 text-xs shadow-md border border-green-200">
+          <div className="absolute bottom-2 left-2 bg-white/95 backdrop-blur-sm rounded-md p-2.5 text-xs shadow-md border border-primary/20">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-green-700 font-medium">
-                <span className="inline-block w-3 h-0.5 bg-green-600 rounded"></span>
+              <div className="flex items-center gap-2 text-primary font-medium">
+                <span className="inline-block w-3 h-0.5 bg-primary rounded"></span>
                 <span>green paths = Delivery available roads</span>
               </div>
               <div className="text-muted-foreground">
@@ -827,12 +827,12 @@ export function GoogleMapsAddressPicker({
 
         {/* Selected Address Info - Compact display below map */}
         {selectedAddress && (
-          <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+          <div className="p-3 bg-primary/10 border border-primary/20 rounded-md">
             <div className="flex items-start gap-2">
-              <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+              <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-green-900 mb-1">Location Selected</p>
-                <p className="text-xs text-green-700 truncate">
+                <p className="text-sm font-medium text-primary mb-1">Location Selected</p>
+                <p className="text-xs text-primary truncate">
                   {selectedAddress.formattedAddress}
                 </p>
               </div>

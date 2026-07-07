@@ -132,7 +132,7 @@ export default function WarehouseStockTable({
       return (
         <Badge
           variant="default"
-          className="flex items-center gap-1 bg-green-100 text-green-800 hover:bg-green-200"
+          className="flex items-center gap-1 bg-primary/10 text-primary hover:bg-primary/20"
         >
           <CheckCircle className="h-3 w-3" />
           In Stock

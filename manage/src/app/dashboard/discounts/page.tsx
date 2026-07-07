@@ -476,7 +476,7 @@ export default function DiscountsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-primary">
               {statusCounts.scheduled}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -498,7 +498,7 @@ export default function DiscountsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-primary">
               {statusCounts.active}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
