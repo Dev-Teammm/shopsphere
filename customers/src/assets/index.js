@@ -6,4 +6,6 @@ export const sneakers = 'https://images.unsplash.com/photo-1595950653106-6c9ebd6
 export const watch = 'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?w=800&auto=format&fit=crop&q=60';
 export const coffeeMaker = 'https://images.unsplash.com/photo-1606937297791-7cdfb8fbc1ff?w=800&auto=format&fit=crop&q=60';
 export const backpack = 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=60';
-export const heroBanner = 'https://images.unsplash.com/photo-1607082350899-7e105aa886ae?w=800&auto=format&fit=crop&q=60'; 
+// Warm lifestyle shopping scene — works well for multipurpose marketplaces
+export const heroImage = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&auto=format&fit=crop&q=80';
+export const heroBanner = heroImage; 

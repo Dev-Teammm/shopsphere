@@ -16,14 +16,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { KeyRound, Mail, Loader2, ArrowLeft } from "lucide-react";
+import { Mail, Loader2, ArrowLeft, LockKeyhole } from "lucide-react";
 import { authService } from "@/lib/services/auth-service";
 import { PasswordResetRequest } from "@/lib/types";
 import { handleApiError } from "@/lib/utils/error-handler";
 import Link from "next/link";
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 export function ForgotPasswordForm() {
@@ -44,15 +44,15 @@ export function ForgotPasswordForm() {
     onSuccess: (message) => {
       setIsSubmitted(true);
       toast({
-        title: "Success",
+        title: "Reset link sent",
         description:
-          message || "Password reset link has been sent to your email",
+          message || "Check your inbox for password reset instructions.",
       });
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);
       toast({
-        title: "Error",
+        title: "Unable to send reset link",
         description: errorMessage,
         variant: "destructive",
       });
@@ -65,49 +65,64 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="mx-auto flex w-full flex-col space-y-6 sm:w-[350px] text-center">
-        <div className="mx-auto flex items-center justify-center bg-primary/10 p-4 rounded-full">
-          <Mail className="h-8 w-8 text-primary" />
+      <div className="mx-auto flex w-full max-w-md flex-col space-y-6">
+        <div className="space-y-2">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10">
+            <Mail className="h-5 w-5 text-primary" />
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Check your email
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            If an account exists for{" "}
+            <span className="font-medium text-foreground">
+              {form.getValues("email")}
+            </span>
+            , you will receive a password reset link shortly. The link is valid
+            for a limited time.
+          </p>
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Check your email
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          We've sent a password reset link to{" "}
-          <span className="font-medium text-foreground">
-            {form.getValues("email")}
-          </span>
-          . Please check your inbox and follow the instructions.
-        </p>
+
+        <div className="rounded-lg border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">Did not receive it?</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>Check your spam or promotions folder.</li>
+            <li>Confirm you entered the email used at registration.</li>
+            <li>Wait a few minutes, then try again.</li>
+          </ul>
+        </div>
+
         <Button
           variant="outline"
           className="w-full"
           onClick={() => setIsSubmitted(false)}
         >
-          Didn't receive the email? Try again
+          Send another link
         </Button>
+
         <Link
           href="/auth"
-          className="flex items-center justify-center text-sm text-primary hover:underline"
+          className="flex items-center justify-center text-sm font-medium text-primary hover:underline"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to login
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to sign in
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex w-full flex-col space-y-6 sm:w-[350px]">
-      <div className="flex flex-col space-y-2 text-center">
-        <div className="mx-auto flex items-center justify-center bg-primary/10 p-4 rounded-full">
-          <KeyRound className="h-8 w-8 text-primary" />
+    <div className="mx-auto flex w-full max-w-md flex-col space-y-6">
+      <div className="space-y-2">
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10">
+          <LockKeyhole className="h-5 w-5 text-primary" />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Forgot Password
+          Forgot your password?
         </h1>
         <p className="text-sm text-muted-foreground">
-          Enter your email address and we'll send you a link to reset your
-          password
+          Enter the email associated with your Shopsphere account. We will email
+          you a secure link to create a new password.
         </p>
       </div>
 
@@ -118,10 +133,12 @@ export function ForgotPasswordForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email Address</FormLabel>
+                <FormLabel>Work email</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="john.doe@example.com"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@company.com"
                     {...field}
                     disabled={resetMutation.isPending}
                   />
@@ -139,23 +156,21 @@ export function ForgotPasswordForm() {
             {resetMutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending link...
+                Sending reset link...
               </>
             ) : (
-              "Send reset link"
+              "Email reset link"
             )}
           </Button>
         </form>
       </Form>
 
-      <div className="text-center text-sm text-muted-foreground">
-        <Link
-          href="/auth"
-          className="flex items-center justify-center text-primary hover:underline"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to login
+      <p className="text-center text-sm text-muted-foreground">
+        Remember your password?{" "}
+        <Link href="/auth" className="font-medium text-primary hover:underline">
+          Sign in
         </Link>
-      </div>
+      </p>
     </div>
   );
 }

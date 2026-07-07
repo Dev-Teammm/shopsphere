@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Shield, Truck } from "lucide-react";
+import { ArrowRight, Zap, CreditCard, Truck } from "lucide-react";
 import { heroBanner } from "@/assets";
 import { formatPrice } from "@/lib/utils/priceFormatter";
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-primary via-primary/90 to-accent text-white">
+    <section className="relative overflow-hidden bg-slate-950 text-white">
       <div className="container mx-auto px-4 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
@@ -46,7 +46,7 @@ const HeroSection = () => {
                 <p className="text-xs text-white/80">On orders {formatPrice(50)}+</p>
               </div>
               <div className="text-center">
-                <Shield className="h-8 w-8 mx-auto mb-2 text-accent" />
+                <CreditCard className="h-8 w-8 mx-auto mb-2 text-amber-300" />
                 <p className="text-sm font-medium">Secure Payment</p>
                 <p className="text-xs text-white/80">100% Protected</p>
               </div>
@@ -60,10 +60,10 @@ const HeroSection = () => {
 
           {/* Image */}
           <div className="relative">
-            <img 
-              src={heroBanner} 
-              alt="Shopping Experience" 
-              className="w-full h-auto rounded-2xl shadow-2xl"
+            <img
+              src={heroBanner}
+              alt="Shopping Experience"
+              className="w-full h-auto rounded-2xl shadow-2xl object-cover"
             />
             <div className="absolute -bottom-4 -left-4 bg-accent text-accent-foreground p-4 rounded-xl shadow-lg">
               <p className="text-sm font-semibold">Special Offer</p>

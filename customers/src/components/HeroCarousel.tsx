@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Star, TrendingUp, Tag } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  TrendingUp,
+  Tag,
+  ArrowRight,
+} from "lucide-react";
 import { LandingPageData } from "@/lib/landingPageService";
 import Link from "next/link";
+import { heroImage } from "@/assets";
 
 interface CarouselItem {
   id: string;
@@ -26,30 +34,19 @@ const HeroCarousel = ({ landingData }: HeroCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
-  // Helper function to generate consistent hash from string
-  const hashCode = (str: string): number => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-    }
-    return hash;
-  };
-
   useEffect(() => {
     const items: CarouselItem[] = [];
 
-    // Add main hero slide for a multipurpose marketplace
     items.push({
       id: "hero-main",
       type: "hero",
       title: "Everything You Need, All in One Marketplace",
-      subtitle: "Explore trusted stores, quality products, and fast delivery across every category.",
-      image: "/hero.png",
+      subtitle:
+        "Explore trusted stores, quality products, and fast delivery across every category.",
+      image: heroImage,
       link: "/shop",
     });
 
-    // Add featured categories (limit to 4)
     const featuredCategories = landingData.featuredCategories || [];
     featuredCategories
       .filter((cat) => cat.productCount > 0)
@@ -66,7 +63,6 @@ const HeroCarousel = ({ landingData }: HeroCarouselProps) => {
         });
       });
 
-    // Add featured brands (limit to 3)
     const featuredBrands = landingData.featuredBrands || [];
     featuredBrands
       .filter((brand) => brand.productCount > 0)
@@ -91,7 +87,7 @@ const HeroCarousel = ({ landingData }: HeroCarouselProps) => {
     if (carouselItems.length > 0) {
       const interval = setInterval(() => {
         setCurrentIndex((prevIndex) =>
-          prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
+          prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1,
         );
       }, 5000);
 
@@ -101,179 +97,151 @@ const HeroCarousel = ({ landingData }: HeroCarouselProps) => {
 
   const goToPrevious = () => {
     setCurrentIndex(
-      currentIndex === 0 ? carouselItems.length - 1 : currentIndex - 1
+      currentIndex === 0 ? carouselItems.length - 1 : currentIndex - 1,
     );
   };
 
   const goToNext = () => {
     setCurrentIndex(
-      currentIndex === carouselItems.length - 1 ? 0 : currentIndex + 1
+      currentIndex === carouselItems.length - 1 ? 0 : currentIndex + 1,
     );
   };
 
+  const renderSlideContent = (item: CarouselItem) => (
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {item.type === "hero" && (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+              <Star className="h-4 w-4 text-amber-300" />
+              Trusted marketplace
+            </div>
+          )}
+          {item.type === "brand" && item.isTopSelling && (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+              <TrendingUp className="h-4 w-4 text-amber-300" />
+              Top selling brand
+            </div>
+          )}
+          {item.type === "discount" && item.discount && (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1 text-sm font-medium text-white">
+              <Tag className="h-4 w-4" />
+              {item.discount}% off
+            </div>
+          )}
+          {item.type === "category" && (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+              <Star className="h-4 w-4 text-amber-300" />
+              Popular category
+            </div>
+          )}
+        </div>
+
+        <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
+          {item.title}
+        </h1>
+
+        <p className="max-w-xl text-lg text-white/85 md:text-xl">
+          {item.subtitle}
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <Link href={item.link || "/shop"}>
+          <Button
+            size="lg"
+            className="h-12 bg-white px-8 text-base font-semibold text-slate-900 hover:bg-white/90"
+          >
+            {item.type === "hero" ? "Start shopping" : "Explore now"}
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </Link>
+        <Link href="/shop">
+          <Button
+            size="lg"
+            variant="outline"
+            className="h-12 border-white/70 bg-white/10 px-8 text-base font-semibold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+          >
+            {item.type === "hero" ? "Browse all products" : "Shop all"}
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+
   if (carouselItems.length === 0) {
     return (
-      <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white h-[500px] md:h-[600px] overflow-hidden">
-        {/* Background Image */}
+      <section className="relative h-[520px] overflow-hidden md:h-[600px]">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(/hero.png)`,
-            filter: "brightness(0.5)",
-          }}
+          style={{ backgroundImage: `url(${heroImage})` }}
         />
-        
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-blue-800/50" />
-        
-        <div className="relative container mx-auto px-4 py-16 h-full flex items-center justify-center">
-          <div className="text-center max-w-4xl">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="flex items-center gap-1 bg-yellow-500 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold">
-                <Star className="h-4 w-4" />
-                Trusted Marketplace
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              Everything You Need, All in One Marketplace
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Explore trusted stores, quality products, and fast delivery across every category.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/shop">
-                <Button
-                  size="lg"
-                  className="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
-                >
-                  Start Shopping
-                </Button>
-              </Link>
-              <Link href="/shop">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white text-white hover:bg-white/10 font-semibold px-8 py-3 text-lg backdrop-blur-sm"
-                >
-                  Browse All Products
-                </Button>
-              </Link>
-            </div>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
+        <div className="relative container mx-auto flex h-full items-center px-4 py-16">
+          {renderSlideContent({
+            id: "hero-fallback",
+            type: "hero",
+            title: "Everything You Need, All in One Marketplace",
+            subtitle:
+              "Explore trusted stores, quality products, and fast delivery across every category.",
+            image: heroImage,
+            link: "/shop",
+          })}
         </div>
       </section>
     );
   }
 
   const currentItem = carouselItems[currentIndex];
+  const slideImage =
+    currentItem?.type === "hero" ? heroImage : currentItem?.image || heroImage;
 
   return (
-    <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white h-[500px] md:h-[600px] overflow-hidden">
-      {/* Background Image - Always use hero.png for all slides */}
+    <section className="relative h-[520px] overflow-hidden md:h-[600px]">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
-        style={{
-          backgroundImage: `url(/hero.png)`,
-          filter: "brightness(0.5)",
-        }}
+        style={{ backgroundImage: `url(${slideImage})` }}
       />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-blue-800/50" />
-
-      {/* Content */}
-      <div className="relative container mx-auto px-4 py-16 h-full flex items-center">
-        <div className="w-full max-w-4xl mx-auto text-center">
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-2">
-                {currentItem?.type === "hero" && (
-                  <div className="flex items-center gap-1 bg-yellow-500 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold">
-                    <Star className="h-4 w-4" />
-                    Trusted Marketplace
-                  </div>
-                )}
-                {currentItem?.type === "brand" && currentItem.isTopSelling && (
-                  <div className="flex items-center gap-1 bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
-                    <TrendingUp className="h-4 w-4" />
-                    Top Selling Brand
-                  </div>
-                )}
-                {currentItem?.type === "discount" && currentItem.discount && (
-                  <div className="flex items-center gap-1 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                    <Tag className="h-4 w-4" />
-                    {currentItem.discount}% OFF
-                  </div>
-                )}
-                {currentItem?.type === "category" && (
-                  <div className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                    <Star className="h-4 w-4" />
-                    Popular Category
-                  </div>
-                )}
-              </div>
-
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                {currentItem?.title}
-              </h1>
-
-              <p className="text-xl lg:text-2xl text-white/90 max-w-2xl mx-auto">
-                {currentItem?.subtitle}
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href={currentItem?.link || "/shop"}>
-                <Button
-                  size="lg"
-                  className="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
-                >
-                  {currentItem?.type === "hero" ? "Start Shopping" : "Explore Now"}
-                </Button>
-              </Link>
-              <Link href="/shop">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white text-white bg-white/10 font-semibold px-8 py-3 text-lg backdrop-blur-sm"
-                >
-                  {currentItem?.type === "hero" ? "Browse All Products" : "Shop All"}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
+      <div className="relative container mx-auto flex h-full items-center px-4 py-16">
+        {renderSlideContent(currentItem)}
       </div>
 
-      <button
-        onClick={goToPrevious}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-
-      <button
-        onClick={goToNext}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
-
-      {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {carouselItems.map((_, index) => (
+      {carouselItems.length > 1 && (
+        <>
           <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-200 ${
-              index === currentIndex ? "bg-yellow-400" : "bg-white/50"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+            onClick={goToPrevious}
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/15 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/25"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/15 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/25"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
+            {carouselItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-2 rounded-full transition-all duration-200 ${
+                  index === currentIndex
+                    ? "w-8 bg-white"
+                    : "w-2 bg-white/45 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 };
