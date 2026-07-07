@@ -1,0 +1,320 @@
+package com.ecommerce.ServiceImpl;
+
+import com.ecommerce.dto.CreateDeliveryNoteRequest;
+import com.ecommerce.dto.OrderDeliveryNoteDTO;
+import com.ecommerce.dto.UpdateDeliveryNoteRequest;
+import com.ecommerce.entity.OrderDeliveryNote;
+import com.ecommerce.entity.ReadyForDeliveryGroup;
+import com.ecommerce.entity.ShopOrder;
+import com.ecommerce.entity.User;
+import com.ecommerce.Exception.ResourceNotFoundException;
+import com.ecommerce.Exception.UnauthorizedException;
+import com.ecommerce.repository.OrderDeliveryNoteRepository;
+import com.ecommerce.repository.OrderRepository;
+import com.ecommerce.repository.ReadyForDeliveryGroupRepository;
+import com.ecommerce.repository.UserRepository;
+import com.ecommerce.service.OrderActivityLogService;
+import com.ecommerce.service.OrderDeliveryNoteService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class OrderDeliveryNoteServiceImpl implements OrderDeliveryNoteService {
+
+    private final OrderDeliveryNoteRepository noteRepository;
+    private final OrderRepository orderRepository;
+    private final com.ecommerce.repository.ShopOrderRepository shopOrderRepository;
+    private final ReadyForDeliveryGroupRepository deliveryGroupRepository;
+    private final UserRepository userRepository;
+    private final OrderActivityLogService activityLogService;
+
+    @Override
+    @Transactional
+    public OrderDeliveryNoteDTO createNote(CreateDeliveryNoteRequest request, String agentEmail) {
+        User agent = userRepository.findByUserEmail(agentEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent not found with ID: " + agentEmail));
+        OrderDeliveryNote.NoteType noteType;
+        try {
+            noteType = OrderDeliveryNote.NoteType.valueOf(request.getNoteType());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid note type: " + request.getNoteType());
+        }
+
+        OrderDeliveryNote.NoteCategory noteCategory = null;
+        if (request.getNoteCategory() != null && !request.getNoteCategory().isEmpty()) {
+            try {
+                noteCategory = OrderDeliveryNote.NoteCategory.valueOf(request.getNoteCategory());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid note category: " + request.getNoteCategory());
+            }
+        }
+
+        OrderDeliveryNote note = new OrderDeliveryNote();
+        note.setNoteText(request.getNoteText());
+        note.setNoteType(noteType);
+        note.setNoteCategory(noteCategory);
+        note.setAgent(agent);
+
+        if (noteType == OrderDeliveryNote.NoteType.ORDER_SPECIFIC) {
+            if (request.getOrderId() == null) {
+                throw new IllegalArgumentException("Shop Order ID is required for order-specific notes");
+            }
+
+            // The orderId in the request is actually a ShopOrder ID (not Order ID)
+            ShopOrder shopOrder = shopOrderRepository.findById(request.getOrderId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Shop order not found with ID: " + request.getOrderId()));
+
+            // Verify shop order has a delivery group assigned
+            ReadyForDeliveryGroup deliveryGroup = shopOrder.getReadyForDeliveryGroup();
+            if (deliveryGroup == null) {
+                throw new IllegalStateException("Shop order is not assigned to any delivery group");
+            }
+
+            // Verify the agent is assigned to this delivery group
+            if (deliveryGroup.getDeliverer() == null ||
+                !deliveryGroup.getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are not assigned to deliver this shop order");
+            }
+
+            // Verify shop order status allows notes (PROCESSING or SHIPPED)
+            if (shopOrder.getStatus() != ShopOrder.ShopOrderStatus.PROCESSING && 
+                shopOrder.getStatus() != ShopOrder.ShopOrderStatus.SHIPPED) {
+                throw new IllegalStateException("Notes can only be created for shop orders with PROCESSING or SHIPPED status. Current status: " + shopOrder.getStatus());
+            }
+
+            note.setShopOrder(shopOrder);
+        }
+        else if (noteType == OrderDeliveryNote.NoteType.GROUP_GENERAL) {
+            if (request.getDeliveryGroupId() == null) {
+                throw new IllegalArgumentException("Delivery group ID is required for group-general notes");
+            }
+
+            ReadyForDeliveryGroup group = deliveryGroupRepository.findById(request.getDeliveryGroupId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Delivery group not found with ID: " + request.getDeliveryGroupId()));
+
+            // Verify delivery has started but not finished
+            if (!group.getHasDeliveryStarted()) {
+                throw new IllegalStateException("Notes can only be created for deliveries that have started. Delivery has not started yet.");
+            }
+            if (group.getHasDeliveryFinished()) {
+                throw new IllegalStateException("Notes cannot be created for completed deliveries. This delivery has already finished.");
+            }
+
+            if (group.getDeliverer() == null || !group.getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are not assigned to this delivery group");
+            }
+
+            note.setDeliveryGroup(group);
+        }
+
+        OrderDeliveryNote savedNote = noteRepository.save(note);
+        log.info("Delivery note created successfully with ID: {}", savedNote.getNoteId());
+
+        // Log activity based on note type
+        String agentName = agent.getFirstName() + " " + agent.getLastName();
+        String categoryStr = noteCategory != null ? noteCategory.toString() : null;
+        
+        if (noteType == OrderDeliveryNote.NoteType.ORDER_SPECIFIC) {
+            // Log for specific shop order
+            activityLogService.logDeliveryNoteAdded(
+                savedNote.getShopOrder().getOrder().getOrderId(),
+                savedNote.getNoteText(),
+                agentName,
+                agent.getId().toString(),
+                savedNote.getNoteId(),
+                categoryStr
+            );
+        } else if (noteType == OrderDeliveryNote.NoteType.GROUP_GENERAL) {
+            List<Long> orderIds = savedNote.getDeliveryGroup().getShopOrders().stream()
+                .map(so -> so.getOrder().getOrderId())
+                .collect(java.util.stream.Collectors.toList());
+            
+            activityLogService.logGroupDeliveryNoteAdded(
+                orderIds,
+                savedNote.getNoteText(),
+                agentName,
+                agent.getId().toString(),
+                savedNote.getNoteId(),
+                categoryStr,
+                savedNote.getDeliveryGroup().getDeliveryGroupName()
+            );
+        }
+
+        return OrderDeliveryNoteDTO.fromEntity(savedNote);
+    }
+
+    @Override
+    @Transactional
+    public OrderDeliveryNoteDTO updateNote(Long noteId, UpdateDeliveryNoteRequest request, String agentEmail) {
+        User agent = userRepository.findByUserEmail(agentEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent not found with email: " + agentEmail));
+        
+        OrderDeliveryNote note = noteRepository.findByIdNotDeleted(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery note not found with ID: " + noteId));
+
+        if (!note.getAgent().getId().equals(agent.getId())) {
+            throw new UnauthorizedException("You can only update notes that you created");
+        }
+
+        if (note.getShopOrder() != null) {
+            ReadyForDeliveryGroup group = note.getShopOrder().getReadyForDeliveryGroup();
+            if (group == null || group.getDeliverer() == null ||
+                !group.getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are no longer assigned to this shop order's delivery");
+            }
+        } else if (note.getDeliveryGroup() != null) {
+            if (note.getDeliveryGroup().getDeliverer() == null ||
+                !note.getDeliveryGroup().getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are no longer assigned to this delivery group");
+            }
+        }
+
+        // Update note
+        note.setNoteText(request.getNoteText());
+
+        // Update category if provided
+        if (request.getNoteCategory() != null && !request.getNoteCategory().isEmpty()) {
+            try {
+                OrderDeliveryNote.NoteCategory category = OrderDeliveryNote.NoteCategory.valueOf(request.getNoteCategory());
+                note.setNoteCategory(category);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid note category: " + request.getNoteCategory());
+            }
+        }
+
+        OrderDeliveryNote updatedNote = noteRepository.save(note);
+        log.info("Delivery note {} updated successfully by agent: {}", noteId, agentEmail);
+
+        return OrderDeliveryNoteDTO.fromEntity(updatedNote);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNote(Long noteId, String agentEmail) {
+        User agent = userRepository.findByUserEmail(agentEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent not found with email: " + agentEmail));
+        
+        OrderDeliveryNote note = noteRepository.findByIdNotDeleted(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery note not found with ID: " + noteId));
+
+        if (!note.getAgent().getId().equals(agent.getId())) {
+            throw new UnauthorizedException("You can only delete notes that you created");
+        }
+
+        if (note.getShopOrder() != null) {
+            ReadyForDeliveryGroup group = note.getShopOrder().getReadyForDeliveryGroup();
+            if (group == null || group.getDeliverer() == null ||
+                !group.getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are no longer assigned to this shop order's delivery");
+            }
+        } else if (note.getDeliveryGroup() != null) {
+            if (note.getDeliveryGroup().getDeliverer() == null ||
+                !note.getDeliveryGroup().getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are no longer assigned to this delivery group");
+            }
+        }
+
+        // Soft delete
+        note.setIsDeleted(true);
+        noteRepository.save(note);
+
+        log.info("Delivery note {} deleted successfully by agent: {}", noteId, agentEmail);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderDeliveryNoteDTO> getNotesForOrder(Long shopOrderId, Pageable pageable, String agentEmail) {
+        log.info("Fetching notes for shop order: {}", shopOrderId);
+
+        // The shopOrderId parameter is a ShopOrder ID (not Order ID)
+        ShopOrder shopOrder = shopOrderRepository.findById(shopOrderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Shop order not found with ID: " + shopOrderId));
+
+        // If agentEmail is provided (DELIVERY_AGENT role), validate agent access
+        if (agentEmail != null && !agentEmail.isEmpty()) {
+            User agent = userRepository.findByUserEmail(agentEmail)
+                    .orElseThrow(() -> new ResourceNotFoundException("Agent not found with email: " + agentEmail));
+            
+            ReadyForDeliveryGroup deliveryGroup = shopOrder.getReadyForDeliveryGroup();
+            if (deliveryGroup == null) {
+                throw new IllegalStateException("Shop order is not assigned to any delivery group");
+            }
+            
+            if (deliveryGroup.getDeliverer() == null ||
+                !deliveryGroup.getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are not assigned to deliver this shop order");
+            }
+        }
+
+        // Get notes directly for this shop order
+        Page<OrderDeliveryNote> notes = noteRepository.findByShopOrderId(shopOrderId, pageable);
+        return notes.map(OrderDeliveryNoteDTO::fromEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderDeliveryNoteDTO> getNotesForDeliveryGroup(Long groupId, Pageable pageable) {
+        log.info("Fetching notes for delivery group: {}", groupId);
+
+        // Verify group exists
+        if (!deliveryGroupRepository.existsById(groupId)) {
+            throw new ResourceNotFoundException("Delivery group not found with ID: " + groupId);
+        }
+
+        Page<OrderDeliveryNote> notes = noteRepository.findByDeliveryGroupId(groupId, pageable);
+        return notes.map(OrderDeliveryNoteDTO::fromEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderDeliveryNoteDTO> getNotesByAgent(String agentEmail, Pageable pageable) {
+        User agent = userRepository.findByUserEmail(agentEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent not found with email: " + agentEmail));
+
+        Page<OrderDeliveryNote> notes = noteRepository.findByAgentId(agent.getId().toString(), pageable);
+        return notes.map(OrderDeliveryNoteDTO::fromEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderDeliveryNoteDTO> getAllNotesForDeliveryGroup(Long groupId, Pageable pageable, String agentEmail) {
+        log.info("Fetching all notes (order-specific and group-general) for delivery group: {}", groupId);
+
+        // Verify group exists
+        ReadyForDeliveryGroup group = deliveryGroupRepository.findById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery group not found with ID: " + groupId));
+
+        // If agentEmail is provided (DELIVERY_AGENT role), validate agent access
+        if (agentEmail != null && !agentEmail.isEmpty()) {
+            User agent = userRepository.findByUserEmail(agentEmail)
+                    .orElseThrow(() -> new ResourceNotFoundException("Agent not found with email: " + agentEmail));
+            
+            if (group.getDeliverer() == null ||
+                !group.getDeliverer().getId().equals(agent.getId())) {
+                throw new UnauthorizedException("You are not assigned to this delivery group");
+            }
+        }
+
+        Page<OrderDeliveryNote> notes = noteRepository.findAllNotesForDeliveryGroup(groupId, pageable);
+        return notes.map(OrderDeliveryNoteDTO::fromEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderDeliveryNoteDTO getNoteById(Long noteId) {
+        log.info("Fetching note by ID: {}", noteId);
+
+        OrderDeliveryNote note = noteRepository.findByIdNotDeleted(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery note not found with ID: " + noteId));
+
+        return OrderDeliveryNoteDTO.fromEntity(note);
+    }
+}

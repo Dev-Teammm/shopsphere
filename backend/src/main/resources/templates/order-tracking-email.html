@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order - Shopsphere</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background-color: #055f32;
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        /* Token Section */
+        .token-section {
+            background-color: #eff6ff;
+            border: 2px solid #055f32;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .token-label {
+            font-weight: 600;
+            color: #055f32;
+            margin-bottom: 12px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .token-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .token-container {
+            position: relative;
+        }
+
+        .token-value {
+            background-color: #ffffff;
+            padding: 14px 60px 14px 14px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-all;
+            border: 1px solid #bfdbfe;
+            color: #055f32;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #055f32;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        .copy-btn:hover {
+            background-color: #055f32;
+        }
+
+        .copy-btn:active {
+            background-color: #055f32;
+        }
+
+        .copy-success {
+            display: none;
+            color: #16a34a;
+            font-size: 13px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .copy-instruction {
+            font-size: 13px;
+            color: #055f32;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .buttons {
+            text-align: center;
+            margin: 32px 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: #055f32;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #055f32;
+        }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #055f32;
+            border: 2px solid #055f32;
+        }
+
+        .btn-secondary:hover {
+            background-color: #eff6ff;
+        }
+
+        /* Instructions Box */
+        .instructions {
+            background-color: #f9fafb;
+            border-left: 4px solid #055f32;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .instructions h3 {
+            color: #111827;
+            margin-bottom: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions-icon {
+            width: 20px;
+            height: 20px;
+            color: #055f32;
+        }
+
+        .instructions ol {
+            margin: 0;
+            padding-left: 24px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+
+        .instructions strong {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            border-radius: 6px;
+            padding: 16px;
+            margin: 24px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-warning {
+            background-color: #fef3c7;
+            border: 1px solid #fbbf24;
+            color: #92400e;
+        }
+
+        .alert-warning .alert-icon {
+            color: #f59e0b;
+        }
+
+        .alert-info {
+            background-color: #dbeafe;
+            border: 1px solid #055f32;
+            color: #055f32;
+        }
+
+        .alert-info .alert-icon {
+            color: #055f32;
+        }
+
+        .alert-content strong {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            padding: 32px 30px;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .footer p {
+            margin: 6px 0;
+            font-size: 14px;
+        }
+
+        .footer-links {
+            margin: 16px 0;
+            padding: 16px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links a {
+            color: #93c5fd;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: #bfdbfe;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .header,
+            .content,
+            .footer {
+                padding: 24px 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .token-value {
+                padding-right: 70px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">AGROCHAIN</div>
+            <h1>Track Your Order</h1>
+            <p>Secure access to your order information</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Hello!</p>
+            
+            <p class="message">
+                You requested to track your orders. Click the button below to securely view your order details and track their status.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="buttons">
+                <a th:href="${trackingUrl}" href="{{trackingUrl}}" class="btn btn-secondary">
+                    Track Orders Directly
+                </a>
+                <!-- <a th:href="${websiteUrl} + '/track-order'" href="{{websiteUrl}}/track-order" class="btn btn-secondary">
+                    Go to Website
+                </a> -->
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <h3>
+                    <svg class="instructions-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    What You Can Do:
+                </h3>
+                <ol>
+                    <li><strong>View Order Status:</strong> See real-time updates on your orders</li>
+                    <li><strong>Check Delivery Details:</strong> Track estimated delivery times</li>
+                    <li><strong>Access Order History:</strong> Review all your past orders</li>
+                </ol>
+            </div>
+
+            <!-- Expiry Warning -->
+            <div class="alert-box alert-warning">
+                <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                <div class="alert-content">
+                    <strong>Important:</strong> This access token expires at {{expiryTime}} for your security.
+                </div>
+            </div>
+
+            <!-- Security Note -->
+            <div class="alert-box alert-info">
+                <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <div class="alert-content">
+                    <strong>Security Note:</strong> This tracking link is secure and personalized for you. If you didn't request this, please ignore this email.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-brand">Shopsphere</div>
+            <p>Your trusted online shopping partner</p>
+            
+            <div class="footer-links">
+                <a th:href="${websiteUrl}" href="{{websiteUrl}}">Visit our website</a>
+                <a th:href="${supportUrl}" href="{{supportUrl}}">Contact Support</a>
+            </div>
+
+            <div class="footer-note">
+                This is an automated message. Please do not reply to this email.<br>
+                © 2025 Shopsphere. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script removed as token copy functionality is no longer needed
+    </script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { ManyProductsDto, ProductService } from "@/lib/productService";
+import {
+  similarProductsService,
+  SimilarProductsRequest,
+} from "@/lib/services/similarProductsService";
+import ProductCard from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Loader2,
+  RefreshCw,
+  Users,
+  Star,
+  TrendingUp,
+  Tag,
+  ChevronDown,
+} from "lucide-react";
+
+interface SimilarProductsProps {
+  productId: string;
+  title?: string;
+  algorithm?: "brand" | "category" | "keywords" | "popular" | "mixed";
+  maxProducts?: number;
+  showAlgorithmSelector?: boolean;
+}
+
+const algorithmLabels = {
+  brand: "Same Brand",
+  category: "Same Category",
+  keywords: "Similar Keywords",
+  popular: "Popular Products",
+  mixed: "Recommended",
+};
+
+const algorithmIcons = {
+  brand: Tag,
+  category: Tag,
+  keywords: Star,
+  popular: TrendingUp,
+  mixed: Users,
+};
+
+export default function SimilarProducts({
+  productId,
+  title = "Similar Products",
+  algorithm = "mixed",
+  maxProducts = 12,
+  showAlgorithmSelector = false,
+}: SimilarProductsProps) {
+  const [products, setProducts] = useState<ManyProductsDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentAlgorithm, setCurrentAlgorithm] = useState(algorithm);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPreviousPage, setHasPreviousPage] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const fetchSimilarProducts = async (
+    page: number = 0,
+    algo: string = currentAlgorithm,
+  ) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const request: SimilarProductsRequest = {
+        productId,
+        page,
+        size: maxProducts,
+        includeOutOfStock: true,
+        algorithm: algo as any,
+      };
+
+      const response = await similarProductsService.getSimilarProducts(request);
+
+      if (response.success) {
+        setProducts(response.data.content);
+        setCurrentPage(response.data.page);
+        setHasNextPage(response.data.hasNext);
+        setHasPreviousPage(response.data.hasPrevious);
+        setTotalPages(response.data.totalPages);
+      } else {
+        setError(response.message || "Failed to load similar products");
+      }
+    } catch (err: any) {
+      console.error("Error fetching similar products:", err);
+      setError(err.message || "Failed to load similar products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSimilarProducts(0, currentAlgorithm);
+  }, [productId, currentAlgorithm]);
+
+  const handleAlgorithmChange = (newAlgorithm: string) => {
+    setCurrentAlgorithm(
+      newAlgorithm as "brand" | "category" | "keywords" | "popular" | "mixed",
+    );
+    fetchSimilarProducts(0, newAlgorithm);
+  };
+
+  const handlePageChange = (page: number) => {
+    fetchSimilarProducts(page, currentAlgorithm);
+  };
+
+  const handleRefresh = () => {
+    fetchSimilarProducts(currentPage, currentAlgorithm);
+  };
+
+  if (loading && products.length === 0) {
+    return (
+      <div className="py-8">
+        <div className="flex items-center justify-center h-32">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Loading similar products...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && products.length === 0) {
+    return (
+      <div className="py-8">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={handleRefresh} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const AlgorithmIcon =
+    algorithmIcons[currentAlgorithm as keyof typeof algorithmIcons];
+
+  return (
+    <div className="py-8">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4 mb-6">
+        {/* Title and Badge */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold">{title}</h2>
+            <Badge
+              variant="secondary"
+              className="hidden sm:flex items-center gap-1"
+            >
+              <AlgorithmIcon className="h-3 w-3" />
+              {
+                algorithmLabels[
+                  currentAlgorithm as keyof typeof algorithmLabels
+                ]
+              }
+            </Badge>
+          </div>
+
+          <Button onClick={handleRefresh} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Algorithm Selector - Responsive */}
+        {showAlgorithmSelector && (
+          <>
+            {/* Mobile Badge - Show current algorithm on small screens */}
+            <div className="sm:hidden">
+              <Badge
+                variant="secondary"
+                className="flex items-center gap-1 w-fit"
+              >
+                <AlgorithmIcon className="h-3 w-3" />
+                {
+                  algorithmLabels[
+                    currentAlgorithm as keyof typeof algorithmLabels
+                  ]
+                }
+              </Badge>
+            </div>
+
+            {/* Desktop - Horizontal buttons (hidden on mobile) */}
+            <div className="hidden lg:flex gap-1">
+              {Object.keys(algorithmLabels).map((algo) => (
+                <Button
+                  key={algo}
+                  variant={currentAlgorithm === algo ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleAlgorithmChange(algo)}
+                  className="text-xs"
+                >
+                  {algorithmLabels[algo as keyof typeof algorithmLabels]}
+                </Button>
+              ))}
+            </div>
+
+            {/* Tablet - Scrollable tabs */}
+            <div className="hidden sm:block lg:hidden">
+              <div className="flex gap-1 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                <div className="flex gap-1 min-w-max px-1">
+                  {Object.keys(algorithmLabels).map((algo) => (
+                    <Button
+                      key={algo}
+                      variant={
+                        currentAlgorithm === algo ? "default" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => handleAlgorithmChange(algo)}
+                      className="text-xs whitespace-nowrap flex-shrink-0"
+                    >
+                      {algorithmLabels[algo as keyof typeof algorithmLabels]}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile - Dropdown selector */}
+            <div className="sm:hidden">
+              <Select
+                value={currentAlgorithm}
+                onValueChange={handleAlgorithmChange}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue>
+                    <div className="flex items-center gap-2">
+                      <AlgorithmIcon className="h-4 w-4" />
+                      {
+                        algorithmLabels[
+                          currentAlgorithm as keyof typeof algorithmLabels
+                        ]
+                      }
+                    </div>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(algorithmLabels).map(([algo, label]) => {
+                    const Icon =
+                      algorithmIcons[algo as keyof typeof algorithmIcons];
+                    return (
+                      <SelectItem key={algo} value={algo}>
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-4 w-4" />
+                          {label}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((product) => {
+          const convertedProduct =
+            ProductService.convertToProductCardFormat(product);
+
+          return (
+            <ProductCard
+              key={product.productId}
+              id={convertedProduct.id}
+              name={convertedProduct.name}
+              price={convertedProduct.price}
+              originalPrice={convertedProduct.originalPrice}
+              discountedPrice={convertedProduct.discountedPrice}
+              image={convertedProduct.image}
+              rating={convertedProduct.rating}
+              reviewCount={convertedProduct.reviewCount}
+              hasActiveDiscount={convertedProduct.hasActiveDiscount}
+              discount={convertedProduct.discount}
+              discountName={convertedProduct.discountName}
+              discountEndDate={convertedProduct.discountEndDate}
+              hasVariantDiscounts={convertedProduct.hasVariantDiscounts}
+              maxVariantDiscount={convertedProduct.maxVariantDiscount}
+              isNew={convertedProduct.isNew}
+              isBestseller={convertedProduct.isBestseller}
+              isFeatured={convertedProduct.isFeatured}
+              category={convertedProduct.category}
+              brand={convertedProduct.brand}
+              shortDescription={convertedProduct.shortDescription}
+              isOrganic={convertedProduct.isOrganic}
+              unit={convertedProduct.unit}
+              shopCapability={convertedProduct.shopCapability}
+            />
+          );
+        })}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <Button
+            variant="outline"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={!hasPreviousPage || loading}
+          >
+            Previous
+          </Button>
+
+          <div className="flex items-center gap-1">
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              const pageNum =
+                Math.max(0, Math.min(totalPages - 5, currentPage - 2)) + i;
+              return (
+                <Button
+                  key={pageNum}
+                  variant={currentPage === pageNum ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handlePageChange(pageNum)}
+                  disabled={loading}
+                >
+                  {pageNum + 1}
+                </Button>
+              );
+            })}
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={!hasNextPage || loading}
+          >
+            Next
+          </Button>
+        </div>
+      )}
+
+      {loading && products.length > 0 && (
+        <div className="flex items-center justify-center mt-4">
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+          <span className="text-sm text-muted-foreground">
+            Loading more products...
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}

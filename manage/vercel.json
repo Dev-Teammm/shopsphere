@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "https://api.shopsphere.innov.rw/api/v1/:path*"
+    }
+  ]
+}

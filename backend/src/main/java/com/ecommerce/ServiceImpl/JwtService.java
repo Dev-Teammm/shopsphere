@@ -1,0 +1,96 @@
+package com.ecommerce.ServiceImpl;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Function;
+
+@Component
+public class JwtService {
+
+    private final org.springframework.core.env.Environment environment;
+    private SecretKey secretKey;
+
+    public JwtService(org.springframework.core.env.Environment environment) {
+        this.environment = environment;
+        initializeSecretKey();
+    }
+
+    private void initializeSecretKey() {
+        String secretKeyString = environment.getProperty("jwt.secret.key");
+        if (secretKeyString == null) {
+            // Fallback to a default key for development (should be overridden in production)
+            secretKeyString = "5d4e74cd64403e075a76438873d2a160948d9fdcfd54aea27f0ddeb4b050162f";
+        }
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));
+    }
+    private final Set<String> tokenBlacklist = new HashSet<>();
+
+    private SecretKey getSigningKey() {
+        return secretKey;
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public String generateToken(String username, String role) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 1000 * 60 * 60 * 10); // 10 hours
+
+        return Jwts.builder()
+                .subject(username)
+                .claim("role", role)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public boolean validateToken(String token, String username) {
+        if (tokenBlacklist.contains(token)) {
+            return false; // Token is invalidated
+        }
+        final String extractedUsername = extractUsername(token);
+        return (extractedUsername.equals(username) && !isTokenExpired(token));
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public void invalidateToken(String token) {
+        tokenBlacklist.add(token);
+    }
+}

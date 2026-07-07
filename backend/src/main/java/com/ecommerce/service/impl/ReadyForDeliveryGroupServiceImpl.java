@@ -1,0 +1,1222 @@
+package com.ecommerce.service.impl;
+
+import com.ecommerce.Enum.UserRole;
+import com.ecommerce.dto.*;
+import com.ecommerce.entity.Order;
+import com.ecommerce.entity.OrderItem;
+import com.ecommerce.entity.ReadyForDeliveryGroup;
+import com.ecommerce.entity.User;
+import com.ecommerce.entity.ShopOrder;
+import com.ecommerce.repository.ShopOrderRepository;
+import com.ecommerce.repository.ReadyForDeliveryGroupRepository;
+import com.ecommerce.repository.UserRepository;
+import com.ecommerce.repository.ShopRepository;
+import com.ecommerce.service.ReadyForDeliveryGroupService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ReadyForDeliveryGroupServiceImpl implements ReadyForDeliveryGroupService {
+
+    private final ReadyForDeliveryGroupRepository groupRepository;
+    private final ShopOrderRepository shopOrderRepository;
+    private final UserRepository userRepository;
+    private final ShopRepository shopRepository;
+    private final com.ecommerce.service.OrderActivityLogService activityLogService;
+
+    @Override
+    @Transactional
+    public ReadyForDeliveryGroupDTO createGroup(CreateReadyForDeliveryGroupDTO request) {
+        log.info("Creating ready for delivery group: {}", request.getDeliveryGroupName());
+
+        User deliverer = userRepository.findById(request.getDelivererId())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Deliverer not found with ID: " + request.getDelivererId()));
+
+        com.ecommerce.entity.Shop shop = shopRepository.findById(request.getShopId())
+                .orElseThrow(() -> new EntityNotFoundException("Shop not found with ID: " + request.getShopId()));
+
+        // Check if the deliverer already has 5 or more active groups
+        Long activeGroupCount = groupRepository.countActiveGroupsByDelivererId(deliverer.getId());
+        if (activeGroupCount >= 5) {
+            throw new IllegalStateException(
+                    "Delivery agent already has " + activeGroupCount
+                            + " active delivery groups. Maximum allowed is 5.");
+        }
+
+        ReadyForDeliveryGroup group = new ReadyForDeliveryGroup();
+        group.setDeliveryGroupName(request.getDeliveryGroupName());
+        group.setDeliveryGroupDescription(request.getDeliveryGroupDescription());
+        group.setDeliverer(deliverer);
+        group.setShop(shop);
+        group.setHasDeliveryStarted(false);
+
+        ReadyForDeliveryGroup savedGroup = groupRepository.save(group);
+
+        if (request.getOrderIds() != null && !request.getOrderIds().isEmpty()) {
+            addOrdersToGroupInternal(savedGroup.getDeliveryGroupId(), request.getOrderIds());
+        }
+
+        log.info("Created ready for delivery group with ID: {}", savedGroup.getDeliveryGroupId());
+        return mapToDTO(savedGroup);
+    }
+
+    @Override
+    @Transactional
+    public ReadyForDeliveryGroupDTO addOrdersToGroup(Long groupId, AddOrdersToGroupDTO request) {
+        log.info("Adding orders to group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot add orders to a group that has already started delivery");
+        }
+
+        addOrdersToGroupInternal(groupId, request.getOrderIds());
+
+        ReadyForDeliveryGroup updatedGroup = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        log.info("Added {} orders to group: {}", request.getOrderIds().size(), groupId);
+        return mapToDTO(updatedGroup);
+    }
+
+    @Override
+    @Transactional
+    public void removeOrdersFromGroup(Long groupId, List<Long> orderIds) {
+        log.info("Removing orders from group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot remove orders from a group that has already started delivery");
+        }
+
+        for (Long orderId : orderIds) {
+            ShopOrder so = findShopOrder(orderId, group.getShop().getShopId());
+
+            if (so.getReadyForDeliveryGroup() != null &&
+                    so.getReadyForDeliveryGroup().getDeliveryGroupId().equals(groupId)) {
+                group.removeShopOrder(so);
+            }
+        }
+
+        groupRepository.save(group);
+        log.info("Removed {} orders from group: {}", orderIds.size(), groupId);
+    }
+
+    @Override
+    @Transactional
+    public ReadyForDeliveryGroupDTO updateGroup(Long groupId, UpdateReadyForDeliveryGroupDTO request) {
+        log.info("Updating group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (request.getDeliveryGroupName() != null) {
+            group.setDeliveryGroupName(request.getDeliveryGroupName());
+        }
+        if (request.getDeliveryGroupDescription() != null) {
+            group.setDeliveryGroupDescription(request.getDeliveryGroupDescription());
+        }
+        if (request.getDelivererId() != null) {
+            User deliverer = userRepository.findById(request.getDelivererId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Deliverer not found with ID: " + request.getDelivererId()));
+
+            // Check if the new deliverer belongs to the same shop as the group
+            if (deliverer.getShop() != null && group.getShop() != null &&
+                    !deliverer.getShop().getShopId().equals(group.getShop().getShopId())) {
+                throw new IllegalStateException("Deliverer belongs to a different shop than the group");
+            }
+
+            // Check if the new deliverer already has 5 or more active groups
+            // Only check if we're actually changing the deliverer
+            if (group.getDeliverer() == null || !deliverer.getId().equals(group.getDeliverer().getId())) {
+                Long activeGroupCount = groupRepository.countActiveGroupsByDelivererId(deliverer.getId());
+                if (activeGroupCount >= 5) {
+                    throw new IllegalStateException(
+                            "Delivery agent already has " + activeGroupCount
+                                    + " active delivery groups. Maximum allowed is 5.");
+                }
+            }
+
+            group.setDeliverer(deliverer);
+        }
+
+        ReadyForDeliveryGroup updatedGroup = groupRepository.save(group);
+        log.info("Updated group: {}", groupId);
+        return mapToDTO(updatedGroup);
+    }
+
+    @Override
+    @Transactional
+    public void deleteGroup(Long groupId) {
+        log.info("Deleting group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot delete a group that has already started delivery");
+        }
+
+        for (com.ecommerce.entity.ShopOrder so : group.getShopOrders()) {
+            so.setReadyForDeliveryGroup(null);
+        }
+
+        groupRepository.delete(group);
+        log.info("Deleted group: {}", groupId);
+    }
+
+    @Override
+    @Transactional
+    public ReadyForDeliveryGroupDTO markDeliveryStarted(Long groupId) {
+        log.info("Marking delivery as started for group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Delivery has already been started for this group");
+        }
+
+        group.setHasDeliveryStarted(true);
+        group.setDeliveryStartedAt(LocalDateTime.now());
+
+        ReadyForDeliveryGroup updatedGroup = groupRepository.save(group);
+        log.info("Marked delivery as started for group: {}", groupId);
+        return mapToDTO(updatedGroup);
+    }
+
+    @Override
+    public ReadyForDeliveryGroupDTO getGroupById(Long groupId) {
+        log.info("Getting group by ID: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrdersAndDeliverer(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        return mapToDTO(group);
+    }
+
+    @Override
+    public Page<ReadyForDeliveryGroupDTO> getAllGroups(java.util.UUID shopId, Pageable pageable) {
+        log.info("Getting all groups for shop {} with pagination: page={}, size={}", shopId, pageable.getPageNumber(),
+                pageable.getPageSize());
+
+        Page<ReadyForDeliveryGroup> groups = groupRepository.findAllGroupsWithoutExclusionsByShop(shopId, pageable);
+        return groups.map(this::mapToDTO);
+    }
+
+    @Override
+    public List<ReadyForDeliveryGroupDTO> getAllGroups(java.util.UUID shopId) {
+        log.info("Getting all groups for shop {}", shopId);
+
+        List<ReadyForDeliveryGroup> groups = groupRepository
+                .findAllGroupsWithoutExclusionsByShop(shopId, Pageable.unpaged()).getContent();
+        return groups.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<ReadyForDeliveryGroupDTO> getAllGroupsWithoutExclusions(java.util.UUID shopId, String search,
+            Pageable pageable) {
+        log.info("Getting all groups for shop {} without exclusions with pagination: page={}, size={}, search={}",
+                shopId, pageable.getPageNumber(), pageable.getPageSize(), search);
+
+        Page<ReadyForDeliveryGroup> groups;
+
+        if (search != null && !search.trim().isEmpty()) {
+            // Search across all groups for a specific shop (no exclusions)
+            groups = groupRepository.searchAllGroupsWithoutExclusionsByShop(shopId, search.trim(), pageable);
+            log.info("Found {} groups for shop {} matching search term: '{}'", groups.getTotalElements(), shopId,
+                    search);
+        } else {
+            // Get all groups for a specific shop (no exclusions)
+            groups = groupRepository.findAllGroupsWithoutExclusionsByShop(shopId, pageable);
+            log.info("Found {} total groups for shop {}", groups.getTotalElements(), shopId);
+        }
+
+        return groups.map(this::mapToDTO);
+    }
+
+    @Override
+    public Page<OrderDTO> getOrdersForGroupWithPagination(Long groupId, Pageable pageable) {
+        log.info("Getting orders for group {} with pagination: page={}, size={}",
+                groupId, pageable.getPageNumber(), pageable.getPageSize());
+
+        // Verify group exists
+        groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        // Get shop orders with pagination
+        org.springframework.data.domain.Page<ShopOrder> shopOrders = shopOrderRepository
+                .findByReadyForDeliveryGroup_DeliveryGroupId(groupId, pageable);
+        log.info("Found {} shop orders for group {}", shopOrders.getTotalElements(), groupId);
+
+        return shopOrders.map(this::mapToOrderDTO);
+    }
+
+    private void addOrdersToGroupInternal(Long groupId, List<Long> orderIds) {
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        String deliveryAgentName = group.getDeliverer() != null
+                ? group.getDeliverer().getFirstName() + " " + group.getDeliverer().getLastName()
+                : "Unassigned";
+        String deliveryAgentPhone = group.getDeliverer() != null && group.getDeliverer().getPhoneNumber() != null
+                ? group.getDeliverer().getPhoneNumber()
+                : "N/A";
+
+        for (Long orderId : orderIds) {
+            ShopOrder shopOrder = findShopOrder(orderId, group.getShop().getShopId());
+
+            // Validate that the order is not a pickup order
+            if (shopOrder.getFulfillmentType() == ShopOrder.FulfillmentType.PICKUP) {
+                throw new IllegalArgumentException(
+                        "Shop order " + orderId + " (Code: " + shopOrder.getShopOrderCode() + 
+                        ") is a pickup order and cannot be added to a delivery group. " +
+                        "Pickup orders must be verified at the shop location using the QR scanner.");
+            }
+
+            if (shopOrder.getReadyForDeliveryGroup() != null) {
+                throw new IllegalStateException(
+                        "Shop order " + orderId + " is already assigned to another delivery group");
+            }
+
+            if (group.getShop() != null && shopOrder.getShop() != null &&
+                    !group.getShop().getShopId().equals(shopOrder.getShop().getShopId())) {
+                throw new IllegalStateException(
+                        "Shop order " + orderId + " belongs to a different shop than the delivery group");
+            }
+
+            group.addShopOrder(shopOrder);
+
+            // LOG ACTIVITY: Added to Delivery Group
+            activityLogService.logAddedToDeliveryGroup(
+                    shopOrder.getOrder().getOrderId(),
+                    group.getDeliveryGroupName(),
+                    deliveryAgentName,
+                    deliveryAgentPhone,
+                    groupId);
+        }
+
+        groupRepository.save(group);
+    }
+
+    private ReadyForDeliveryGroupDTO mapToDTO(ReadyForDeliveryGroup group) {
+        List<String> orderIds = group.getShopOrders().stream()
+                .map(so -> so.getId().toString())
+                .collect(Collectors.toList());
+
+        String delivererName = group.getDeliverer() != null
+                ? group.getDeliverer().getFirstName() + " " + group.getDeliverer().getLastName()
+                : null;
+
+        int ordersCount = group.getShopOrders().size();
+
+        return ReadyForDeliveryGroupDTO.builder()
+                .deliveryGroupId(group.getDeliveryGroupId())
+                .deliveryGroupName(group.getDeliveryGroupName())
+                .deliveryGroupDescription(group.getDeliveryGroupDescription())
+                .delivererId(group.getDeliverer() != null ? group.getDeliverer().getId() : null)
+                .shopId(group.getShop() != null ? group.getShop().getShopId() : null)
+                .delivererName(delivererName)
+                .orderIds(orderIds)
+                .orderCount(ordersCount)
+                .totalOrders(ordersCount) // Set totalOrders for frontend compatibility
+                .createdAt(group.getCreatedAt())
+                .scheduledAt(group.getScheduledAt())
+                .hasDeliveryStarted(group.getHasDeliveryStarted())
+                .deliveryStartedAt(group.getDeliveryStartedAt())
+                .build();
+    }
+
+    @Override
+    public Page<DeliveryGroupDto> listAvailableGroups(java.util.UUID shopId, Pageable pageable) {
+        log.info("Listing available groups for shop {} with pagination: page={}, size={}", shopId,
+                pageable.getPageNumber(),
+                pageable.getPageSize());
+
+        Page<ReadyForDeliveryGroup> groups = groupRepository.findAllWithOrdersAndDelivererByShop(shopId, pageable);
+        return groups.map(this::mapToDeliveryGroupDto);
+    }
+
+    @Override
+    public Page<DeliveryGroupDto> listAvailableGroups(java.util.UUID shopId, String search, Pageable pageable) {
+        log.info("Listing available groups for shop {} with search='{}', page={}, size={}",
+                shopId, search, pageable.getPageNumber(), pageable.getPageSize());
+
+        if (search == null || search.trim().isEmpty()) {
+            return listAvailableGroups(shopId, pageable);
+        }
+
+        Page<ReadyForDeliveryGroup> groups = groupRepository.searchAvailableGroupsByShop(shopId, search.trim(),
+                pageable);
+        return groups.map(this::mapToDeliveryGroupDto);
+    }
+
+    @Override
+    @Transactional
+    public DeliveryGroupDto createGroupEnhanced(CreateReadyForDeliveryGroupDTO request) {
+        log.info("Creating enhanced delivery group: {}", request.getDeliveryGroupName());
+
+        ReadyForDeliveryGroupDTO group = createGroup(request);
+        return mapToDeliveryGroupDto(groupRepository.findByIdWithOrdersAndDeliverer(group.getDeliveryGroupId())
+                .orElseThrow(() -> new EntityNotFoundException("Group not found after creation")));
+    }
+
+    @Override
+    @Transactional
+    public BulkAddResult addOrdersToGroupBulk(Long groupId, List<Long> orderIds) {
+        log.info("Bulk adding {} orders to group: {}", orderIds.size(), groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot add orders to a group that has already started delivery");
+        }
+
+        List<BulkAddResult.SkippedOrder> skippedOrders = new ArrayList<>();
+        int successfullyAdded = 0;
+
+        for (Long orderId : orderIds) {
+            try {
+                ShopOrder shopOrder = findShopOrder(orderId, group.getShop().getShopId());
+
+                // Validate that the order is not a pickup order
+                if (shopOrder.getFulfillmentType() == ShopOrder.FulfillmentType.PICKUP) {
+                    skippedOrders.add(BulkAddResult.SkippedOrder.builder()
+                            .orderId(orderId)
+                            .reason("Shop order " + orderId + " (Code: " + shopOrder.getShopOrderCode() + 
+                                    ") is a pickup order and cannot be added to a delivery group. " +
+                                    "Pickup orders must be verified at the shop location using the QR scanner.")
+                            .build());
+                    continue;
+                }
+
+                if (shopOrder.getReadyForDeliveryGroup() != null) {
+                    skippedOrders.add(BulkAddResult.SkippedOrder.builder()
+                            .orderId(orderId)
+                            .reason("already_in_group")
+                            .details("Shop order is already assigned to group: "
+                                    + shopOrder.getReadyForDeliveryGroup().getDeliveryGroupName())
+                            .build());
+                } else if (!group.getShop().getShopId().equals(shopOrder.getShop().getShopId())) {
+                    skippedOrders.add(BulkAddResult.SkippedOrder.builder()
+                            .orderId(orderId)
+                            .reason("wrong_shop")
+                            .details("Shop order belongs to a different shop than the delivery group")
+                            .build());
+                } else {
+                    group.addShopOrder(shopOrder);
+                    successfullyAdded++;
+                }
+            } catch (Exception e) {
+                skippedOrders.add(BulkAddResult.SkippedOrder.builder()
+                        .orderId(orderId)
+                        .reason("error")
+                        .details(e.getMessage())
+                        .build());
+            }
+        }
+
+        if (successfullyAdded > 0) {
+            groupRepository.save(group);
+        }
+
+        log.info("Bulk add completed: {} added, {} skipped", successfullyAdded, skippedOrders.size());
+
+        return BulkAddResult.builder()
+                .totalRequested(orderIds.size())
+                .successfullyAdded(successfullyAdded)
+                .skipped(skippedOrders.size())
+                .skippedOrders(skippedOrders)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public void removeOrderFromGroup(Long groupId, Long orderId) {
+        log.info("Removing order {} from group: {}", orderId, groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot remove orders from a group that has already started delivery");
+        }
+
+        ShopOrder shopOrder = findShopOrder(orderId, group.getShop().getShopId());
+
+        if (shopOrder.getReadyForDeliveryGroup() != null &&
+                shopOrder.getReadyForDeliveryGroup().getDeliveryGroupId().equals(groupId)) {
+            group.removeShopOrder(shopOrder);
+            groupRepository.save(group);
+            log.info("Order {} removed from group {}", orderId, groupId);
+        } else {
+            throw new IllegalStateException("Order is not assigned to this group");
+        }
+    }
+
+    @Override
+    public Page<AgentDto> listAvailableAgents(java.util.UUID shopId, Pageable pageable, Sort sort) {
+        log.info("Listing available agents for shop {} with pagination: page={}, size={}", shopId,
+                pageable.getPageNumber(),
+                pageable.getPageSize());
+        Page<User> users = userRepository.findByRoleAndShop(UserRole.DELIVERY_AGENT, shopId, pageable);
+        return users.map(this::mapToAgentDto);
+    }
+
+    @Override
+    public Page<AgentDto> listAvailableAgents(java.util.UUID shopId, String search, Pageable pageable, Sort sort) {
+        log.info("Listing available agents for shop {} with search='{}', page={}, size={}",
+                shopId, search, pageable.getPageNumber(), pageable.getPageSize());
+
+        if (search == null || search.trim().isEmpty()) {
+            return listAvailableAgents(shopId, pageable, sort);
+        }
+
+        Page<User> users = userRepository.findByRoleAndShopAndSearchTerm(
+                UserRole.DELIVERY_AGENT,
+                shopId,
+                search.trim().toLowerCase(),
+                pageable);
+        return users.map(this::mapToAgentDto);
+    }
+
+    @Override
+    public Optional<DeliveryGroupDto> findGroupByOrder(Long orderId) {
+        log.info("Finding group for order: {}", orderId);
+
+        // Try finding by ShopOrder ID first
+        Optional<ShopOrder> shopOrderOpt = shopOrderRepository.findById(orderId);
+
+        if (shopOrderOpt.isPresent()) {
+            ShopOrder shopOrder = shopOrderOpt.get();
+            if (shopOrder.getReadyForDeliveryGroup() != null) {
+                ReadyForDeliveryGroup group = groupRepository
+                        .findByIdWithOrdersAndDeliverer(shopOrder.getReadyForDeliveryGroup().getDeliveryGroupId())
+                        .orElse(null);
+                if (group != null) {
+                    return Optional.of(mapToDeliveryGroupDto(group));
+                }
+            }
+        } else {
+            // If not found by ID, it might be an Order ID.
+            // Look for any shop orders belonging to this order that are in a group.
+            List<ShopOrder> shopOrders = shopOrderRepository.findByOrder_OrderId(orderId);
+            for (ShopOrder so : shopOrders) {
+                if (so.getReadyForDeliveryGroup() != null) {
+                    ReadyForDeliveryGroup group = groupRepository
+                            .findByIdWithOrdersAndDeliverer(so.getReadyForDeliveryGroup().getDeliveryGroupId())
+                            .orElse(null);
+                    if (group != null) {
+                        return Optional.of(mapToDeliveryGroupDto(group));
+                    }
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private DeliveryGroupDto mapToDeliveryGroupDto(ReadyForDeliveryGroup group) {
+        List<Long> orderIds = group.getShopOrders().stream()
+                .map(ShopOrder::getId)
+                .collect(Collectors.toList());
+
+        String delivererName = group.getDeliverer() != null
+                ? group.getDeliverer().getFirstName() + " " + group.getDeliverer().getLastName()
+                : null;
+
+        String status = "IN_PROGRESS";
+        if (group.getHasDeliveryStarted() && group.getHasDeliveryFinished()) {
+            status = "COMPLETED";
+        } else if (group.getHasDeliveryStarted() && !group.getHasDeliveryFinished()) {
+            status = "DELIVERING";
+        } else {
+            status = "READY";
+        }
+        return DeliveryGroupDto.builder()
+                .deliveryGroupId(group.getDeliveryGroupId())
+                .deliveryGroupName(group.getDeliveryGroupName())
+                .deliveryGroupDescription(group.getDeliveryGroupDescription())
+                .delivererId(group.getDeliverer() != null ? group.getDeliverer().getId() : null)
+                .shopId(group.getShop() != null ? group.getShop().getShopId() : null)
+                .delivererName(delivererName)
+                .orderIds(orderIds)
+                .memberCount(group.getShopOrders().size())
+                .createdAt(group.getCreatedAt())
+                .scheduledAt(group.getScheduledAt())
+                .hasDeliveryStarted(group.getHasDeliveryStarted())
+                .deliveryStartedAt(group.getDeliveryStartedAt())
+                .hasDeliveryFinished(group.getHasDeliveryFinished())
+                .deliveryFinishedAt(group.getDeliveryFinishedAt())
+                .status(status)
+                .build();
+    }
+
+    private AgentDto mapToAgentDto(User user) {
+        // Count only active (non-completed) delivery groups
+        Long activeGroupCount = groupRepository.countActiveGroupsByDelivererId(user.getId());
+
+        // Agent is busy if they have 5 or more active groups
+        boolean hasAGroup = activeGroupCount >= 5;
+        boolean isAvailable = activeGroupCount < 5;
+
+        return AgentDto.builder()
+                .agentId(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getUserEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .isAvailable(isAvailable)
+                .hasAGroup(hasAGroup)
+                .activeGroupCount(activeGroupCount)
+                .lastActiveAt(user.getUpdatedAt())
+                .build();
+    }
+
+    @Override
+    public DeliveryAgentDashboardDTO getDeliveryAgentDashboard(UUID agentId) {
+        log.info("Getting dashboard data for delivery agent: {}", agentId);
+
+        // Get current groups (not finished)
+        List<ReadyForDeliveryGroup> currentGroups = groupRepository
+                .findByDelivererIdAndHasDeliveryFinishedFalse(agentId);
+
+        // Get completed groups (finished)
+        List<ReadyForDeliveryGroup> completedGroups = groupRepository
+                .findByDelivererIdAndHasDeliveryFinishedTrue(agentId);
+
+        // Calculate stats
+        Long totalGroups = groupRepository.countByDelivererId(agentId);
+        Long completedGroupsCount = (long) completedGroups.size();
+        Long totalOrders = groupRepository.countOrdersByDelivererId(agentId);
+
+        DeliveryAgentStatsDTO stats = new DeliveryAgentStatsDTO();
+        stats.setTotalGroups(totalGroups);
+        stats.setCompletedGroups(completedGroupsCount);
+        stats.setTotalOrders(totalOrders);
+
+        List<DeliveryGroupDto> currentGroupDtos = currentGroups.stream()
+                .map(this::mapToDeliveryGroupDto)
+                .collect(java.util.stream.Collectors.toList());
+
+        List<DeliveryGroupDto> completedGroupDtos = completedGroups.stream()
+                .map(this::mapToDeliveryGroupDto)
+                .collect(java.util.stream.Collectors.toList());
+
+        return DeliveryAgentDashboardDTO.builder()
+                .stats(stats)
+                .currentGroups(currentGroupDtos)
+                .completedGroups(completedGroupDtos)
+                .build();
+    }
+
+    @Override
+    public List<OrderDTO> getOrdersForGroup(Long groupId, UUID agentId) {
+        log.info("Getting orders for group {} by agent {}", groupId, agentId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithOrdersAndDeliverer(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found"));
+
+        // Verify the agent owns this group
+        if (!group.getDeliverer().getId().equals(agentId)) {
+            throw new IllegalStateException("Agent does not have access to this group");
+        }
+
+        return group.getShopOrders().stream()
+                .map(this::mapToOrderDTO)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public DeliveryGroupDto startDelivery(Long groupId, UUID agentId) {
+        log.info("Starting delivery for group {} by agent {}", groupId, agentId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithDeliverer(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found"));
+
+        // Verify the agent owns this group
+        if (!group.getDeliverer().getId().equals(agentId)) {
+            throw new IllegalStateException("Agent does not have access to this group");
+        }
+
+        if (group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Delivery has already been started");
+        }
+
+        group.setHasDeliveryStarted(true);
+        group.setDeliveryStartedAt(java.time.LocalDateTime.now());
+
+        ReadyForDeliveryGroup savedGroup = groupRepository.save(group);
+
+        // LOG ACTIVITY: Delivery Started for all orders in the group
+        String deliveryAgentName = group.getDeliverer().getFirstName() + " " + group.getDeliverer().getLastName();
+        ReadyForDeliveryGroup groupWithOrders = groupRepository.findByIdWithOrders(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found"));
+
+        for (ShopOrder so : groupWithOrders.getShopOrders()) {
+            activityLogService.logDeliveryStarted(
+                    so.getOrder().getOrderId(),
+                    group.getDeliveryGroupName(),
+                    deliveryAgentName,
+                    agentId.toString());
+        }
+
+        return mapToDeliveryGroupDto(savedGroup);
+    }
+
+    @Override
+    public DeliveryGroupDto finishDelivery(Long groupId, UUID agentId) {
+        log.info("Finishing delivery for group {} by agent {}", groupId, agentId);
+
+        ReadyForDeliveryGroup group = groupRepository.findByIdWithDeliverer(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found"));
+
+        // Verify the agent owns this group
+        if (!group.getDeliverer().getId().equals(agentId)) {
+            throw new IllegalStateException("Agent does not have access to this group");
+        }
+
+        if (!group.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Delivery must be started before it can be finished");
+        }
+
+        if (group.getHasDeliveryFinished()) {
+            throw new IllegalStateException("Delivery has already been finished");
+        }
+
+        group.setHasDeliveryFinished(true);
+        group.setDeliveryFinishedAt(java.time.LocalDateTime.now());
+
+        ReadyForDeliveryGroup savedGroup = groupRepository.save(group);
+        return mapToDeliveryGroupDto(savedGroup);
+    }
+
+    @Override
+    public OrderDTO getOrderDetailsForAgent(Long orderId, UUID agentId) {
+        ShopOrder shopOrder = shopOrderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Shop order not found"));
+
+        if (shopOrder.getReadyForDeliveryGroup() == null ||
+                !shopOrder.getReadyForDeliveryGroup().getDeliverer().getId().equals(agentId)) {
+            throw new IllegalStateException("Agent does not have access to this order");
+        }
+
+        return mapToOrderDTO(shopOrder);
+    }
+
+    private OrderDTO mapToOrderDTO(Order order) {
+        List<OrderItemDTO> orderItems = order.getShopOrders().stream()
+                .flatMap(shopOrder -> shopOrder.getItems().stream())
+                .map(item -> {
+                    OrderItemDTO dto = new OrderItemDTO();
+                    dto.setId(item.getOrderItemId().toString());
+                    dto.setQuantity(item.getQuantity());
+                    dto.setPrice(item.getPrice());
+                    dto.setTotalPrice(item.getPrice().multiply(java.math.BigDecimal.valueOf(item.getQuantity())));
+
+                    SimpleProductDTO productDto = new SimpleProductDTO();
+
+                    if (item.getProductVariant() != null) {
+                        dto.setVariantId(item.getProductVariant().getId().toString());
+                        dto.setProductId(item.getProductVariant().getProduct().getProductId().toString());
+                        productDto.setProductId(item.getProductVariant().getProduct().getProductId().toString());
+                        productDto.setName(item.getProductVariant().getProduct().getProductName() +
+                                " - " + item.getProductVariant().getVariantName());
+                        productDto.setImages(item.getProductVariant().getProduct().getImages().stream()
+                                .map(img -> img.getImageUrl())
+                                .toArray(String[]::new));
+                        productDto.setUnit(com.ecommerce.dto.UnitDTO.from(item.getProductVariant().getProduct().getUnit()));
+                        productDto.setOrganic(item.getProductVariant().getProduct().getOrganic());
+                    } else if (item.getProduct() != null) {
+                        // Handle regular product items
+                        dto.setProductId(item.getProduct().getProductId().toString());
+                        productDto.setProductId(item.getProduct().getProductId().toString());
+                        productDto.setName(item.getProduct().getProductName());
+                        productDto.setImages(item.getProduct().getImages().stream()
+                                .map(img -> img.getImageUrl())
+                                .toArray(String[]::new));
+                        productDto.setUnit(com.ecommerce.dto.UnitDTO.from(item.getProduct().getUnit()));
+                        productDto.setOrganic(item.getProduct().getOrganic());
+                    }
+
+                    dto.setProduct(productDto);
+                    return dto;
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+        AddressDto shippingAddress = new AddressDto();
+        if (order.getOrderAddress() != null) {
+            shippingAddress.setStreetAddress(
+                    order.getOrderAddress().getStreet() != null ? order.getOrderAddress().getStreet() : "N/A");
+            shippingAddress.setCity(
+                    order.getOrderAddress().getRegions() != null ? order.getOrderAddress().getRegions() : "N/A");
+            shippingAddress.setState(
+                    order.getOrderAddress().getRegions() != null ? order.getOrderAddress().getRegions() : "N/A");
+            shippingAddress.setCountry(
+                    order.getOrderAddress().getCountry() != null ? order.getOrderAddress().getCountry() : "N/A");
+            shippingAddress.setLatitude(order.getOrderAddress().getLatitude());
+            shippingAddress.setLongitude(order.getOrderAddress().getLongitude());
+        } else {
+            shippingAddress.setStreetAddress("N/A");
+            shippingAddress.setCity("N/A");
+            shippingAddress.setState("N/A");
+            shippingAddress.setCountry("N/A");
+            shippingAddress.setLatitude(null);
+            shippingAddress.setLongitude(null);
+        }
+
+        String customerName = "N/A";
+        String customerEmail = "N/A";
+        String customerPhone = "N/A";
+
+        if (order.getOrderCustomerInfo() != null) {
+            String firstName = order.getOrderCustomerInfo().getFirstName() != null
+                    ? order.getOrderCustomerInfo().getFirstName()
+                    : "";
+            String lastName = order.getOrderCustomerInfo().getLastName() != null
+                    ? order.getOrderCustomerInfo().getLastName()
+                    : "";
+            customerName = (firstName + " " + lastName).trim();
+            if (customerName.isEmpty())
+                customerName = "N/A";
+
+            customerEmail = order.getOrderCustomerInfo().getEmail() != null ? order.getOrderCustomerInfo().getEmail()
+                    : "N/A";
+            customerPhone = order.getOrderCustomerInfo().getPhoneNumber() != null
+                    ? order.getOrderCustomerInfo().getPhoneNumber()
+                    : "N/A";
+        }
+
+        // Handle order info safely
+        java.math.BigDecimal totalAmount = order.getTotalAmount();
+
+        // Calculate total items count (sum of all quantities)
+        int totalItemsCount = orderItems.stream()
+                .mapToInt(OrderItemDTO::getQuantity)
+                .sum();
+
+        return OrderDTO.builder()
+                .id(order.getOrderId())
+                .orderNumber(order.getOrderCode())
+                .customerName(customerName)
+                .customerEmail(customerEmail)
+                .customerPhone(customerPhone)
+                .status(order.getStatus())
+                .totalAmount(totalAmount)
+                .totalItems(totalItemsCount)
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
+                .items(orderItems)
+                .shippingAddress(shippingAddress)
+                .build();
+    }
+
+    private OrderDTO mapToOrderDTO(ShopOrder shopOrder) {
+        List<OrderItemDTO> orderItems = shopOrder.getItems().stream()
+                .map(item -> {
+                    OrderItemDTO dto = new OrderItemDTO();
+                    dto.setId(item.getOrderItemId().toString());
+                    dto.setQuantity(item.getQuantity());
+                    dto.setPrice(item.getPrice());
+                    dto.setTotalPrice(item.getPrice().multiply(java.math.BigDecimal.valueOf(item.getQuantity())));
+
+                    SimpleProductDTO productDto = new SimpleProductDTO();
+
+                    if (item.getProductVariant() != null) {
+                        dto.setVariantId(item.getProductVariant().getId().toString());
+                        dto.setProductId(item.getProductVariant().getProduct().getProductId().toString());
+                        productDto.setProductId(item.getProductVariant().getProduct().getProductId().toString());
+                        productDto.setName(item.getProductVariant().getProduct().getProductName() +
+                                " - " + item.getProductVariant().getVariantName());
+                        productDto.setImages(item.getProductVariant().getProduct().getImages().stream()
+                                .map(img -> img.getImageUrl())
+                                .toArray(String[]::new));
+                        productDto.setUnit(com.ecommerce.dto.UnitDTO.from(item.getProductVariant().getProduct().getUnit()));
+                        productDto.setOrganic(item.getProductVariant().getProduct().getOrganic());
+                    } else if (item.getProduct() != null) {
+                        // Handle regular product items
+                        dto.setProductId(item.getProduct().getProductId().toString());
+                        productDto.setProductId(item.getProduct().getProductId().toString());
+                        productDto.setName(item.getProduct().getProductName());
+                        productDto.setImages(item.getProduct().getImages().stream()
+                                .map(img -> img.getImageUrl())
+                                .toArray(String[]::new));
+                        productDto.setUnit(com.ecommerce.dto.UnitDTO.from(item.getProduct().getUnit()));
+                        productDto.setOrganic(item.getProduct().getOrganic());
+                    }
+
+                    dto.setProduct(productDto);
+                    return dto;
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+        AddressDto shippingAddress = new AddressDto();
+        if (shopOrder.getOrder() != null && shopOrder.getOrder().getOrderAddress() != null) {
+            shippingAddress.setStreetAddress(
+                    shopOrder.getOrder().getOrderAddress().getStreet() != null
+                            ? shopOrder.getOrder().getOrderAddress().getStreet()
+                            : "N/A");
+            shippingAddress.setCity(
+                    shopOrder.getOrder().getOrderAddress().getRegions() != null
+                            ? shopOrder.getOrder().getOrderAddress().getRegions()
+                            : "N/A");
+            shippingAddress.setState(
+                    shopOrder.getOrder().getOrderAddress().getRegions() != null
+                            ? shopOrder.getOrder().getOrderAddress().getRegions()
+                            : "N/A");
+            shippingAddress.setCountry(
+                    shopOrder.getOrder().getOrderAddress().getCountry() != null
+                            ? shopOrder.getOrder().getOrderAddress().getCountry()
+                            : "N/A");
+            shippingAddress.setLatitude(shopOrder.getOrder().getOrderAddress().getLatitude());
+            shippingAddress.setLongitude(shopOrder.getOrder().getOrderAddress().getLongitude());
+        } else {
+            shippingAddress.setStreetAddress("N/A");
+            shippingAddress.setCity("N/A");
+            shippingAddress.setState("N/A");
+            shippingAddress.setCountry("N/A");
+            shippingAddress.setLatitude(null);
+            shippingAddress.setLongitude(null);
+        }
+
+        String customerName = "N/A";
+        String customerEmail = "N/A";
+        String customerPhone = "N/A";
+
+        if (shopOrder.getOrder() != null && shopOrder.getOrder().getOrderCustomerInfo() != null) {
+            String firstName = shopOrder.getOrder().getOrderCustomerInfo().getFirstName() != null
+                    ? shopOrder.getOrder().getOrderCustomerInfo().getFirstName()
+                    : "";
+            String lastName = shopOrder.getOrder().getOrderCustomerInfo().getLastName() != null
+                    ? shopOrder.getOrder().getOrderCustomerInfo().getLastName()
+                    : "";
+            customerName = (firstName + " " + lastName).trim();
+            if (customerName.isEmpty())
+                customerName = "N/A";
+
+            customerEmail = shopOrder.getOrder().getOrderCustomerInfo().getEmail() != null
+                    ? shopOrder.getOrder().getOrderCustomerInfo().getEmail()
+                    : "N/A";
+            customerPhone = shopOrder.getOrder().getOrderCustomerInfo().getPhoneNumber() != null
+                    ? shopOrder.getOrder().getOrderCustomerInfo().getPhoneNumber()
+                    : "N/A";
+        }
+
+        java.math.BigDecimal totalAmount = shopOrder.getTotalAmount() != null ? shopOrder.getTotalAmount()
+                : java.math.BigDecimal.ZERO;
+
+        int totalItemsCount = orderItems.stream()
+                .mapToInt(OrderItemDTO::getQuantity)
+                .sum();
+
+        return OrderDTO.builder()
+                .id(shopOrder.getId())
+                .orderNumber(shopOrder.getShopOrderCode())
+                .customerName(customerName)
+                .customerEmail(customerEmail)
+                .customerPhone(customerPhone)
+                .status(shopOrder.getStatus() != null ? shopOrder.getStatus().toString() : "UNKNOWN")
+                .totalAmount(totalAmount)
+                .totalItems(totalItemsCount)
+                .createdAt(shopOrder.getCreatedAt())
+                .updatedAt(shopOrder.getUpdatedAt())
+                .items(orderItems)
+                .shippingAddress(shippingAddress)
+                .build();
+    }
+
+    @Override
+    public Map<String, Object> startDelivery(Long groupId) {
+        log.info("Starting delivery for group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found with id: " + groupId));
+
+        // Check if delivery has already started
+        if (Boolean.TRUE.equals(group.getHasDeliveryStarted())) {
+            throw new IllegalStateException("Delivery has already been started for this group");
+        }
+
+        // Check if shop orders are not delivered
+        Set<ShopOrder> shopOrders = group.getShopOrders();
+        long deliveredOrders = shopOrders.stream()
+                .filter(so -> so.getStatus() == ShopOrder.ShopOrderStatus.DELIVERED)
+                .count();
+
+        if (deliveredOrders > 0) {
+            throw new IllegalStateException(
+                    "Cannot start delivery: " + deliveredOrders + " orders are already delivered");
+        }
+
+        // Start delivery
+        group.setHasDeliveryStarted(true);
+        group.setDeliveryStartedAt(java.time.LocalDateTime.now());
+        groupRepository.save(group);
+
+        // Log activity for all shop orders in the group
+        String agentName = group.getDeliverer() != null
+                ? group.getDeliverer().getFirstName() + " " + group.getDeliverer().getLastName()
+                : "Delivery Agent";
+
+        for (ShopOrder so : shopOrders) {
+            activityLogService.logDeliveryStarted(
+                    so.getOrder().getOrderId(),
+                    group.getDeliveryGroupName(),
+                    agentName,
+                    group.getDeliverer() != null ? group.getDeliverer().getId().toString() : null);
+        }
+
+        // Send email notifications to customers (async)
+        sendDeliveryStartNotifications(group);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("groupId", groupId);
+        result.put("groupName", group.getDeliveryGroupName());
+        result.put("deliveryStartedAt", group.getDeliveryStartedAt());
+        result.put("totalOrders", shopOrders.size());
+        result.put("notificationsSent", shopOrders.size());
+
+        log.info("Delivery started successfully for group: {} with {} shop orders", groupId, shopOrders.size());
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> finishDelivery(Long groupId) {
+        log.info("Finishing delivery for group: {}", groupId);
+
+        ReadyForDeliveryGroup group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found with id: " + groupId));
+
+        // Check if delivery has been started
+        if (!Boolean.TRUE.equals(group.getHasDeliveryStarted())) {
+            throw new IllegalStateException("Delivery has not been started for this group");
+        }
+
+        // Check if delivery has already finished
+        if (Boolean.TRUE.equals(group.getHasDeliveryFinished())) {
+            throw new IllegalStateException("Delivery has already been finished for this group");
+        }
+
+        // Check if all shop orders are delivered and pickup tokens are used
+        Set<ShopOrder> shopOrders2 = group.getShopOrders();
+        long undeliveredOrders = shopOrders2.stream()
+                .filter(so -> so.getStatus() != ShopOrder.ShopOrderStatus.DELIVERED)
+                .count();
+
+        long unusedTokens = shopOrders2.stream()
+                .filter(so -> !Boolean.TRUE.equals(so.getPickupTokenUsed()))
+                .count();
+
+        if (undeliveredOrders > 0) {
+            throw new IllegalStateException(
+                    "Cannot finish delivery: " + undeliveredOrders + " orders are not yet delivered");
+        }
+
+        if (unusedTokens > 0) {
+            throw new IllegalStateException(
+                    "Cannot finish delivery: " + unusedTokens + " pickup tokens are not yet used");
+        }
+
+        // Finish delivery
+        group.setHasDeliveryFinished(true);
+        group.setDeliveryFinishedAt(java.time.LocalDateTime.now());
+        groupRepository.save(group);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("groupId", groupId);
+        result.put("groupName", group.getDeliveryGroupName());
+        result.put("deliveryFinishedAt", group.getDeliveryFinishedAt());
+        result.put("totalOrders", shopOrders2.size());
+        result.put("deliveredOrders", shopOrders2.size());
+
+        log.info("Delivery finished successfully for group: {} with {} shop orders", groupId, shopOrders2.size());
+        return result;
+    }
+
+    private void sendDeliveryStartNotifications(ReadyForDeliveryGroup group) {
+        // Use async processing to send emails quickly
+        CompletableFuture.runAsync(() -> {
+            try {
+                Set<ShopOrder> shopOrders = group.getShopOrders();
+                log.info("Sending delivery start notifications for {} shop orders", shopOrders.size());
+
+                for (ShopOrder so : shopOrders) {
+                    try {
+                        if (so.getStatus() != ShopOrder.ShopOrderStatus.DELIVERED && so.getOrder() != null
+                                && so.getOrder().getUser() != null) {
+                            sendDeliveryStartEmail(so);
+                        }
+                    } catch (Exception e) {
+                        log.error("Failed to send notification for shop order {}: {}", so.getId(), e.getMessage());
+                    }
+                }
+
+                log.info("Completed sending delivery start notifications for group: {}", group.getDeliveryGroupId());
+            } catch (Exception e) {
+                log.error("Error sending delivery start notifications: {}", e.getMessage(), e);
+            }
+        });
+    }
+
+    private void sendDeliveryStartEmail(ShopOrder shopOrder) {
+        try {
+            // Create email content
+            String subject = "Your Order Delivery Has Started - " + shopOrder.getShopOrderCode();
+            String content = createDeliveryStartEmailContent(shopOrder);
+
+            // Send email (you can integrate with your email service here)
+            log.info("Sending delivery start email to: {} for shop order: {}",
+                    shopOrder.getOrder().getUser().getUserEmail(), shopOrder.getShopOrderCode());
+
+            // TODO: Integrate with actual email service (e.g., SendGrid, AWS SES, etc.)
+            // emailService.sendEmail(order.getUser().getUserEmail(), subject, content);
+
+        } catch (Exception e) {
+            log.error("Failed to send delivery start email for shop order {}: {}", shopOrder.getId(), e.getMessage());
+        }
+    }
+
+    private String createDeliveryStartEmailContent(ShopOrder shopOrder) {
+        StringBuilder content = new StringBuilder();
+        content.append("<html><body>");
+        content.append("<h2>Your Order Delivery Has Started!</h2>");
+        content.append("<p>Dear ").append(shopOrder.getOrder().getUser().getFirstName()).append(",</p>");
+        content.append("<p>Great news! Your order <strong>").append(shopOrder.getShopOrderCode())
+                .append("</strong> is now out for delivery.</p>");
+
+        content.append("<h3>Order Summary:</h3>");
+        content.append("<ul>");
+        for (OrderItem item : shopOrder.getItems()) {
+            content.append("<li>").append(item.getQuantity()).append("x ");
+            if (item.getProductVariant() != null) {
+                content.append(item.getProductVariant().getProduct().getProductName());
+            } else {
+                content.append("Product");
+            }
+            content.append("</li>");
+        }
+        content.append("</ul>");
+
+        content.append("<p><strong>Total Amount:</strong> $").append(shopOrder.getTotalAmount()).append("</p>");
+
+        content.append("<h3>Delivery Information:</h3>");
+        if (shopOrder.getOrder().getOrderAddress() != null) {
+            content.append("<p><strong>Delivery Address:</strong><br>");
+            content.append(shopOrder.getOrder().getOrderAddress().getStreet()).append("<br>");
+            content.append(shopOrder.getOrder().getOrderAddress().getRegions()).append(" ");
+            content.append(shopOrder.getOrder().getOrderAddress().getCountry()).append("</p>");
+        }
+
+        content.append("<p>Please have your pickup QR code ready when the delivery agent arrives.</p>");
+        content.append("<p>Thank you for choosing our service!</p>");
+        content.append("</body></html>");
+
+        return content.toString();
+    }
+
+    @Override
+    @Transactional
+    public DeliveryGroupDto changeOrderGroup(Long orderId, Long newGroupId) {
+        log.info("Changing order {} to group {}", orderId, newGroupId);
+
+        // Find the new group first to get shop context
+        ReadyForDeliveryGroup newGroup = groupRepository.findByIdWithDeliverer(newGroupId)
+                .orElseThrow(() -> new EntityNotFoundException("Delivery group not found with ID: " + newGroupId));
+
+        // Find the shop order using robust lookup
+        ShopOrder shopOrder = findShopOrder(orderId, newGroup.getShop().getShopId());
+
+        // Validate that the new group hasn't started delivery
+        if (newGroup.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot assign order to a group that has already started delivery");
+        }
+
+        // Validate that the order and group belong to the same shop
+        if (!newGroup.getShop().getShopId().equals(shopOrder.getShop().getShopId())) {
+            throw new IllegalStateException("Cannot assign order to a group belonging to a different shop");
+        }
+
+        // Get the old group if exists
+        ReadyForDeliveryGroup oldGroup = shopOrder.getReadyForDeliveryGroup();
+
+        // Validate that the old group (if exists) hasn't started delivery
+        if (oldGroup != null && oldGroup.getHasDeliveryStarted()) {
+            throw new IllegalStateException("Cannot change order from a group that has already started delivery");
+        }
+
+        // Remove from old group if exists
+        if (oldGroup != null) {
+            oldGroup.getShopOrders().remove(shopOrder);
+            groupRepository.save(oldGroup);
+            log.info("Removed order {} from old group {}", orderId, oldGroup.getDeliveryGroupId());
+        }
+
+        // Add to new group
+        shopOrder.setReadyForDeliveryGroup(newGroup);
+        if (!newGroup.getShopOrders().contains(shopOrder)) {
+            newGroup.getShopOrders().add(shopOrder);
+        }
+
+        // Save both entities
+        shopOrderRepository.save(shopOrder);
+        ReadyForDeliveryGroup savedGroup = groupRepository.save(newGroup);
+
+        log.info("Successfully changed order {} to group {}", orderId, newGroupId);
+
+        return mapToDeliveryGroupDto(savedGroup);
+    }
+
+    private ShopOrder findShopOrder(Long orderId, UUID shopId) {
+        // Try finding by ShopOrder ID first
+        Optional<ShopOrder> shopOrderOpt = shopOrderRepository.findById(orderId);
+        if (shopOrderOpt.isPresent()) {
+            ShopOrder so = shopOrderOpt.get();
+            // If shopId matches, great
+            if (shopId != null && so.getShop().getShopId().equals(shopId)) {
+                return so;
+            }
+            // If shopId doesn't match but we have it, try finding by Order ID and shopId
+            // instead
+            if (shopId != null) {
+                return shopOrderRepository.findByOrder_OrderIdAndShop_ShopId(orderId, shopId)
+                        .orElse(so); // Fallback to the one found by ID if not found by OrderID+ShopID
+            }
+            return so;
+        }
+
+        // If not found by direct ID, try by main Order ID and shop ID
+        if (shopId != null) {
+            return shopOrderRepository.findByOrder_OrderIdAndShop_ShopId(orderId, shopId)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Shop order not found for Order ID: " + orderId + " and shop ID: " + shopId));
+        }
+
+        throw new EntityNotFoundException("Shop order not found with ID: " + orderId);
+    }
+}

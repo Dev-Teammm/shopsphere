@@ -1,0 +1,81 @@
+package com.ecommerce.repository;
+
+import com.ecommerce.entity.StockBatch;
+import com.ecommerce.entity.Stock;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface StockBatchRepository extends JpaRepository<StockBatch, Long> {
+
+        List<StockBatch> findByStock(Stock stock);
+
+        List<StockBatch> findByStockOrderByCreatedAtDesc(Stock stock);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock = :stock AND sb.status = 'ACTIVE'")
+        List<StockBatch> findActiveBatchesByStock(@Param("stock") Stock stock);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock = :stock AND sb.status = 'ACTIVE' ORDER BY sb.expiryDate ASC")
+        List<StockBatch> findActiveBatchesByStockOrderByExpiryDate(@Param("stock") Stock stock);
+
+        @Query("SELECT COALESCE(SUM(sb.quantity), 0) FROM StockBatch sb WHERE sb.stock = :stock AND sb.status = 'ACTIVE'")
+        Integer getTotalActiveQuantityByStock(@Param("stock") Stock stock);
+
+        @Query("SELECT COALESCE(SUM(sb.quantity), 0) FROM StockBatch sb WHERE sb.stock = :stock AND sb.status NOT IN ('RECALLED', 'EXPIRED')")
+        Integer getTotalAvailableQuantityByStock(@Param("stock") Stock stock);
+
+        /**
+         * Get total available quantity excluding expired batches (checks runtime
+         * expiration)
+         * This query excludes batches that are:
+         * - RECALLED or EXPIRED status
+         * - Have expiresAt <= now (runtime check)
+         * - Have expiryDate <= now (legacy field, runtime check)
+         */
+        @Query("SELECT COALESCE(SUM(sb.quantity), 0) FROM StockBatch sb WHERE sb.stock = :stock " +
+                        "AND sb.status NOT IN ('RECALLED', 'EXPIRED') " +
+                        "AND (sb.expiresAt IS NULL OR sb.expiresAt > :now) " +
+                        "AND (sb.expiryDate IS NULL OR sb.expiryDate > :now)")
+        Integer getTotalNonExpiredQuantityByStock(@Param("stock") Stock stock,
+                        @Param("now") java.time.LocalDateTime now);
+
+        /**
+         * Check if there is at least one active (non-expired) batch with quantity
+         * Used for product availability checks
+         */
+        @Query("SELECT CASE WHEN COUNT(sb) > 0 THEN true ELSE false END FROM StockBatch sb " +
+                        "WHERE sb.stock = :stock AND sb.status = 'ACTIVE' AND sb.quantity > 0 " +
+                        "AND (sb.expiresAt IS NULL OR sb.expiresAt > :now) " +
+                        "AND (sb.expiryDate IS NULL OR sb.expiryDate > :now)")
+        boolean hasActiveNonExpiredBatch(@Param("stock") Stock stock, @Param("now") java.time.LocalDateTime now);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock = :stock AND sb.batchNumber = :batchNumber")
+        Optional<StockBatch> findByStockAndBatchNumber(@Param("stock") Stock stock,
+                        @Param("batchNumber") String batchNumber);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock.warehouse.id = :warehouseId AND sb.stock.product.productId = :productId")
+        List<StockBatch> findByWarehouseAndProduct(@Param("warehouseId") Long warehouseId,
+                        @Param("productId") java.util.UUID productId);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock.warehouse.id = :warehouseId AND sb.stock.productVariant.id = :variantId")
+        List<StockBatch> findByWarehouseAndVariant(@Param("warehouseId") Long warehouseId,
+                        @Param("variantId") Long variantId);
+
+        List<StockBatch> findByStockInOrderByCreatedAtDesc(List<Stock> stocks);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock.id = :stockId AND sb.status = 'ACTIVE' AND sb.quantity > 0 ORDER BY sb.expiryDate ASC NULLS LAST")
+        List<StockBatch> findActiveByStockIdOrderByExpiryDateAsc(@Param("stockId") Long stockId);
+
+        void deleteByStock(Stock stock);
+
+        @Query("SELECT CASE WHEN COUNT(oib) > 0 THEN true ELSE false END FROM OrderItemBatch oib WHERE oib.stockBatch.id = :batchId")
+        boolean isReferencedByOrders(@Param("batchId") Long batchId);
+
+        @Query("SELECT sb FROM StockBatch sb WHERE sb.stock = :stock AND NOT EXISTS (SELECT 1 FROM OrderItemBatch oib WHERE oib.stockBatch = sb)")
+        List<StockBatch> findUnreferencedBatchesByStock(@Param("stock") Stock stock);
+}

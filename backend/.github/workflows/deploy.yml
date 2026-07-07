@@ -1,0 +1,41 @@
+name: Deploy AgroChain Backend
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, backend]
+
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load environment variables
+        run: |
+          export $(grep -v '^#' /opt/configs/agrochain-backend/.env | xargs)
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
+      - name: Build Spring Boot app
+        run: ./mvnw clean package -DskipTests
+
+      - name: Deploy JAR
+        run: |
+          cp target/*.jar /opt/apps/agrochain-backend/agrochain-backend.jar
+
+      - name: Start / Restart with PM2
+        run: |
+          export $(grep -v '^#' /opt/configs/agrochain-backend/.env | xargs)
+
+          pm2 start /opt/apps/agrochain-backend/agrochain-backend.jar \
+            --name agrochain-backend \
+            --interpreter java \
+            --interpreter-args "-jar" \
+            --update-env \
+            || pm2 restart agrochain-backend --update-env
+
+          pm2 save
