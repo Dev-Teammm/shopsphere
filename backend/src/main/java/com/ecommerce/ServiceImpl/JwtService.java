@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,11 +27,18 @@ public class JwtService {
 
     private void initializeSecretKey() {
         String secretKeyString = environment.getProperty("jwt.secret.key");
-        if (secretKeyString == null) {
-            // Fallback to a default key for development (should be overridden in production)
+        if (secretKeyString == null || secretKeyString.isBlank()) {
             secretKeyString = "5d4e74cd64403e075a76438873d2a160948d9fdcfd54aea27f0ddeb4b050162f";
         }
-        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));
+        this.secretKey = Keys.hmacShaKeyFor(resolveSecretKeyBytes(secretKeyString));
+    }
+
+    private byte[] resolveSecretKeyBytes(String secretKeyString) {
+        try {
+            return Decoders.BASE64.decode(secretKeyString);
+        } catch (RuntimeException ex) {
+            return secretKeyString.getBytes(StandardCharsets.UTF_8);
+        }
     }
     private final Set<String> tokenBlacklist = new HashSet<>();
 

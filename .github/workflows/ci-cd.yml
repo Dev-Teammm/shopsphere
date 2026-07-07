@@ -42,7 +42,7 @@ jobs:
       DB_URL: jdbc:postgresql://localhost:5432/shopsphere_ci
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
-      JWT_SECRET_KEY: 01234567890123456789012345678901
+      JWT_SECRET_KEY: "5d4e74cd64403e075a76438873d2a160948d9fdcfd54aea27f0ddeb4b050162f"
       STRIPE_SECRET_KEY: sk_test_dummy
       STRIPE_WEBHOOK_SECRET: whsec_dummy
       MAIL_HOST: smtp.gmail.com
